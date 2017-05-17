@@ -9,11 +9,11 @@ MetaDataFormat = "yaml"
 	about = "/:filename/"
 
 [params]
-  author = "Firstname Lastname"
-  avatar = "/images/avatar.png"
+  author = "Bl4ckH00d5"
+  avatar = "/images/blackHoodsIcon120x120.png"
   background = "/images/background.jpg"
   description = "A place to publish my incomprehensible ramblings" #meta description
-  image = "/images/avatar-192x210.png" #for frontpage profile card
+  image = "/images/blackHoodsIcon120x120.png" #for frontpage profile card
   mdlPrimary = "grey"
   mdlSecondary = "orange"
   website = "example.com"

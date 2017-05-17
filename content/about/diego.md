@@ -1,7 +1,7 @@
 ---
 title: "D00p3lg4ng3r"
-username: "D00p3lg4ng3r"
-name: "Alejo Moles Ramos"
+username: "Baba ganga"
+name: "Diego Gomez Maranon"
 description: "sss"
 date: "2015-08-18"
 type: "about"
