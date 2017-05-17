@@ -82,7 +82,12 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/about/</loc>
+    <loc>http://CuckooWorld.github.io/alejo-copy/</loc>
+    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://CuckooWorld.github.io/alejo/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
   </url>
   
@@ -93,6 +98,12 @@
   
   <url>
     <loc>http://CuckooWorld.github.io/categories/about/</loc>
+    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://CuckooWorld.github.io/about/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
