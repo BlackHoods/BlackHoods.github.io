@@ -16,7 +16,6 @@ before_script:
 script:
 - git clone --branch source https://github.com/BlackHoods/BlackHoods.github.io.git
 - rm -r public/*
-- unzip themes/HugoMDL.zip -d themes/
-- hugo --buildDrafts
+- hugo
 after_success:
 - "./scripts/deploy.sh"
