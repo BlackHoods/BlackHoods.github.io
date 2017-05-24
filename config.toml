@@ -13,7 +13,7 @@ category = "categories"
 
 [permalinks]
 	page = "/:title/"
-	about = "/:filename/"
+	about = "/about/:filename"
 
 [params]
   id = 1
