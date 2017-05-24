@@ -16,21 +16,21 @@
 			this.IS_SHOWING = true;
 			this.classList.add(VISIBLE_CLASS);
 			closeRest(this);
+			
+			e.preventDefault();
+			e.stopPropagation();
 		} else {
 			this.IS_SHOWING = false;
 			this.classList.remove(VISIBLE_CLASS);
 		}
-		
-		e.preventDefault();
-		e.stopPropagation();
 	}
 	
-	var container_static_name = "fab_ctn";
+	var container_static_name = "fab_ctn_";
 	var VISIBLE_CLASS = "is-showing-options";
 	var list_ctns = [];
 	
 	for (i=1; i<=2; i++) {
-		fab_ctn = document.getElementById(container_static_name + '_' + i);
+		fab_ctn = document.getElementById(container_static_name + i);
 		if (fab_ctn != null) {
 			list_ctns.push(fab_ctn)
 			fab_ctn.addEventListener("click", showHideOpts);
