@@ -7,11 +7,6 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/post/coolpost/</loc>
-    <lastmod>2015-10-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://CuckooWorld.github.io/project/coolcode/</loc>
     <lastmod>2015-09-27T00:00:00+00:00</lastmod>
   </url>
@@ -32,58 +27,8 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/post/another/</loc>
-    <lastmod>2015-08-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/third/</loc>
-    <lastmod>2015-08-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/another2/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://CuckooWorld.github.io/post/andyetanother/</loc>
     <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/another1/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/second/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/yetanother/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/omgsomanymore/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/omgsomany/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/post/another3/</loc>
-    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://CuckooWorld.github.io/alejo-copy/</loc>
-    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -92,7 +37,7 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/post/first/</loc>
+    <loc>http://CuckooWorld.github.io/diego/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
   </url>
   
@@ -121,6 +66,12 @@
   </url>
   
   <url>
+    <loc>http://CuckooWorld.github.io/</loc>
+    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://CuckooWorld.github.io/categories/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -139,20 +90,14 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://CuckooWorld.github.io/categories/post/</loc>
-    <lastmod>2015-10-04T00:00:00+00:00</lastmod>
+    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://CuckooWorld.github.io/post/</loc>
-    <lastmod>2015-10-04T00:00:00+00:00</lastmod>
+    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -182,7 +127,7 @@
   
   <url>
     <loc>http://CuckooWorld.github.io/tags/test/</loc>
-    <lastmod>2015-10-04T00:00:00+00:00</lastmod>
+    <lastmod>2015-08-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

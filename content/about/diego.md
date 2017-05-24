@@ -13,7 +13,7 @@ categories:
 tags:
     - "bio"
 
-email: "al3jokotama@gmail.com"
+email: "example@email.com"
 twitter: "https://twitter.com/firstname_lastname"
 github: "https://github.com/firstname_lastname/"
 linkedin: "https://linkedin.com/in/firstname_lastname/"
