@@ -2,19 +2,18 @@
 title: "Awesome Post"
 description: "Second post with Hugo website engine"
 date: "2015-08-19"
-name: "D00p3lg4ng3r"
 categories:
-    - "post"
+- "post"
 tags:
-    - "meta"
-    - "test"
+- "meta"
+- "test"
+
 #cardimagelg: "/images/default.jpg"
 #cardimagesm: "/images/default.jpg"
 cardbackground: "#838238" #optional: overwrites default #263238, only shows when no image specified.
 "author":
     name: "D00p3lg4ng3r"
     description: "Writer of stuff"
-    website: "http://example.com/"
     email: "firstname@example.com"
     twitter: "https://twitter.com/"
     github: "https://github.com/"

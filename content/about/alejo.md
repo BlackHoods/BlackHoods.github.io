@@ -1,24 +1,20 @@
 ---
 id: 1
-title: "D00p3lg4ng3r"
 username: "D00p3lg4ng3r"
-name: "Alejo Moles Ramos"
+name: "Alejo"
 description: "sss"
 date: "2015-08-18"
 type: "about"
 layout: "single"
 categories:
-    - "bio"
-    - "about"
-    - "meta"
+- "bio"
+- "about"
+- "meta"
 tags:
-    - "bio"
+- "bio"
 
-email: "al3jokotama@gmail.com"
-twitter: "https://twitter.com/firstname_lastname"
-github: "https://github.com/firstname_lastname/"
-linkedin: "https://linkedin.com/in/firstname_lastname/"
-facebook: "https://facebook.com/firstname_lastname/"
+
+
 
 blurb: "Just a city boy, born and raised in South Detroit"
 recentposts: 5

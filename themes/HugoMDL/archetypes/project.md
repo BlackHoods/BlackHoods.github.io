@@ -9,10 +9,11 @@ repo: "http://github.com/" #optional: no icon appears if unset
 web: "http://github.com/" #optional: no icon appears if unset
 date: "2015-08-18"
 categories:
-    - "project"
+- "project"
 tags:
-    - "meta"
-    - "project"
+- "meta"
+- "project"
+
 "author": # used to fill out the project page. Unset fields are removed from page
     name: "Firstname Lastname"
     description: "Writer of stuff"

@@ -11,15 +11,18 @@ cardbackground: "#222444"
 cardthumbimage: "/images/default-small.jpg"
 cardheaderimage: "/images/default.jpg"
 #cardtitlecolor: "#fafafa"
-categories:
-  - "project"
+
 date: "2015-10-05T02:27:08Z"
 description: "Description of the sample project"
 
 repo: "http://github.com/"
+
+categories:
+- "project"
 tags:
-  - "meta"
-  - "project"
+- "meta"
+- "project"
+
 title: "Awesome Collaborative Project"
 #web: "http://github.com/"
 ---

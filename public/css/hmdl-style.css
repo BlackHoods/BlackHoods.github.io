@@ -52,7 +52,7 @@ main {
     margin: 0 auto;
     flex-shrink: 0;
     justify-content: center;
-    padding-top: 160px;
+    padding-top: 40px;
     padding-bottom: 80px;
     position: relative;
     -webkit-overflow-scrolling: touch
@@ -251,7 +251,7 @@ main {
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px
 }
-.hmdl-frontpage .hmdl-profile-card #fab_ctn {
+.hmdl-frontpage .hmdl-profile-card [id^=fab_ctn] {
     position: absolute;
     top: calc(100% - 92px);
     right: 16px
