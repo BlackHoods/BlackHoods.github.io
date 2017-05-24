@@ -1,0 +1,11 @@
+     {{- partial "header.html" . }}
+            <div class="hmdl-frontpage mdl-grid">
+            {{- range .Data.Pages }}
+                {{- if eq .Type "about" }}
+			
+                    {{ .Render "about-card" }}
+				
+                {{- end }}
+            {{- end }}
+            </div>
+            {{- partial "footer.html" . }}

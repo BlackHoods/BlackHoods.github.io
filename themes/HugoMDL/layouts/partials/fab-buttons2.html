@@ -1,0 +1,23 @@
+                    <!-- Actual buttons that fly out -->
+                    <div id="fab_ctn" class="mdl-button--fab_flinger-container">
+                        
+                        <button id="fab_btn" class="mdl-button mdl-js-ripple-effect mdl-js-button mdl-button--fab mdl-color--accent">
+                            <i class="icon ion-android-add mdl-color-text--white" role="presentation"></i>
+                            <span class="visuallyhidden">add</span>
+                        </button>
+                        
+                        <div class="mdl-button--fab_flinger-options">
+                            <a href="/about/index.html">
+                                <button id="about" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-color--primary" title="Members">
+                                    <i class="icon ion-android-people mdl-color-text--white" role="presentation"></i>
+                                </button>
+                            </a>
+                            
+                            
+                            <a href="mailto:{{ .Site.Params.email }}?subject=Hi">
+                                <button id="email" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-color--primary" title="Email us">
+                                    <i class="icon ion-email mdl-color-text--white" role="presentation"></i>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
