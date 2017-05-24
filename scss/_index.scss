@@ -87,7 +87,7 @@
             border-bottom-right-radius: 2px;
         }
 
-        #fab_ctn {
+        [id^=fab_ctn] {
             position: absolute;
             top: calc(100% - 92px);
             right: 16px;

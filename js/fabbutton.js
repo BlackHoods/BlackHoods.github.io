@@ -1,25 +1,37 @@
 (function () {
-showOpts = function(e) {
-		    console.log('clicked!');
-		    var processClick = function (evt) {
-		    if (e !== evt) {
-		        fab_ctn.classList.remove(VISIBLE_CLASS);
-		        fab_ctn.IS_SHOWING = false;
-		        document.removeEventListener("click", processClick);
-		    }
-		    };
-		    if (!fab_ctn.IS_SHOWING) {
-		    fab_ctn.IS_SHOWING = true;
-		    fab_ctn.classList.add(VISIBLE_CLASS);
-		    document.addEventListener("click", processClick);
-		    }
-		};
-var button_static_name = "fab_btn";
-var container_static_name = "fab_ctn";
-	var VISIBLE_CLASS = "is-showing-options";
-		fab_btn  = document.getElementById(button_static_name );
-		fab_ctn  = document.getElementById(container_static_name);
+	showOpts = function(e) {
 		
-	fab_btn.addEventListener("click", showOpts);
-
+		var processClick = function (evt) {
+			if (e !== evt) {
+				for (var i = 0; i < list_ctns.length; i++) {
+					if (list_ctns[i].IS_SHOWING) {
+						list_ctns[i].classList.remove(VISIBLE_CLASS);
+						list_ctns[i].IS_SHOWING = false;
+						document.removeEventListener("click", processClick);
+					}
+				}
+				
+			}
+		};
+		
+		if (!this.IS_SHOWING) {
+			this.IS_SHOWING = true;
+			this.classList.add(VISIBLE_CLASS);
+			document.addEventListener("click", processClick);
+		}
+	};
+	
+	var container_static_name = "fab_ctn";
+	var VISIBLE_CLASS = "is-showing-options";
+	var list_ctns = [];
+	
+	for (i=1; i<=2; i++) {
+		fab_ctn = document.getElementById(container_static_name + '_' + i);
+		
+		if (fab_ctn != null) {
+			list_ctns.push(fab_ctn)
+			fab_ctn.addEventListener("click", showOpts);
+		}
+	}
+	
 }.call(this));
