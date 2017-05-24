@@ -110,13 +110,13 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/categories/bio/</loc>
+    <loc>http://CuckooWorld.github.io/tags/bio/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/tags/bio/</loc>
+    <loc>http://CuckooWorld.github.io/categories/bio/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -134,14 +134,14 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/categories/meta/</loc>
-    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
+    <loc>http://CuckooWorld.github.io/tags/meta/</loc>
+    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/tags/meta/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
+    <loc>http://CuckooWorld.github.io/categories/meta/</loc>
+    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -158,13 +158,13 @@
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/categories/project/</loc>
+    <loc>http://CuckooWorld.github.io/tags/project/</loc>
     <lastmod>2015-10-05T02:27:08+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://CuckooWorld.github.io/tags/project/</loc>
+    <loc>http://CuckooWorld.github.io/categories/project/</loc>
     <lastmod>2015-10-05T02:27:08+00:00</lastmod>
     <priority>0</priority>
   </url>
