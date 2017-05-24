@@ -23,7 +23,9 @@
     {{- if .IsNode }}
     <script src="/js/cardmedia.js"></script>
 	{{- if eq .Section "about" }}
-    <script src="/js/fabbutton.js"></script>
+    <script src="/js/fabbutton_about.js"></script>
+	{{- else }}
+	<script src="/js/fabbutton.js"></script>
     {{- end }}
     {{- end }}
     {{- partial "extra-footer.html" . }}
