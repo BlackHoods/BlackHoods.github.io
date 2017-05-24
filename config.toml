@@ -4,6 +4,8 @@ title = "BlackHoods Site"
 theme = "HugoMDL"
 MetaDataFormat = "yaml"
 
+
+
 [permalinks]
 	page = "/:title/"
 	about = "/:filename/"
