@@ -15,7 +15,6 @@ before_script:
 - go get -u -v github.com/spf13/hugo
 script:
 - git clone --branch source https://github.com/BlackHoods/BlackHoods.github.io.git
-- rm -r public/*
 - hugo
 after_success:
 - "./scripts/deploy.sh"
