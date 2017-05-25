@@ -30,16 +30,11 @@
                             <div class="list">
                                 <h4>Recent Posts</h4>
                                 <ul>
-<<<<<<< HEAD
-                                    {{$post := range first .Params.recentposts  (where .Site.Pages "Section" "project") }}
-										{{ printf "%#v" $post }}
-										{{- if eq $.Params.author.name .Params.username }}
-                                    		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-										{{- end }}
-=======
-                                    {{- range first .Params.recentposts  (where .Site.Pages "Section" "project") }}
+                                    {{$post := range first .Params.recentposts  (where .Site.Pages "Section" "post") }}
+
+
                                     	<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
->>>>>>> a8ca94aa9d40b44b2de55ae8b8ca9be5864af5f6
+
                                     {{- end }}
                                 </ul>
                             </div>
