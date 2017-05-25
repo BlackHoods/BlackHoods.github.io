@@ -1,6 +1,6 @@
 ---
 id: 2
-title: "D00p3lg4ng3r"
+nick: "XXXXX"
 name: "Diego Gomez Maranon"
 description: "sss"
 date: "2015-08-18"
@@ -10,6 +10,7 @@ categories:
 - "bio"
 - "about"
 - "meta"
+
 tags:
 - "bio"
 

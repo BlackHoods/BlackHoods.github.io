@@ -1,6 +1,6 @@
 ---
 id: 1
-title: "username"
+nick: "username"
 name: "name"
 description: "sss"
 date: "2015-08-18"

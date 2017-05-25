@@ -1,4 +1,5 @@
             {{- partial "header.html" . }}
+			{{$nick := .Params.nick}}
             <div class="hmdl-page hmdl-about mdl-grid">
                 <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
                     <div id="hmdl-about-media" class="hmdl-page-banner mdl-card__media about-media" style="{{with .Params.cardheaderimage}}background-image: url('{{.}}');{{end}} {{with .Params.cardbackground}}background-color:{{.}};{{end}}">
@@ -19,21 +20,24 @@
                             <div class="list">
                                 <h4>Recent Projects</h4>
                                 <ul>
-                                    {{- range first .Params.recentprojects (where .Site.Pages "Section" "project") }}
-                                    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+                                    {{- range $key, $value := first .Params.recentprojects (where .Site.Pages "Section" "project") }}
+                                    	{{- if eq $nick $value.Params.author.name }}
+                                    		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+										{{- end }}
                                     {{- end }}
                                 </ul>
                             </div>
                             {{- end }}
 
                             {{- if .Params.recentposts }}
+							
                             <div class="list">
                                 <h4>Recent Posts</h4>
                                 <ul>
-                                    {{- range first .Params.recentposts  (where .Site.Pages "Section" "post") }}
-
-                                    	<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-
+                                    {{- range $key, $value := first .Params.recentposts (where .Site.Pages "Section" "post") }}
+										{{- if eq $nick $value.Params.author.name }}
+                                    		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+										{{- end }}
                                     {{- end }}
                                 </ul>
                             </div>

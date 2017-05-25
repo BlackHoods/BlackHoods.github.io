@@ -1,6 +1,6 @@
 ---
 id: 1
-username: "D00p3lg4ng3r"
+nick: "D00p3lg4ng3r"
 name: "Alejo"
 description: "sss"
 date: "2015-08-18"
@@ -10,6 +10,7 @@ categories:
 - "bio"
 - "about"
 - "meta"
+
 tags:
 - "bio"
 
