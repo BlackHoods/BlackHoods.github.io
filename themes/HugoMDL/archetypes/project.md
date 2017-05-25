@@ -15,13 +15,12 @@ tags:
 - "project"
 
 "author": # used to fill out the project page. Unset fields are removed from page
-    name: "Firstname Lastname"
+    name: ["Firstname Lastname"]
     description: "Writer of stuff"
-    website: "http://example.com/"
     email: "firstname@example.com"
     twitter: "https://twitter.com/"
     github: "https://github.com/"
-    image: "/images/avatar-64x64.png"
+    image: ["/images/avatar-64x64.png"]
 
 ---
 

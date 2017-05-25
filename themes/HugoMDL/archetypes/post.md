@@ -13,12 +13,12 @@ tags:
 #cardimagesm: "/images/default.jpg"
 cardbackground: "#838238" #optional: overwrites default #263238, only shows when no image specified.
 "author":
-    name: "username"
+    name: ["username"]
     description: "Writer of stuff"
     email: "firstname@example.com"
     twitter: "https://twitter.com/"
     github: "https://github.com/"
-    image: "/images/avatar-64x64.png"
+    image: ["/images/avatar-64x64.png"]
 ---
 
 This is my post.
