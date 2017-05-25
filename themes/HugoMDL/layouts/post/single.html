@@ -12,9 +12,11 @@
                         {{- end }}
 
                         <div>
-							{{- range .Params.author.name}}
-                            	<strong>{{ . }}</strong>
-							{{- end}}
+							<strong>
+								{{- range .Params.author.name}}
+                            		<strong>{{ . }}</strong>
+								{{- end}}
+							</strong>
                             <span>{{ .Date.Format "Jan 2, 2006" }}</span>
                         </div>
                         <div class="section-spacer"></div>
