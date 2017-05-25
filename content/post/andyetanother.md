@@ -12,7 +12,7 @@ tags:
 #cardimagesm: "/images/default.jpg"
 cardbackground: "#838238" #optional: overwrites default #263238, only shows when no image specified.
 "author":
-    name: "D00p3lg4ng3r"
+    name: ["D00p3lg4ng3r","XXXXX"]
     description: "Writer of stuff"
     email: "firstname@example.com"
     twitter: "https://twitter.com/"

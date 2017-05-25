@@ -21,7 +21,7 @@
                                 <h4>Recent Projects</h4>
                                 <ul>
                                     {{- range $key, $value := first .Params.recentprojects (where .Site.Pages "Section" "project") }}
-                                    	{{- if eq $nick $value.Params.author.name }}
+                                    	{{- if in $value.Params.author.name $nick}}
                                     		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
 										{{- end }}
                                     {{- end }}
@@ -35,7 +35,7 @@
                                 <h4>Recent Posts</h4>
                                 <ul>
                                     {{- range $key, $value := first .Params.recentposts (where .Site.Pages "Section" "post") }}
-										{{- if eq $nick $value.Params.author.name }}
+										{{- if in  $value.Params.author.name $nick}}
                                     		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
 										{{- end }}
                                     {{- end }}

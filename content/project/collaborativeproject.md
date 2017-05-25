@@ -4,7 +4,7 @@
   email: "jeremy@example.com"
   github: "https://github.com/"
   image: "/images/avatar.png"
-  name: "XXXXX"
+  name: ["D00p3lg4ng3r"]
   twitter: "example_twittername"
   website: "http://example.com/"
 cardbackground: "#222444"
