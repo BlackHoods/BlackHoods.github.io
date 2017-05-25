@@ -30,8 +30,7 @@
                             <div class="list">
                                 <h4>Recent Posts</h4>
                                 <ul>
-                                    {{$post := range first .Params.recentposts  (where .Site.Pages "Section" "post") }}
-
+                                    {{- range first .Params.recentposts  (where .Site.Pages "Section" "post") }}
 
                                     	<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
 
