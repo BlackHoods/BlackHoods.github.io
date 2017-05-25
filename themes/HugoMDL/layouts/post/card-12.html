@@ -7,11 +7,17 @@
                         {{ .Summary }}
                     </div>
                     <div class="hmdl-page-meta mdl-card__supporting-text mdl-color-text--grey-600">
-                        {{- with .Params.author.image }}
+                        {{- range .Params.author.image}}
+                        	{{- with . }}
+						{{- end}}
                         <div class="minilogo" style="background-image: url('{{.}}');"></div>
                         {{- end }}
                         <div>
-                            <strong><a href="{{ .Params.author.website }}">{{ .Params.author.name }}</a></strong>
+                            <strong><a href="{{ .Params.author.website }}">
+								{{- range .Params.author.name}}
+                            		<strong>{{ . }}</strong>
+								{{- end}}
+							</a></strong>
                             <span>{{ .Date.Format "Jan 2, 2006" }}</span>
                         </div>
                     </div>
