@@ -17,7 +17,7 @@ cardbackground: "#838238" #optional: overwrites default #263238, only shows when
     email: "firstname@example.com"
     twitter: "https://twitter.com/"
     github: "https://github.com/"
-    image: "/images/avatar-64x64.png"
+    image: ["/images/doplerIcon.png", "/images/avatar-64x64.png"]
 ---
 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. 

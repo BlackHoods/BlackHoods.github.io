@@ -5,11 +5,15 @@
                         <h3 {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</h3>
                     </div>
                     <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
-                        {{- with .Params.author.image }}
+                        {{- range .Params.author.image}}
+                        	{{- with . }}
+						{{- end}}
                         <div class="minilogo" style="background-image: url('{{.}}');"></div>
                         {{- end }}
                         <div>
-                            <strong>{{ .Params.author.name }}</strong>
+                            {{- range .Params.author.name}}
+                            	<strong>{{ . }}</strong>
+							{{- end}}
                             <span>{{ .Date.Format "Jan 2, 2006" }}</span>
                         </div>
                         <div class="section-spacer"></div>
