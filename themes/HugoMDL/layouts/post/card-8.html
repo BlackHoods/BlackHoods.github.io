@@ -13,11 +13,11 @@
                         <div class="minilogo" style="background-image: url('{{.}}');"></div>
                         {{- end }}
                         <div>
-                            <strong><a href="{{ .Params.author.website }}">
+                            <strong>
 							{{- range .Params.author.name}}
                             	<strong>{{ . }}</strong>
 							{{- end}}
-							</a></strong>
+							</strong>
                             <span>{{ .Date.Format "Jan 2, 2006" }}</span>
                         </div>
                     </div>

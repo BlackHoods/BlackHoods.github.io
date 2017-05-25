@@ -25,7 +25,11 @@
                         {{ .Content }}
                     </div>
                     <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
-                        <a href={{ .Params.author.website }}>{{ .Params.author.name }}</a>
+                        <strong>
+							{{- range .Params.author.name}}
+                            	<strong>{{ . }}</strong>
+							{{- end}}
+						</strong>
                         <p>{{ .Params.author.description }}</p>
                     </div>  
                 </div>
