@@ -2,39 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>BlackHoods Site</title>
-    <link>http://CuckooWorld.github.io/</link>
+    <link>http://BlackHoods.github.io/</link>
     <description>Recent content on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Oct 2015 02:27:08 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
     
-	<atom:link href="http://CuckooWorld.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://BlackHoods.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>TamuCTF 2017 - Pwn 1</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
+      <description>TamuCTF 2017 Pwn1 - 50 Points We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 pwn1  Now that the binary is opened, we need to analyze its content.
+[0xf7721ac0]&amp;gt; aaa	# Analyze [0xf7721ac0]&amp;gt; afl	# List functions found . . 0x0804854b 4 103 sym.print_flag 0x080485b2 4 120 main .</description>
+    </item>
+    
+    <item>
       <title>Awesome Collaborative Project</title>
-      <link>http://CuckooWorld.github.io/project/collaborativeproject/</link>
+      <link>http://BlackHoods.github.io/project/collaborativeproject/</link>
       <pubDate>Mon, 05 Oct 2015 02:27:08 +0000</pubDate>
       
-      <guid>http://CuckooWorld.github.io/project/collaborativeproject/</guid>
+      <guid>http://BlackHoods.github.io/project/collaborativeproject/</guid>
       <description>Mustache keytar disrupt ugh PBR. Before they sold out Brooklyn pickled, lumbersexual lo-fi mustache hoodie Tumblr Banksy semiotics salvia seitan 8-bit four loko PBR. Readymade mumblecore selfies, forage Schlitz Truffaut Portland PBR&amp;amp;B brunch sustainable chia retro 90&amp;rsquo;s tofu actually. Cold-pressed synth pickled Blue Bottle, chambray photo booth Schlitz Austin leggings distillery. Whatever kogi gastropub hashtag, 90&amp;rsquo;s wayfarers church-key ennui chia actually. Disrupt Bushwick trust fund, bicycle rights umami pork belly sartorial lumbersexual scenester asymmetrical Schlitz.</description>
     </item>
     
     <item>
-      <title>Awesome Post</title>
-      <link>http://CuckooWorld.github.io/post/andyetanother/</link>
-      <pubDate>Wed, 19 Aug 2015 00:00:00 +0000</pubDate>
-      
-      <guid>http://CuckooWorld.github.io/post/andyetanother/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title></title>
-      <link>http://CuckooWorld.github.io/about/alejo/</link>
+      <link>http://BlackHoods.github.io/about/alejo/</link>
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://CuckooWorld.github.io/about/alejo/</guid>
+      <guid>http://BlackHoods.github.io/about/alejo/</guid>
       <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
 Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
  2013 - Bachelor of Arts , University of British Columbia</description>
@@ -42,10 +44,10 @@ Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
     
     <item>
       <title></title>
-      <link>http://CuckooWorld.github.io/about/diego/</link>
+      <link>http://BlackHoods.github.io/about/diego/</link>
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://CuckooWorld.github.io/about/diego/</guid>
+      <guid>http://BlackHoods.github.io/about/diego/</guid>
       <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
 Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
  2013 - Bachelor of Arts , University of British Columbia</description>

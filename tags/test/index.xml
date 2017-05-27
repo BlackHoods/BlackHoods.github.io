@@ -2,22 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Test on BlackHoods Site</title>
-    <link>http://CuckooWorld.github.io/tags/test/</link>
+    <link>http://BlackHoods.github.io/tags/test/</link>
     <description>Recent content in Test on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 19 Aug 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
     
-	<atom:link href="http://CuckooWorld.github.io/tags/test/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://BlackHoods.github.io/tags/test/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Awesome Post</title>
-      <link>http://CuckooWorld.github.io/post/andyetanother/</link>
-      <pubDate>Wed, 19 Aug 2015 00:00:00 +0000</pubDate>
+      <title>TamuCTF 2017 - Pwn 1</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://CuckooWorld.github.io/post/andyetanother/</guid>
-      <description></description>
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
+      <description>TamuCTF 2017 Pwn1 - 50 Points We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 pwn1  Now that the binary is opened, we need to analyze its content.
+[0xf7721ac0]&amp;gt; aaa	# Analyze [0xf7721ac0]&amp;gt; afl	# List functions found . . 0x0804854b 4 103 sym.print_flag 0x080485b2 4 120 main .</description>
     </item>
     
   </channel>

