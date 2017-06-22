@@ -4,7 +4,7 @@
                         <h3><a href="{{ .RelPermalink }}" {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</a></h3>
                     </div>
                     <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                        {{ .Summary }}
+                        {{ .Params.summary }}
                     </div>
                     <div class="hmdl-page-meta mdl-card__supporting-text mdl-color-text--grey-600">
                         {{- range .Params.author.image}}

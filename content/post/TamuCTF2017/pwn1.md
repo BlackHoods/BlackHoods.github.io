@@ -7,13 +7,14 @@ author:
   name:
   - Tzaoh
 cardbackground: '#838238'
-categories:
-- post
+post_categories:
+- CTFs
 date: 2017-05-27T18:56:18+02:00
 description: a
 tags:
 - test
 title: "TamuCTF 2017 - Pwn 1"
+summary: ""
 ---
 
 # [TamuCTF 2017](https://ctf.tamu.edu/)

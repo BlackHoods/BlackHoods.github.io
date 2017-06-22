@@ -7,7 +7,9 @@ MetaDataFormat = "yaml"
 
 [taxonomies]
 tag = "tags"
-category = "categories"
+post_category = "post_categories"
+about_category = "about_categories"
+project_category = "project_categories"
 
 
 
