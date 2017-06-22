@@ -145,20 +145,19 @@ main {
 .hmdl-body .mdl-layout__drawer-button,
 .hmdl-body .mdl-layout__header--transparent .mdl-navigation__link {
     color: gray;
-	background-color: white;
+	background-color: transparent;
 
 }
 
 .hmdl-body .mdl-layout__header-row .mdl-navigation{
 	list-style-type: none;
-	color: white;
 	font-size: 18px
 }
 .hmdl-body .mdl-mini-footer {
     min-height: 80px;
     padding: 20px;
     align-items: center;
-    background-color: white;
+    background-color: transparent;
     box-sizing: border-box
 }
 @media (max-width: 480px) {
