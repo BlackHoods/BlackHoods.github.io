@@ -6,7 +6,8 @@ author:
   - /images/avatar-64x64.png
   name:
   - Tzaoh
-cardbackground: '#838238'
+cardbackground: 'white'
+cardtitlecolor: 'orange'
 post_categories:
 - CTFs
 date: 2017-05-27T18:56:18+02:00
@@ -14,7 +15,8 @@ description: a
 tags:
 - test
 title: "TamuCTF 2017 - Pwn 1"
-summary: ""
+summary: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+cardthumbimage: "/images/TamuCTF2017/pwn1/index.png"
 ---
 
 # [TamuCTF 2017](https://ctf.tamu.edu/)
