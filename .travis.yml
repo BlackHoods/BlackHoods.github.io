@@ -1,6 +1,8 @@
+# dist: precise
 language: go
 go:
 - 1.7.1
+
 env:
   global:
   - SSH_KEY="blackhoods"
