@@ -4,6 +4,8 @@ title = "BlackHoods Site"
 theme = "HugoMDL"
 MetaDataFormat = "yaml"
 
+PygmentsCodeFences = true
+PygmentsStyle = "monokai"
 
 [taxonomies]
 tag = "tags"
