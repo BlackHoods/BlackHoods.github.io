@@ -1,10 +1,23 @@
                 <!-- Make a card view for posts -->
                 <div class="mdl-card mdl-cell mdl-cell--12-col">
-                    <div class="mdl-card__media mdl-color-text--grey-50" style="{{with .Params.cardthumbimage}}background-image: url('{{.}}');{{end}} {{with .Params.cardbackground}}background-color:{{.}};{{end}}">
-                        <h3><a href="{{ .RelPermalink }}" {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</a></h3>
-                    </div>
+                    <div class="mdl-card__media mdl-color-text--grey-50">
+					{{- if .RelPermalink }}
+						<a href="{{ .RelPermalink }}">
+							<img src="{{.Params.cardthumbimage}}"></img>
+						</a>
+					</div>
+					<div style="{{with .Params.cardbackground}}background-color:{{.}};text-align: center;{{end}}">
+						<h3><a href="{{ .RelPermalink }}" {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</a></h3>
+					</div>
+					{{else}}
+						<div style="{{with .Params.cardbackground}}background-color:{{.}};text-align: center;{{end}}">
+							<h3><a href="{{ .RelPermalink }}" {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</a></h3>
+						</div>
+					</div>
+					{{end}}
+
                     <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                        {{ .Summary }}
+                        {{ .Params.summary }}
                     </div>
                     <div class="hmdl-page-meta mdl-card__supporting-text mdl-color-text--grey-600">
                         {{- range .Params.author.image}}
