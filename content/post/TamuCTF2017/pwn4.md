@@ -1,6 +1,23 @@
-# [TamuCTF 2017](https://ctf.tamu.edu/)
-### pwn4 - 200 Points
-
+---
+author:
+  email: tzaoh1@gmail.com
+  github: https://github.com/tzaoh
+  image:
+  - /images/avatar-64x64.png
+  name:
+  - Tzaoh
+cardbackground: 'white'
+cardtitlecolor: 'orange'
+post_categories:
+- CTFs
+date: 2017-05-29T18:56:18+02:00
+description: a
+tags:
+- test
+title: "TamuCTF 2017 - Pwn 4"
+summary: "Is curious that this specific challenge is more worthy than the previous one ([pwn3](../pwn3/pwn3.md)). As we will see it is way easier."
+cardthumbimage: "/assets/TamuCTF2017/title.png"
+---
 ![Pwn4 challenge description](assets/1-pwn4_description.png)
 
 Is curious that this specific challenge is more worthy than the previous one ([pwn3](../pwn3/pwn3.md)). As we will see it is way easier.

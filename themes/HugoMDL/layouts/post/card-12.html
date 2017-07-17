@@ -17,7 +17,7 @@
 					{{end}}
 
                     <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                        {{ .Params.summary }}
+                        {{ .Params.summary | markdownify}}
                     </div>
                     <div class="hmdl-page-meta mdl-card__supporting-text mdl-color-text--grey-600">
                         {{- range .Params.author.image}}
@@ -27,9 +27,9 @@
                         {{- end }}
                         <div>
                             <strong>
-								{{- range .Params.author.name}}
-                            		<strong>{{ . }}</strong>
-								{{- end}}
+							{{- range .Params.author.name}}
+								<strong>{{ . }}</strong>
+							{{- end}}
 							</strong>
                             <span>{{ .Date.Format "Jan 2, 2006" }}</span>
                         </div>
