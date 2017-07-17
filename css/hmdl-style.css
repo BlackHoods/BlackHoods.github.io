@@ -126,8 +126,14 @@ main {
     flex-grow: 1;
     flex-direction: row;
     align-items: flex-end;
-    cursor: pointer
+    cursor: pointer;
 }
+
+.hmdl-body .mdl-card__media a {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .hmdl-body .mdl-card__media ~ .mdl-card__supporting-text {
     min-height: 64px
 }
@@ -400,13 +406,13 @@ main {
     border: 0;
     box-sizing: border-box;
     min-height: 64px;
-    padding: 64px;
+    padding: 0px 64px 64px 64px;
     width: 100%
 }
 .hmdl-page .hmdl-page-content h1,
 .hmdl-page .hmdl-page-content h2,
 .hmdl-page .hmdl-page-content h3 {
-    margin-top: 64px
+    margin-top: 64px;
 }
 .hmdl-page .hmdl-page-content .highlight {
     border-radius: 4px;

