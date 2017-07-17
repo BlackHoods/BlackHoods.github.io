@@ -19,7 +19,7 @@ summary: "We are given a source code file and a binary which is being run remote
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 
-![Pwn2 challenge description](assets/1-pwn2_description.png)
+![Pwn2 challenge description](/assets/1-pwn2_description.png)
 
 We are given a source code file and a binary which is being run remotely.
 Let's a analyze it with radare2:
@@ -49,14 +49,14 @@ We can see similar functions to the previous pwning challenge, but there a compl
 We realize that **print_flag** function, which is responsible for printing the flag stored in **flag.txt**, is never called!  
 Instead a new function named **echo** is called from **main** function.
 
-![Pwn2 call in main function](assets/2-pwn2_call_echo_in_main.png)
+![Pwn2 call in main function](/assets/2-pwn2_call_echo_in_main.png)
 
 Lets see what it does:
 
 ```bash
 $ pdf @ sym.echo
 ```
-![Pwn2 echo function content](assets/3-pwn2_echo_function.png)
+![Pwn2 echo function content](/assets/3-pwn2_echo_function.png)
 
 Ok, so aparently it just prints back whatever you input before. But hey! To read your input it uses `gets` insecure function again!  That means we can write beyond the allocated memory for our input.
 > "All right, but this case is not like the previous one! ([pwn1 challenge](../pwn1/pwn1.md)).  
@@ -71,11 +71,11 @@ When a function is going to be called, some data is going to be pushed into the 
 The purpose of EIP register (or instruction pointer) is to indicate the CPU which instruction has to be executed after the current one. When the **echo** function will finish the CPU will need to continue the execution right after the call.  
 Like this:
 
-![Pwn2 Normal execution flow](assets/4-pwn2_normal_flow.png)    
+![Pwn2 Normal execution flow](/assets/4-pwn2_normal_flow.png)    
 
 And the stack will look like:
 
-![Pwn2 Stack view on echo call](assets/5-pwn2_stack_view.png)    
+![Pwn2 Stack view on echo call](/assets/5-pwn2_stack_view.png)    
 
 Nice :v:!, looking at the stack we realize we could just write a bunch of bytes until we reach the **Saved EIP** value!
 
@@ -90,7 +90,7 @@ $ gdb pwn2                                  # We open the binary with gdb.
 (gdb) run < input.txt                       # Run the binary with the content of input.txt as input.
 ```
 
-![Pwn2 GDB executing pwn2](assets/6-pwn2_gdb.png) 
+![Pwn2 GDB executing pwn2](/assets/6-pwn2_gdb.png) 
 
 We ran the binary with gdb and passed 500 "A"s as input.
 That `0x41414141` means that we have overwritten EIP register with value "AAAA" and the process crashed when it tried to execute the instrucction of that address (obviously there is nothing there).
@@ -108,7 +108,7 @@ $ gdb pwn2
 (gdb) run < input.txt
 ```
 
-![Pwn2 GDB Executing pwn2](assets/7-pwn2_gdb_cyclic.png) 
+![Pwn2 GDB Executing pwn2](/assets/7-pwn2_gdb_cyclic.png) 
 
 To check that value we do:
 ```bash
@@ -118,7 +118,7 @@ $ pwn cyclic -l 0x6261616b
 
 And finally, after 140 Characters we write a new address to continue the execution. Which address? the address of the **print_flag** function, of course! The new execution flow will look like this:
 
-![Pwn2 Modified execution flow](assets/8-pwn2_modified_flow.png) 
+![Pwn2 Modified execution flow](/assets/8-pwn2_modified_flow.png) 
 
 Lets get our flag:
 ```bash

