@@ -6,31 +6,10 @@
     <description>Recent content on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 29 May 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>TamuCTF 2017 - Pwn 3</title>
-      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn3/</link>
-      <pubDate>Mon, 29 May 2017 18:56:18 +0200</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn3/</guid>
-      <description>Here we are, with another pwning challenge. Let&amp;rsquo;s start :grin:.
-$ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3 $ r2 pwn3 [0x080484b0]&amp;gt; aaa [0x080484b0]&amp;gt; afl . . 0x080485ab 4 103 sym.print_flag 0x08048612 1 102 sym.main . .  Two interesting functions, and again, one of them is never called.
-[0x080484b0]&amp;gt; axt sym.print_flag # Search for cross references to this function in the entire binary [0x080484b0]&amp;gt;  Lets check what is happing inside the main one.</description>
-    </item>
-    
-    <item>
-      <title>TamuCTF 2017 - Pwn 2</title>
-      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn2/</link>
-      <pubDate>Sun, 28 May 2017 18:56:18 +0200</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn2/</guid>
-      <description>We are given a source code file and a binary which is being run remotely. Let&amp;rsquo;s a analyze it with radare2:
-$ wget https://ctf.tamu.edu/files/dacdf9d7951deede662f1b89e4ec2a90/pwn2 $ r2 pwn2 [0x08048450]&amp;gt; aaa	# Analyze [0x08048450]&amp;gt; afl	# List functions found . . 0x0804854b 4 103 sym.print_flag 0x080485b2 1 84 sym.echo 0x08048606 1 36 sym.main . .  We can see similar functions to the previous pwning challenge, but there a complication here: if we look closely&amp;hellip;</description>
-    </item>
     
     <item>
       <title>TamuCTF 2017 - Pwn 1</title>
@@ -38,9 +17,9 @@ $ wget https://ctf.tamu.edu/files/dacdf9d7951deede662f1b89e4ec2a90/pwn2 $ r2 pwn
       <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
       
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
-      <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
-root@kali $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 pwn1  Now that the binary is opened, we need to analyze its content.
-[0xf7721ac0]&amp;gt; aaa	# Analyze [0xf7721ac0]&amp;gt; afl	# List functions found . . 0x0804854b 4 103  sym.print_flag 0x080485b2 4 120  main . .  Interesting, there is print_flag function at 0x0804854b.</description>
+      <description>TamuCTF 2017 Pwn1 - 50 Points We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 pwn1  Now that the binary is opened, we need to analyze its content.
+[0xf7721ac0]&amp;gt; aaa	# Analyze [0xf7721ac0]&amp;gt; afl	# List functions found . . 0x0804854b 4 103 sym.print_flag 0x080485b2 4 120 main .</description>
     </item>
     
     <item>
@@ -72,18 +51,6 @@ Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
       <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
 Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
  2013 - Bachelor of Arts , University of British Columbia</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
-      <description>TamuCTF 2017 pwn4 - 200 Points Is curious that this specific challenge is more worthy than the previous one (pwn3). As we will see it is way easier.
-Lets take a look to the code with r2
-$ r2 pwn4 -c &amp;#39;aaa; afl&amp;#39;  We can see four interesting functions:
- sym.flag_func() at 0x080484cb sym.func2() at 0x080484e4 sym.func1() at 0x080484fd sym.main() at 0x08048515  [0x080483d0]&amp;gt; s sym.flag_func; V; p; p # be positioned at start of sym.</description>
     </item>
     
   </channel>
