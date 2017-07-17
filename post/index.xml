@@ -23,6 +23,18 @@ $ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3 $ r2 pwn
     </item>
     
     <item>
+      <title>TamuCTF 2017 - Pwn 4</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</link>
+      <pubDate>Mon, 29 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
+      <description>Is curious that this specific challenge is more worthy than the previous one (pwn3). As we will see it is way easier.
+Lets take a look to the code with r2
+$ r2 pwn4 -c &amp;#39;aaa; afl&amp;#39;  We can see four interesting functions:
+ sym.flag_func() at 0x080484cb sym.func2() at 0x080484e4 sym.func1() at 0x080484fd sym.main() at 0x08048515  [0x080483d0]&amp;gt; s sym.flag_func; V; p; p # be positioned at start of sym.</description>
+    </item>
+    
+    <item>
       <title>TamuCTF 2017 - Pwn 2</title>
       <link>http://BlackHoods.github.io/post/tamuctf2017/pwn2/</link>
       <pubDate>Sun, 28 May 2017 18:56:18 +0200</pubDate>
@@ -41,18 +53,6 @@ $ wget https://ctf.tamu.edu/files/dacdf9d7951deede662f1b89e4ec2a90/pwn2 $ r2 pwn
       <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
 root@kali $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 pwn1  Now that the binary is opened, we need to analyze its content.
 [0xf7721ac0]&amp;gt; aaa	# Analyze [0xf7721ac0]&amp;gt; afl	# List functions found . . 0x0804854b 4 103  sym.print_flag 0x080485b2 4 120  main . .  Interesting, there is print_flag function at 0x0804854b.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
-      <description>TamuCTF 2017 pwn4 - 200 Points Is curious that this specific challenge is more worthy than the previous one (pwn3). As we will see it is way easier.
-Lets take a look to the code with r2
-$ r2 pwn4 -c &amp;#39;aaa; afl&amp;#39;  We can see four interesting functions:
- sym.flag_func() at 0x080484cb sym.func2() at 0x080484e4 sym.func1() at 0x080484fd sym.main() at 0x08048515  [0x080483d0]&amp;gt; s sym.flag_func; V; p; p # be positioned at start of sym.</description>
     </item>
     
   </channel>

