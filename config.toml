@@ -4,6 +4,7 @@ title = "BlackHoods Site"
 theme = "HugoMDL"
 MetaDataFormat = "yaml"
 
+pygmentsuseclasses = true
 PygmentsCodeFences = true
 PygmentsStyle = "monokai"
 

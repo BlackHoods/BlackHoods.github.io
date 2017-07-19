@@ -24,7 +24,7 @@ cardthumbimage: "/assets/TamuCTF2017/title.png"
 We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
 
 ```bash
-root@kali $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
 $ r2 pwn1
 ```
 
