@@ -7,14 +7,13 @@ MetaDataFormat = "yaml"
 pygmentsuseclasses = true
 PygmentsCodeFences = true
 PygmentsStyle = "monokai"
+enableEmoji = true
 
 [taxonomies]
 tag = "tags"
 post_category = "post_categories"
 about_category = "about_categories"
 project_category = "project_categories"
-
-
 
 [permalinks]
 	page = "/:title/"

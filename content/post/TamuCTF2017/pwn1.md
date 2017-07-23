@@ -23,14 +23,14 @@ cardthumbimage: "/assets/TamuCTF2017/title.png"
 
 We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
 
-```bash
+{{< highlight bash >}}
 $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
 $ r2 pwn1
-```
+{{< /highlight >}}
 
 Now that the binary is opened, we need to analyze its content.
 
-```r2
+{{< highlight r2 "hl_lines=1">}}
 [0xf7721ac0]> aaa		# Analyze
 [0xf7721ac0]> afl		# List functions found
 .
@@ -39,7 +39,9 @@ Now that the binary is opened, we need to analyze its content.
 0x080485b2    4 120          main
 .
 .
-```
+{{< /highlight >}}
+
+
 
 Interesting, there is `print_flag` function at `0x0804854b`. Lets see what's inside.
 
@@ -50,7 +52,7 @@ Interesting, there is `print_flag` function at `0x0804854b`. Lets see what's ins
 ![Pwn1 Open File Function](/assets/TamuCTF2017/pwn1/2-pwn1_open_flag.png)
 
 
-Because of the offsets `0x08048569` and `0x0804856e` we can deduce that the function opens a file called **flag.txt** and prints its content. Fantastic :v:, so we just need to know who will call **print_flag**. This can be figured out through the `axt` command of r2 which stands for "cross reference to" the actual function.
+Because of the offsets `0x08048569` and `0x0804856e` we can deduce that the function opens a file called **flag.txt** and prints its content. Fantastic :v: , so we just need to know who will call **print_flag**. This can be figured out through the `axt` command of r2 which stands for "cross reference to" the actual function.
 
 ```r2
 [0x0804854b]> axt
