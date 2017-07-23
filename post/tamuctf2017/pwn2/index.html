@@ -137,7 +137,7 @@ Like this:</p>
 
 <p><img src="/assets/TamuCTF2017/pwn2/5-pwn2_stack_view.png" alt="Pwn2 Stack view on echo call" /></p>
 
-<p>Nice :v:!, looking at the stack we realize we could just write a bunch of bytes until we reach the <strong>Saved EIP</strong> value!</p>
+<p>Nice ✌️!, looking at the stack we realize we could just write a bunch of bytes until we reach the <strong>Saved EIP</strong> value!</p>
 
 <blockquote>
 <p>Okay but &hellip; how many bytes do we have to write?</p>
@@ -155,7 +155,7 @@ $ gdb pwn2                                  <span class="c1"># We open the binar
 <p>We ran the binary with gdb and passed 500 &ldquo;A&rdquo;s as input.
 That <code>0x41414141</code> means that we have overwritten EIP register with value &ldquo;AAAA&rdquo; and the process crashed when it tried to execute the instrucction of that address (obviously there is nothing there).</p>
 
-<p>So now we could just create a custom string like &ldquo;ABCDEF&hellip;.&rdquo; to figure out which part of the string is being used to overwrite the EIP &hellip; OR we can use a script which generates it for us :grin:.</p>
+<p>So now we could just create a custom string like &ldquo;ABCDEF&hellip;.&rdquo; to figure out which part of the string is being used to overwrite the EIP &hellip; OR we can use a script which generates it for us 😁.</p>
 
 <p>Now is when it comes the <strong>pwntools</strong> for python (to install just do
 <code>bash $ pip install pwntools</code></p>

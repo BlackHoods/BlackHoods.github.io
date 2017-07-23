@@ -85,13 +85,16 @@
 <p><img src="/assets/TamuCTF2017/pwn1/1-pwn1_description.png" alt="Pwn1 Challenge Description" /></p>
 
 <p>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.</p>
+
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
 $ r2 pwn1
 </code></pre></div>
 
+
 <p>Now that the binary is opened, we need to analyze its content.</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">aaa</span>		# Analyze
-[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">afl</span>		# List functions found
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="hll">[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">aaa</span>		# Analyze
+</span>[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">afl</span>		# List functions found
 .
 .
 <span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
@@ -100,6 +103,7 @@ $ r2 pwn1
 .
 </code></pre></div>
 
+
 <p>Interesting, there is <code>print_flag</code> function at <code>0x0804854b</code>. Lets see what&rsquo;s inside.</p>
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0xf771eac0</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.print_flag	# We move to beginning of print_flag function
 [<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">pdf</span>				# print its code
@@ -107,7 +111,7 @@ $ r2 pwn1
 
 <p><img src="/assets/TamuCTF2017/pwn1/2-pwn1_open_flag.png" alt="Pwn1 Open File Function" /></p>
 
-<p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <strong>flag.txt</strong> and prints its content. Fantastic :v:, so we just need to know who will call <strong>print_flag</strong>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
+<p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <strong>flag.txt</strong> and prints its content. Fantastic ✌️ , so we just need to know who will call <strong>print_flag</strong>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">axt</span>
 call <span class="mh">0x8048606</span> call sym<span class="o">.</span>print_flag in main
 </code></pre></div>

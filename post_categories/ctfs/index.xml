@@ -29,7 +29,7 @@ $ r2 pwn4 -c &amp;#39;aaa; afl&amp;#39;  We can see four interesting functions:
       <pubDate>Mon, 29 May 2017 18:56:18 +0200</pubDate>
       
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn3/</guid>
-      <description>Here we are, with another pwning challenge. Let&amp;rsquo;s start :grin:.
+      <description>Here we are, with another pwning challenge. Let&amp;rsquo;s start 😁.
 $ wget https://ctf.tamu.edu/files/e02cea87728137d5da449db45dcb875e/pwn3 $ r2 pwn3 [0x080484b0]&amp;gt; aaa [0x080484b0]&amp;gt; afl . . 0x080485ab 4 103 sym.print_flag 0x08048612 1 102 sym.main . .  Two interesting functions, and again, one of them is never called.
 [0x080484b0]&amp;gt; axt sym.print_flag # Search for cross references to this function in the entire binary [0x080484b0]&amp;gt;  Lets check what is happing inside the main one.</description>
     </item>
