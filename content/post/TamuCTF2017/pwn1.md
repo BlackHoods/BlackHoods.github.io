@@ -30,7 +30,7 @@ $ r2 pwn1
 
 Now that the binary is opened, we need to analyze its content.
 
-{{< highlight r2 "hl_lines=28 29" >}}
+{{< highlight r2 "hl_lines=28 29" >}} 
 [0x08048450]> afl
 0x08048390    3 35           sym._init
 0x080483b3    1 25           fcn.080483b3
