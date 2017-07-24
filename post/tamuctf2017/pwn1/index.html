@@ -85,55 +85,119 @@
 <p><img src="/assets/TamuCTF2017/pwn1/1-pwn1_description.png" alt="Pwn1 Challenge Description" /></p>
 
 <p>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.</p>
-
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
 $ r2 pwn1
 </code></pre></div>
 
-
 <p>Now that the binary is opened, we need to analyze its content.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="hll">[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">aaa</span>		# Analyze
-</span>[<span class="mh">0xf7721ac0</span>]<span class="o">&gt;</span> <span class="nf">afl</span>		# List functions found
-.
-.
-<span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
-<span class="s">0x080485b2</span>  <span class="mh">  4 120        </span>  main
-.
-.
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
+<span class="s">0x08048390</span>  <span class="mh">  3 35         </span>  sym._init
+<span class="s">0x080483b3</span>  <span class="mh">  1 25         </span>  fcn.080483b3
+<span class="s">0x080483cc</span>  <span class="mh">  1 4          </span>  sub.gets_12_3cc
+<span class="s">0x080483d0</span>  <span class="mh">  1 6          </span>  sym.imp.gets
+<span class="s">0x080483d6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483d6
+<span class="s">0x080483e0</span>  <span class="mh">  1 6          </span>  sym.imp._IO_getc
+<span class="s">0x080483e6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483e6
+<span class="s">0x080483f0</span>  <span class="mh">  1 6          </span>  sym.imp.puts
+<span class="s">0x080483f6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483f6
+<span class="s">0x08048400</span>  <span class="mh">  1 6          </span>  sym.imp.__libc_start_main
+<span class="s">0x08048406</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048406
+<span class="s">0x08048410</span>  <span class="mh">  1 6          </span>  sym.imp.setvbuf
+<span class="s">0x08048416</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048416
+<span class="s">0x08048420</span>  <span class="mh">  1 6          </span>  sym.imp.fopen
+<span class="s">0x08048426</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048426
+<span class="s">0x08048430</span>  <span class="mh">  1 6          </span>  sym.imp.putchar
+<span class="s">0x08048436</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048436
+<span class="s">0x08048440</span>  <span class="mh">  1 6          </span>  sub.__gmon_start___252_440
+<span class="s">0x08048448</span>  <span class="mh">  1 8          </span>  fcn.08048448
+<span class="s">0x08048450</span>  <span class="mh">  1 33         </span>  entry0
+<span class="s">0x08048471</span>  <span class="mh">  1 1          </span>  fcn.08048471
+<span class="s">0x08048480</span>  <span class="mh">  1 4          </span>  sym.__x86.get_pc_thunk.bx
+<span class="s">0x08048490</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
+<span class="s">0x080484bc</span>  <span class="mh">  4 57         </span>  fcn.080484bc
+<span class="s">0x080484f5</span>  <span class="mh">  3 41         </span>  fcn.080484f5
+<span class="s">0x08048520</span>  <span class="mh">  8 43   -&gt; 93 </span>  sym.frame_dummy
+<span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
+</span><span class="hll"><span class="s">0x080485b2</span>  <span class="mh">  4 120        </span>  main
+</span><span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
+<span class="s">0x0804868d</span>  <span class="mh">  1 5          </span>  fcn.0804868d
+<span class="s">0x08048692</span>  <span class="mh">  1 22         </span>  fcn.08048692
 </code></pre></div>
 
 
 <p>Interesting, there is <code>print_flag</code> function at <code>0x0804854b</code>. Lets see what&rsquo;s inside.</p>
+
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0xf771eac0</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.print_flag	# We move to beginning of print_flag function
-[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">pdf</span>				# print its code
+[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> 
+<span class="k">/</span> (<span class="mh">fcn</span>) <span class="k">sym</span><span class="o">.</span>print_flag <span class="m">103</span>
+<span class="k">|</span>   <span class="k">sym</span><span class="o">.</span>print_flag ();
+<span class="k">|</span>           <span class="c">; var int local_dh @ ebp-0xd</span>
+<span class="k">|</span>           <span class="c">; var int local_ch @ ebp-0xc</span>
+<span class="k">|</span>           <span class="c">; CALL XREF from 0x08048606 (main)</span>
+<span class="k">|</span>           <span class="s">0x0804854b</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">|</span>           <span class="s">0x0804854c</span>      89e5           <span class="k">ebp</span> <span class="nf">=</span> <span class="k">esp</span>
+<span class="k">|</span>           <span class="s">0x0804854e</span>      83ec18         <span class="k">esp</span> <span class="nf">-=</span> <span class="mh">0x18</span>
+<span class="k">|</span>           <span class="s">0x08048551</span>      83ec0c         <span class="k">esp</span> <span class="nf">-=</span> <span class="mh">0xc</span>
+<span class="k">|</span>           <span class="s">0x08048554</span>      68b0860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>How_did_you_figure_out_my_secret__
+<span class="k">|</span>              <span class="c">; int puts(const char *s)</span>
+<span class="k">|</span>           <span class="s">0x08048559</span>      e892feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
+<span class="k">|</span>           <span class="s">0x0804855e</span>      83c410         <span class="k">esp</span> <span class="nf">+=</span> <span class="mh">0x10</span>
+<span class="k">|</span>           <span class="s">0x08048561</span>      83ec08         <span class="k">esp</span> <span class="nf">-=</span> <span class="m">8</span>
+<span class="k">|</span>           <span class="s">0x08048564</span>      68d3860408     <span class="k">push</span> <span class="mh">0x80486d3</span>
+<span class="hll"><span class="k">|</span>           <span class="s">0x08048569</span>      68d5860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>flag.txt                                  
+</span><span class="k">|</span>              <span class="c">; file*fopen(const char *filename,</span>
+<span class="hll"><span class="k">|</span>           <span class="s">0x0804856e</span>      e8adfeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>fopen ()                                   
+</span><span class="k">|</span>           <span class="s">0x08048573</span>      83c410         <span class="k">esp</span> <span class="nf">+=</span> <span class="mh">0x10</span>
+<span class="k">|</span>           <span class="s">0x08048576</span>      8945f4         dword [<span class="mh">local_ch</span>] <span class="nf">=</span> <span class="k">eax</span>
+<span class="k">|</span>       <span class="k">,=&lt;</span> <span class="s">0x08048579</span>      eb10           <span class="mh">goto</span> <span class="mh">0x804858b</span>
+<span class="k">|</span>       <span class="k">|</span>      <span class="c">; JMP XREF from 0x080485a0 (sym.print_flag)</span>
+<span class="k">|</span>      <span class="k">.--&gt;</span> <span class="s">0x0804857b</span>      0fbe45f3       <span class="k">eax</span> <span class="nf">=</span> byte [<span class="mh">local_dh</span>]
+<span class="k">|</span>      <span class="k">||</span>   <span class="s">0x0804857f</span>      83ec0c         <span class="k">esp</span> <span class="nf">-=</span> <span class="mh">0xc</span>
+<span class="k">|</span>      <span class="k">||</span>   <span class="s">0x08048582</span>      50             <span class="k">push</span> <span class="k">eax</span>
+<span class="k">|</span>      <span class="k">||</span>   <span class="s">0x08048583</span>      e8a8feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>putchar ()          <span class="c">; int putchar(int c)</span>
+<span class="k">|</span>      <span class="k">||</span>   <span class="s">0x08048588</span>      83c410         <span class="k">esp</span> <span class="nf">+=</span> <span class="mh">0x10</span>
+<span class="k">|</span>      <span class="err">!</span><span class="k">|</span>      <span class="c">; JMP XREF from 0x08048579 (sym.print_flag)</span>
+<span class="k">|</span>      <span class="k">|`-&gt;</span> <span class="s">0x0804858b</span>      83ec0c         <span class="k">esp</span> <span class="nf">-=</span> <span class="mh">0xc</span>
+<span class="k">|</span>      <span class="k">|</span>    <span class="s">0x0804858e</span>      ff75f4         <span class="k">push</span> dword [<span class="mh">local_ch</span>]
+<span class="k">|</span>      <span class="k">|</span>    <span class="s">0x08048591</span>      e84afeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>_IO_getc ()         <span class="c">; int getc(FILE *steam)</span>
+<span class="k">|</span>      <span class="k">|</span>    <span class="s">0x08048596</span>      83c410         <span class="k">esp</span> <span class="nf">+=</span> <span class="mh">0x10</span>
+<span class="k">|</span>      <span class="k">|</span>    <span class="s">0x08048599</span>      8845f3         byte [<span class="mh">local_dh</span>] <span class="nf">=</span> <span class="k">al</span>
+<span class="k">|</span>      <span class="k">|</span>    <span class="s">0x0804859c</span>      807df3ff       <span class="mh">var</span> <span class="nf">=</span> byte [<span class="mh">local_dh</span>] - <span class="mh">0xff</span> <span class="c">; [0xff:1]=8</span>
+<span class="k">|</span>      <span class="k">`==&lt;</span> <span class="s">0x080485a0</span>      75d9           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x804857b</span>
+<span class="k">|</span>           <span class="s">0x080485a2</span>      83ec0c         <span class="k">esp</span> <span class="nf">-=</span> <span class="mh">0xc</span>
+<span class="k">|</span>           <span class="s">0x080485a5</span>      6a0a           <span class="k">push</span> <span class="mh">0xa</span>
+<span class="k">|</span>           <span class="s">0x080485a7</span>      e884feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>putchar ()          <span class="c">; int putchar(int c)</span>
+<span class="k">|</span>           <span class="s">0x080485ac</span>      83c410         <span class="k">esp</span> <span class="nf">+=</span> <span class="mh">0x10</span>
+<span class="k">|</span>           <span class="s">0x080485af</span>      90             
+<span class="k">|</span>           <span class="s">0x080485b0</span>      c9             
+<span class="k">\</span>           <span class="s">0x080485b1</span>      c3 
 </code></pre></div>
 
-<p><img src="/assets/TamuCTF2017/pwn1/2-pwn1_open_flag.png" alt="Pwn1 Open File Function" /></p>
 
-<p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <strong>flag.txt</strong> and prints its content. Fantastic ✌️ , so we just need to know who will call <strong>print_flag</strong>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
+<p>Because of the offsets <code>0x08048569</code> and <code>0x0804856e</code> we can deduce that the function opens a file called <code>flag.txt</code> and prints its content. Fantastic ✌️ , so we just need to know who will call <code>print_flag</code>. This can be figured out through the <code>axt</code> command of r2 which stands for &ldquo;cross reference to&rdquo; the actual function.</p>
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">axt</span>
 call <span class="mh">0x8048606</span> call sym<span class="o">.</span>print_flag in main
 </code></pre></div>
 
-<p>Cool, so this function will be called from offset <code>0x8048606</code> <strong>main</strong>. Lets see whats inside it.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x0804854b<span class="o">]</span>&gt; s main
-<span class="o">[</span>0x080485b2<span class="o">]</span>&gt; pdf
+<p>Cool, so this function will be called from offset <code>0x8048606</code> <code>main</code> Lets see whats inside it.</p>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">s</span> main
+[<span class="mh">0x080485b2</span>]<span class="o">&gt;</span> <span class="nf">pdf</span>
 </code></pre></div>
 
 <p><img src="/assets/TamuCTF2017/pwn1/3-pwn1_condition.png" alt="Pwn1 Condition" /></p>
 
-<p>We see that <strong>print_flag</strong> will be called if the condition <code>local_ch == 0xca11ab1e</code> is not satisfied. But wait a moment, if we give a closer look to the assembly instrucctions we realized that the only variable we are supposed to edit is <strong>local_27h</strong> through the <code>gets</code> function:</p>
+<p>We see that <code>print_flag</code> will be called if the condition <code>local_ch == 0xca11ab1e</code> is not satisfied. But wait a moment, if we give a closer look to the assembly instrucctions we realized that the only variable we are supposed to edit is <code>local_27h</code> through the <code>gets</code> function:</p>
 
 <p><img src="/assets/TamuCTF2017/pwn1/4-pwn1_gets_call.png" alt="Pwn1 Gets Call" /></p>
 
-<p>So what we need to do? As maybe you know, <strong>gets</strong> is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then if we input more characters than it is supposed store, we will be able to overwrite neighbor local variables!</p>
+<p>So what we need to do? As maybe you know, <code>gets</code> is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then if we input more characters than it is supposed store, we will be able to overwrite neighbor local variables!</p>
 
 <p>How can we know the length of the string we must provide? By knowing where the variables are stored onto the stack</p>
 
 <p><img src="/assets/TamuCTF2017/pwn1/5-pwn1_stack_view.png" alt="Pwn1 Stack diagram" /></p>
 
-<p>So finally, how many bytes do we need to start writting <strong>local_ch</strong>?
+<p>So finally, how many bytes do we need to start writting <code>local_ch</code>
 Easy!</p>
 
 <p><code>($ebp - 0xC) - ($ebp - 0x27)  = 0x27 - 0xC = 0x1B = 27d</code> 27 Characters.</p>
