@@ -91,7 +91,8 @@ $ r2 pwn1
 
 <p>Now that the binary is opened, we need to analyze its content.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k"> </span>
+[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
 <span class="s">0x08048390</span>  <span class="mh">  3 35         </span>  sym._init
 <span class="s">0x080483b3</span>  <span class="mh">  1 25         </span>  fcn.080483b3
 <span class="s">0x080483cc</span>  <span class="mh">  1 4          </span>  sub.gets_12_3cc
@@ -117,10 +118,10 @@ $ r2 pwn1
 <span class="s">0x08048490</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
 <span class="s">0x080484bc</span>  <span class="mh">  4 57         </span>  fcn.080484bc
 <span class="s">0x080484f5</span>  <span class="mh">  3 41         </span>  fcn.080484f5
-<span class="s">0x08048520</span>  <span class="mh">  8 43   -&gt; 93 </span>  sym.frame_dummy
-<span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
-</span><span class="hll"><span class="s">0x080485b2</span>  <span class="mh">  4 120        </span>  main
-</span><span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
+<span class="hll"><span class="s">0x08048520</span>  <span class="mh">  8 43   -&gt; 93 </span>  sym.frame_dummy
+</span><span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
+</span><span class="s">0x080485b2</span>  <span class="mh">  4 120        </span>  main
+<span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
 <span class="s">0x0804868d</span>  <span class="mh">  1 5          </span>  fcn.0804868d
 <span class="s">0x08048692</span>  <span class="mh">  1 22         </span>  fcn.08048692
 </code></pre></div>
