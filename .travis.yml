@@ -18,7 +18,7 @@ before_install:
  - openssl aes-256-cbc -K $encrypted_88b4fd6fc50b_key -iv $encrypted_88b4fd6fc50b_iv -in blackhoods.enc -out blackhoods -d
 script:
 - git clone --branch source https://github.com/BlackHoods/BlackHoods.github.io.git
-- ls -R ./
 - hugo --ignoreCache
+- ls -R ./
 after_success:
 - "./scripts/deploy.sh"
