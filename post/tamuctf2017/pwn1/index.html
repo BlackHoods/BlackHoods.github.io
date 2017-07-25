@@ -91,7 +91,8 @@ $ r2 -A pwn1
 
 <p>Now that the binary is opened, we need to analyze its content.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k"> </span>
+[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
 <span class="s">0x08048390</span>  <span class="mh">  3 35         </span>  sym._init
 <span class="s">0x080483d0</span>  <span class="mh">  1 6          </span>  sym.imp.gets
 <span class="s">0x080483e0</span>  <span class="mh">  1 6          </span>  sym.imp._IO_getc
@@ -106,10 +107,10 @@ $ r2 -A pwn1
 <span class="s">0x08048490</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
 <span class="s">0x080484c0</span>  <span class="mh">  4 53         </span>  sym.register_tm_clones
 <span class="s">0x08048500</span>  <span class="mh">  3 30         </span>  sym.__do_global_dtors_aux
-<span class="s">0x08048520</span>  <span class="mh">  4 43   -&gt; 40 </span>  sym.frame_dummy
-<span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103          sym.print_flag                                                            </span> 
-</span><span class="hll">0x080485b2    4 120          main                                                                       
-</span><span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
+<span class="hll"><span class="s">0x08048520</span>  <span class="mh">  4 43   -&gt; 40 </span>  sym.frame_dummy
+</span><span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103          sym.print_flag                                                            </span> 
+</span>0x080485b2    4 120          main                                                                       
+<span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
 <span class="s">0x08048690</span>  <span class="mh">  1 2          </span>  sym.__libc_csu_fini
 <span class="s">0x08048694</span>  <span class="mh">  1 20         </span>  sym._fini
 </code></pre></div>
