@@ -1,33 +1,33 @@
-            {{- partial "header.html" . }}  
-            <div class="hmdl-list mdl-grid">
-                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
-                   <div class="mdl-card__media mdl-color-text--grey-50">
-                        <h3>All Posts:
-						{{ range $key, $value := .Site.Taxonomies }}
-							{{ if eq $key "post_categories" }}
-								<div class="mdl-layout__header-row">
-									<div class="cmdl-layout-spacer">
-										<ul class="mdl-navigation" >
-											<!--{{ range first 5 $value.ByCount }} -->
-												<li><a class="mdl-navigation__link" href="{{ $.Site.BaseURL}}{{ $key | pluralize }}/{{ .Name | urlize }}">{{ .Name }}</a></li>
-											<!--{{ end }}-->
-										</ul>
-									</div>
-								</div>
-							{{ end }}
-						{{ end }}
-						
-						</h3>
-                    </div>
-                    {{- partial "pagination.html" . }}
-                    {{- range .Data.Pages }}
-						<!--{{ printf "%s" .Params.post_categories }}-->
-						{{- if eq .Type "post" }}
-								{{ .Render "listitem" }}
-						{{end}}
-						
-                    {{- end }}
-                    {{- partial "pagination.html" . }}
-                </div>
-            </div>
-            {{- partial "footer.html" . }}
+{{- partial "header.html" . }}  
+<div class="hmdl-list mdl-grid">
+	<div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+	   <div class="mdl-card__media mdl-color-text--grey-50">
+			<h3>All Posts:
+			{{ range $key, $value := .Site.Taxonomies }}
+				{{ if eq $key "post_categories" }}
+					<div class="mdl-layout__header-row">
+						<div class="cmdl-layout-spacer">
+							<ul class="mdl-navigation" >
+								<!--{{ range first 5 $value.ByCount }} -->
+									<li><a class="mdl-navigation__link" href="{{ $.Site.BaseURL}}{{ $key | pluralize }}/{{ .Name | urlize }}">{{ .Name }}</a></li>
+								<!--{{ end }}-->
+							</ul>
+						</div>
+					</div>
+				{{ end }}
+			{{ end }}
+			
+			</h3>
+		</div>
+		{{- partial "pagination.html" . }}
+		{{- range .Data.Pages }}
+			<!--{{ printf "%s" .Params.post_categories }}-->
+			{{- if eq .Type "post" }}
+					{{ .Render "listitem" }}
+			{{end}}
+			
+		{{- end }}
+		{{- partial "pagination.html" . }}
+	</div>
+</div>
+{{- partial "footer.html" . }}
