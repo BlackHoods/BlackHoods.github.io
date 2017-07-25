@@ -12,7 +12,7 @@ env:
   - DEPLOY_BRANCH="source"
 before_install:
  - sudo pip install pygments
- - sudo --no-cache-dir pip install git+https://github.com/Blackhoods/radare2-pygments-lexer.git
+ - sudo pip --no-cache-dir install git+https://github.com/Blackhoods/radare2-pygments-lexer.git
  - git clone --branch v2 https://github.com/go-yaml/yaml \$GOPATH/src/gopkg.in/yaml.v2
  - go get -u -v github.com/spf13/hugo
  - openssl aes-256-cbc -K $encrypted_88b4fd6fc50b_key -iv $encrypted_88b4fd6fc50b_iv -in blackhoods.enc -out blackhoods -d
