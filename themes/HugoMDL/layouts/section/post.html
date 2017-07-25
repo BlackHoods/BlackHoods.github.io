@@ -16,11 +16,10 @@
 					</div>
 				{{ end }}
 			{{ end }}
-			
 			</h3>
 		</div>
 		{{- partial "pagination.html" . }}
-		{{- range .Data.Pages }}
+		{{- range .Paginator.Pages }}
 			<!--{{ printf "%s" .Params.post_categories }}-->
 			{{- if eq .Type "post" }}
 					{{ .Render "listitem" }}
