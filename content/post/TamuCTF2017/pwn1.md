@@ -30,7 +30,7 @@ $ r2 -A pwn1
 
 Now that the binary is opened, we need to analyze its content.
 
-{{< highlight r2 "hl_lines=17 18" >}}
+{{< highlight r2 "hl_lines=17 18" >}} 
 [0x08048450]> afl
 0x08048390    3 35           sym._init
 0x080483d0    1 6            sym.imp.gets
