@@ -8,9 +8,9 @@
 								<div class="mdl-layout__header-row">
 									<div class="cmdl-layout-spacer">
 										<ul class="mdl-navigation" >
-											{{ range first 5 $value.ByCount }}
+											<!--{{ range first 5 $value.ByCount }} -->
 												<li><a class="mdl-navigation__link" href="{{ $.Site.BaseURL}}{{ $key | pluralize }}/{{ .Name | urlize }}">{{ .Name }}</a></li>
-											{{ end }}
+											<!--{{ end }}-->
 										</ul>
 									</div>
 								</div>
