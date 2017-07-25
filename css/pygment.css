@@ -3,7 +3,8 @@
     background: #272822;
     color: #f8f8f2 !important;
     border: 1px solid #272822;
-    /*border-radius: 5px;*/
+	white-space: pre-wrap;
+    border-radius: 5px;
 }
 /*.highlight .hll { background-color: #4b238a }*/
 .highlight .hll { background-color: #505050 }
