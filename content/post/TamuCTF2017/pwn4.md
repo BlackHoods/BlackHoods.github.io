@@ -19,7 +19,7 @@ summary: "Is curious that this specific challenge is more worthy than the previo
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 
-![Pwn4 challenge description](/assets/1-pwn4_description.png)
+![Pwn4 challenge description](/assets/TamuCTF2017/pwn4/TamuCTF2017/pwn4/1-pwn4_description.png)
 
 Is curious that this specific challenge is more worthy than the previous one ([pwn3](../pwn3/pwn3.md)). As we will see it is way easier.
 
@@ -27,7 +27,7 @@ Lets take a look to the code with r2
 ```bash
 $ r2 pwn4 -c 'aaa; afl'
 ```
-![Pwn4 functions](/assets/2-pwn4_functions.png)
+![Pwn4 functions](/assets/TamuCTF2017/pwn4/TamuCTF2017/pwn4/2-pwn4_functions.png)
 
 We can see four interesting functions:
 
@@ -43,7 +43,7 @@ We can see four interesting functions:
 
 Here they are, take a look at them.
 
-![Pwn4 functions code](/assets/3-pwn4_functions_code.png)
+![Pwn4 functions code](/assets/TamuCTF2017/pwn4/3-pwn4_functions_code.png)
 
 Obviously we should try to execute that **`sym.flag_func()`**, it seems it will try print a file (**flag2.txt**, strange name right? why 2?) using the `cat` command on the remote server. But that function is never called. You can check it on your own with:
 ```
@@ -75,13 +75,13 @@ Now we create a file with the previously commented file (**`flag2.txt`**) to try
 $ echo This is the flag > flag2.txt
 $ python -c 'print("A"*16 + "\xcb\x84\x04\x08")' | ./pwn4
 ```
-![Pwn4 printing flag2.txt](/assets/4-pwn4_printing_flag2.png)
+![Pwn4 printing flag2.txt](/assets/TamuCTF2017/pwn4/4-pwn4_printing_flag2.png)
 
 Good! what will the remote server say?
 ```bash
 $ python -c 'print("A"*16 + "\xcb\x84\x04\x08")' | nc pwn.ctf.tamu.edu 4324
 ```
-![Pwn4 printing flag2.txt](/assets/5-pwn4_remote_flag2_content.png)
+![Pwn4 printing flag2.txt](/assets/TamuCTF2017/pwn4/5-pwn4_remote_flag2_content.png)
 
 Ouch! that file was just a decoy. There must be a file named **`flag.txt`**.
 > But how could we executed it? There is only one function which print a file and its name is hardcoded.
@@ -90,7 +90,7 @@ Well, that is not a problem, because there is a call to **`system()`**.
 The only thing we need to do is to pass a different argument: **`cat flag.txt`** instead of **`cat flag2.txt`**.
 
 If you inspect all the strings of the binary you may find surprise:
-![Pwn4 printing flag2.txt](/assets/6-pwn4_pointer_flag_file.png):
+![Pwn4 printing flag2.txt](/assets/TamuCTF2017/pwn4/6-pwn4_pointer_flag_file.png):
 
 As you may know, in order to pass the arguments to the function they need to be pushed into the stack. In case of a string not its value but its reference (a pointer **`0x0804a028`**.
 
@@ -108,7 +108,7 @@ Lets send to the server:
 ```bash
 $ python -c 'print("A"*16 + "\xd9\x84\x04\x08" + "\x28\xa0\x04\x08")' | nc pwn.ctf.tamu.edu 4324
 ```
-![Pwn4 printing flag2.txt](/assets/7-pwn4_answer.png)
+![Pwn4 printing flag2.txt](/assets/TamuCTF2017/pwn4/7-pwn4_answer.png)
 Answer: gigem{R3TURN_0R13NT3D_PR0F1T}
 
 ### Complete video
