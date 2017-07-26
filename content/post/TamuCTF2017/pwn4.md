@@ -19,7 +19,7 @@ summary: "Is curious that this specific challenge is more worthy than the previo
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 
-![Pwn4 challenge description](/assets/TamuCTF2017/pwn4/1-pwn4_description.png)
+![Pwn4 challenge description](/assets/TamuCTF2017/pwn4/1-pwn4_description.png) 
 
 Is curious that this specific challenge is more worthy than the previous one ([pwn3](../pwn3/pwn3.md)). As we will see it is way easier.
 
