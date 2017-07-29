@@ -7,7 +7,16 @@
     border-radius: 5px;
 }
 /*.highlight .hll { background-color: #4b238a }*/
-.highlight .hll { background-color: #505050 }
+.highlight .hll {
+    background-color: #505050;
+    display: block;
+}
+
+.hll + .hll{
+    box-sizing: border-box;
+    border-top: 2px solid rgba(39, 40, 34, 1);
+}
+
 .highlight .c { color: #75715e } /* Comment */
 .highlight .err { color: #960050; background-color: #1e0010 } /* Error */
 .highlight .k { color: #66d9ef } /* Keyword */
