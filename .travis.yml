@@ -19,6 +19,5 @@ before_install:
 script:
 - git clone --branch source https://github.com/BlackHoods/BlackHoods.github.io.git
 - hugo --ignoreCache
-- ls -R ./
 after_success:
 - "./scripts/deploy.sh"
