@@ -86,13 +86,12 @@
 
 <p>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
-$ r2 -A pwn1
+$ r2 -A pwn1  
 </code></pre></div>
 
 <p>Now that the binary is opened, we need to analyze its content.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k"> </span>
-[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
 <span class="s">0x08048390</span>  <span class="mh">  3 35         </span>  sym._init
 <span class="s">0x080483d0</span>  <span class="mh">  1 6          </span>  sym.imp.gets
 <span class="s">0x080483e0</span>  <span class="mh">  1 6          </span>  sym.imp._IO_getc
@@ -107,10 +106,10 @@ $ r2 -A pwn1
 <span class="s">0x08048490</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
 <span class="s">0x080484c0</span>  <span class="mh">  4 53         </span>  sym.register_tm_clones
 <span class="s">0x08048500</span>  <span class="mh">  3 30         </span>  sym.__do_global_dtors_aux
-<span class="hll"><span class="s">0x08048520</span>  <span class="mh">  4 43   -&gt; 40 </span>  sym.frame_dummy
-</span><span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103          sym.print_flag                                                            </span> 
-</span>0x080485b2    4 120          main                                                                       
-<span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
+<span class="s">0x08048520</span>  <span class="mh">  4 43   -&gt; 40 </span>  sym.frame_dummy
+<span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
+</span><span class="hll"><span class="s">0x080485b2</span>  <span class="mh">  4 120        </span>  main
+</span><span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
 <span class="s">0x08048690</span>  <span class="mh">  1 2          </span>  sym.__libc_csu_fini
 <span class="s">0x08048694</span>  <span class="mh">  1 20         </span>  sym._fini
 </code></pre></div>
@@ -118,47 +117,47 @@ $ r2 -A pwn1
 
 <p>Interesting, there is <code>print_flag</code> function at <code>0x0804854b</code>. Lets see what&rsquo;s inside.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.print_flag
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.print_flag 
 [<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> 
-┌ <span class="err">(</span>fcn) sym<span class="o">.</span>print_flag <span class="mh">103</span>
-│   sym<span class="o">.</span>print_flag <span class="err">(</span>)<span class="err">;</span>
-│           <span class="err">;</span> var int local_dh <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0xd</span>
-│           <span class="err">;</span> var int local_ch <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0xc</span>
-│              <span class="err">;</span> CALL XREF from <span class="mh">0x08048606</span> <span class="err">(</span>main)
-│           <span class="mh">0x0804854b</span>      <span class="mh">55</span>             push ebp
-│           <span class="mh">0x0804854c</span>      <span class="mh">89e5</span>           ebp <span class="o">=</span> esp
-│           <span class="mh">0x0804854e</span>      <span class="mh">83ec18</span>         esp <span class="o">-=</span> <span class="mh">0x18</span>
-│           <span class="mh">0x08048551</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│           <span class="mh">0x08048554</span>      <span class="mh">68b0860408</span>     push str<span class="o">.</span>How_did_you_figure_out_my_secret__
-│           <span class="mh">0x08048559</span>      e<span class="mh">892feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)
-│           <span class="mh">0x0804855e</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│           <span class="mh">0x08048561</span>      <span class="mh">83ec08</span>         esp <span class="o">-=</span> <span class="mh">8</span>
-│           <span class="mh">0x08048564</span>      <span class="mh">68d3860408</span>     push <span class="mh">0x80486d3</span>
-<span class="hll">│           <span class="mh">0x08048569</span>      <span class="mh">68d5860408</span>     push str<span class="o">.</span>flag<span class="o">.</span>txt                                           
-</span><span class="hll">│           <span class="mh">0x0804856e</span>      e<span class="mh">8adfeffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>fopen <span class="err">(</span>)                                            
-</span>│           <span class="mh">0x08048573</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│           <span class="mh">0x08048576</span>      <span class="mh">8945f4</span>         dword <span class="err">[</span>local_ch<span class="err">]</span> <span class="o">=</span> eax
-│       <span class="err">┌─</span>&lt; <span class="mh">0x08048579</span>      eb<span class="mh">10</span>           goto <span class="mh">0x804858b</span>
-│       <span class="err">│</span>      <span class="err">;</span> JMP XREF from <span class="mh">0x080485a0</span> <span class="err">(</span>sym<span class="o">.</span>print_flag)
-│      <span class="err">┌──</span>&gt; <span class="mh">0x0804857b</span>      <span class="mh">0fbe45f3</span>       eax <span class="o">=</span> byte <span class="err">[</span>local_dh<span class="err">]</span>
-│      <span class="k">|</span><span class="err">│</span>   <span class="mh">0x0804857f</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│      <span class="k">|</span><span class="err">│</span>   <span class="mh">0x08048582</span>      <span class="mh">50</span>             push eax
-│      <span class="k">|</span><span class="err">│</span>   <span class="mh">0x08048583</span>      e<span class="mh">8a8feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>putchar <span class="err">(</span>)
-│      <span class="k">|</span><span class="err">│</span>   <span class="mh">0x08048588</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│      <span class="err">↑│</span>      <span class="err">;</span> JMP XREF from <span class="mh">0x08048579</span> <span class="err">(</span>sym<span class="o">.</span>print_flag)
-│      <span class="k">|</span><span class="err">└─</span>&gt; <span class="mh">0x0804858b</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│      <span class="k">|</span>    <span class="mh">0x0804858e</span>      ff<span class="mh">75f4</span>         push dword <span class="err">[</span>local_ch<span class="err">]</span>
-│      <span class="k">|</span>    <span class="mh">0x08048591</span>      e<span class="mh">84afeffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>_IO_getc <span class="err">(</span>)
-│      <span class="k">|</span>    <span class="mh">0x08048596</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│      <span class="k">|</span>    <span class="mh">0x08048599</span>      <span class="mh">8845f3</span>         byte <span class="err">[</span>local_dh<span class="err">]</span> <span class="o">=</span> al
-│      <span class="k">|</span>    <span class="mh">0x0804859c</span>      <span class="mh">807df3ff</span>       var <span class="o">=</span> byte <span class="err">[</span>local_dh<span class="err">]</span> <span class="o">-</span> <span class="mh">0xff</span>
-│      <span class="err">└──</span>&lt; <span class="mh">0x080485a0</span>      <span class="mh">75d9</span>           if <span class="err">(</span>var) goto <span class="mh">0x804857b</span>
-│           <span class="mh">0x080485a2</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│           <span class="mh">0x080485a5</span>      <span class="mh">6a0a</span>           push <span class="mh">0xa</span>
-│           <span class="mh">0x080485a7</span>      e<span class="mh">884feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>putchar <span class="err">(</span>)
-│           <span class="mh">0x080485ac</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│           <span class="mh">0x080485af</span>      <span class="mh">90</span>             
-└           <span class="mh">0x080485b0</span>      c<span class="mh">9</span>             
+<span class="k">┌</span> (<span class="k">fcn</span>) <span class="k">sym</span><span class="o">.</span>print_flag <span class="m">103</span> 
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>print_flag ();
+<span class="k">│</span>           <span class="c">; var int local_dh @ ebp-0xd</span>
+<span class="k">│</span>           <span class="c">; var int local_ch @ ebp-0xc</span>
+<span class="k">│</span>              <span class="c">; CALL XREF from 0x08048606 (main)</span>
+<span class="k">│</span>           <span class="s">0x0804854b</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">│</span>           <span class="s">0x0804854c</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
+<span class="k">│</span>           <span class="s">0x0804854e</span>      83ec18         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x18</span>
+<span class="k">│</span>           <span class="s">0x08048551</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>           <span class="s">0x08048554</span>      68b0860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>How_did_you_figure_out_my_secret__
+<span class="k">│</span>           <span class="s">0x08048559</span>      e892feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
+<span class="k">│</span>           <span class="s">0x0804855e</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x08048561</span>      83ec08         <span class="k">esp</span> <span class="o">-=</span> <span class="m">8</span>
+<span class="k">│</span>           <span class="s">0x08048564</span>      68d3860408     <span class="k">push</span> <span class="mh">0x80486d3</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x08048569</span>      68d5860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>flag.txt
+</span><span class="hll"><span class="k">│</span>           <span class="s">0x0804856e</span>      e8adfeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>fopen ()
+</span><span class="k">│</span>           <span class="s">0x08048573</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x08048576</span>      8945f4         dword [<span class="k">local_ch</span>] <span class="o">=</span> <span class="k">eax</span>
+<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x08048579</span>      eb10           <span class="mh">goto</span> <span class="mh">0x804858b</span>
+<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x080485a0 (sym.print_flag)</span>
+<span class="k">│</span>      <span class="k">┌──&gt;</span> <span class="s">0x0804857b</span>      0fbe45f3       <span class="k">eax</span> <span class="o">=</span> byte [<span class="k">local_dh</span>]
+<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x0804857f</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x08048582</span>      50             <span class="k">push</span> <span class="k">eax</span>
+<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x08048583</span>      e8a8feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>putchar ()
+<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x08048588</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>      <span class="k">↑│</span>      <span class="c">; JMP XREF from 0x08048579 (sym.print_flag)</span>
+<span class="k">│</span>      <span class="k">|└─&gt;</span> <span class="s">0x0804858b</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0804858e</span>      ff75f4         <span class="k">push</span> dword [<span class="k">local_ch</span>]
+<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x08048591</span>      e84afeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>_IO_getc ()
+<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x08048596</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x08048599</span>      8845f3         byte [<span class="k">local_dh</span>] <span class="o">=</span> <span class="k">al</span>
+<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0804859c</span>      807df3ff       <span class="mh">var</span> <span class="o">=</span> byte [<span class="k">local_dh</span>] <span class="o">-</span> <span class="mh">0xff</span>
+<span class="k">│</span>      <span class="k">└──&lt;</span> <span class="s">0x080485a0</span>      75d9           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x804857b</span>
+<span class="k">│</span>           <span class="s">0x080485a2</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>           <span class="s">0x080485a5</span>      6a0a           <span class="k">push</span> <span class="mh">0xa</span>
+<span class="k">│</span>           <span class="s">0x080485a7</span>      e884feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>putchar ()
+<span class="k">│</span>           <span class="s">0x080485ac</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x080485af</span>      90             
+<span class="k">└</span>           <span class="s">0x080485b0</span>      c9             
 </code></pre></div>
 
 
@@ -171,52 +170,52 @@ call <span class="mh">0x8048606</span> call sym<span class="o">.</span>print_fla
 
 <p><div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x0804854b</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main   
 <span class="k"> </span>           <span class="c">;-- main:</span>
-┌ <span class="err">(</span>fcn) main <span class="mh">120</span>
-│   main <span class="err">(</span>)<span class="err">;</span>
-│           <span class="err">;</span> var int local_<span class="mh">27</span>h <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0x27</span>
-│           <span class="err">;</span> var int local_ch <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0xc</span>
-│           <span class="err">;</span> var int local_<span class="mh">4</span>h_<span class="mh">2</span> <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0x4</span>
-│           <span class="err">;</span> var int local_<span class="mh">4</span>h <span class="err">@</span> esp<span class="o">+</span><span class="mh">0x4</span>
-│              <span class="err">;</span> DATA XREF from <span class="mh">0x08048467</span> <span class="err">(</span>entry<span class="mh">0</span>)
-│           <span class="mh">0x080485b2</span>      <span class="mh">8d4c2404</span>       ecx <span class="o">=</span> <span class="err">[</span>local_<span class="mh">4</span>h<span class="err">]</span>
-│           <span class="mh">0x080485b6</span>      <span class="mh">83e4f0</span>         esp <span class="err">&amp;</span><span class="o">=</span> <span class="mh">0xfffffff0</span>
-│           <span class="mh">0x080485b9</span>      ff<span class="mh">71fc</span>         push dword <span class="err">[</span>ecx <span class="o">-</span> <span class="mh">4</span><span class="err">]</span>
-│           <span class="mh">0x080485bc</span>      <span class="mh">55</span>             push ebp
-│           <span class="mh">0x080485bd</span>      <span class="mh">89e5</span>           ebp <span class="o">=</span> esp
-│           <span class="mh">0x080485bf</span>      <span class="mh">51</span>             push ecx
-│           <span class="mh">0x080485c0</span>      <span class="mh">83ec24</span>         esp <span class="o">-=</span> <span class="mh">0x24</span>
-│           <span class="mh">0x080485c3</span>      a<span class="mh">130a00408</span>     eax <span class="o">=</span> dword obj<span class="o">.</span>stdout
-│           <span class="mh">0x080485c8</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>
-│           <span class="mh">0x080485ca</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>
-│           <span class="mh">0x080485cc</span>      <span class="mh">6a02</span>           push <span class="mh">2</span>
-│           <span class="mh">0x080485ce</span>      <span class="mh">50</span>             push eax
-│           <span class="mh">0x080485cf</span>      e<span class="mh">83cfeffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>setvbuf <span class="err">(</span>)
-│           <span class="mh">0x080485d4</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│           <span class="mh">0x080485d7</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│           <span class="mh">0x080485da</span>      <span class="mh">68de860408</span>     push str<span class="o">.</span>Enter_the_secret_word<span class="o">:</span>
-│           <span class="mh">0x080485df</span>      e<span class="mh">80cfeffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)
-│           <span class="mh">0x080485e4</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│           <span class="mh">0x080485e7</span>      c<span class="mh">745f4000000</span><span class="o">.</span>  dword <span class="err">[</span>local_ch<span class="err">]</span> <span class="o">=</span> <span class="mh">0</span>
-│           <span class="mh">0x080485ee</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="hll">│           <span class="mh">0x080485f1</span>      <span class="mh">8d45d9</span>         eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">27</span>h<span class="err">]</span>                                           
-</span><span class="hll">│           <span class="mh">0x080485f4</span>      <span class="mh">50</span>             push eax                                                    
-</span><span class="hll">│           <span class="mh">0x080485f5</span>      e<span class="mh">8d6fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>gets <span class="err">(</span>)                                             
-</span>│           <span class="mh">0x080485fa</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="hll">│           <span class="mh">0x080485fd</span>      <span class="mh">817df41eab11</span><span class="o">.</span>  var <span class="o">=</span> dword <span class="err">[</span>local_ch<span class="err">]</span> <span class="o">-</span> <span class="mh">0xca11ab1e</span>                         
-</span><span class="hll">│       <span class="err">┌─</span>&lt; <span class="mh">0x08048604</span>      <span class="mh">7507</span>           if <span class="err">(</span>var) goto <span class="mh">0x804860d</span>                                     
-</span><span class="hll">│       <span class="err">│</span>   <span class="mh">0x08048606</span>      e<span class="mh">840ffffff</span>     sym<span class="o">.</span>print_flag <span class="err">(</span>)                                           
-</span>│      <span class="err">┌──</span>&lt; <span class="mh">0x0804860b</span>      eb<span class="mh">10</span>           goto <span class="mh">0x804861d</span>
-│      <span class="err">││</span>      <span class="err">;</span> JMP XREF from <span class="mh">0x08048604</span> <span class="err">(</span>main)
-│      <span class="err">│└─</span>&gt; <span class="mh">0x0804860d</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
-│      <span class="err">│</span>    <span class="mh">0x08048610</span>      <span class="mh">68f5860408</span>     push str<span class="o">.</span>That_is_not_the_secret_word_
-│      <span class="err">│</span>    <span class="mh">0x08048615</span>      e<span class="mh">8d6fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)             <span class="err">;</span> int puts<span class="err">(</span>const char <span class="err">*</span>s)
-│      <span class="err">│</span>    <span class="mh">0x0804861a</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
-│      <span class="err">│</span>       <span class="err">;</span> JMP XREF from <span class="mh">0x0804860b</span> <span class="err">(</span>main)
-│      <span class="err">└──</span>&gt; <span class="mh">0x0804861d</span>      b<span class="mh">800000000</span>     eax <span class="o">=</span> <span class="mh">0</span>
-│           <span class="mh">0x08048622</span>      <span class="mh">8b4dfc</span>         ecx <span class="o">=</span> dword <span class="err">[</span>local_<span class="mh">4</span>h_<span class="mh">2</span><span class="err">]</span>
-│           <span class="mh">0x08048625</span>      c<span class="mh">9</span>             
-│           <span class="mh">0x08048626</span>      <span class="mh">8d61fc</span>         esp <span class="o">=</span> <span class="err">[</span>ecx <span class="o">-</span> <span class="mh">4</span><span class="err">]</span>
-└           <span class="mh">0x08048629</span>      c<span class="mh">3</span>             
+<span class="k">┌</span> (<span class="k">fcn</span>) main <span class="m">120</span>
+<span class="k">│</span>   main ();
+<span class="k">│</span>           <span class="c">; var int local_27h @ ebp-0x27</span>
+<span class="k">│</span>           <span class="c">; var int local_ch @ ebp-0xc</span>
+<span class="k">│</span>           <span class="c">; var int local_4h_2 @ ebp-0x4</span>
+<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
+<span class="k">│</span>              <span class="c">; DATA XREF from 0x08048467 (entry0)</span>
+<span class="k">│</span>           <span class="s">0x080485b2</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]
+<span class="k">│</span>           <span class="s">0x080485b6</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>
+<span class="k">│</span>           <span class="s">0x080485b9</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
+<span class="k">│</span>           <span class="s">0x080485bc</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">│</span>           <span class="s">0x080485bd</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
+<span class="k">│</span>           <span class="s">0x080485bf</span>      51             <span class="k">push</span> <span class="k">ecx</span>
+<span class="k">│</span>           <span class="s">0x080485c0</span>      83ec24         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x24</span>
+<span class="k">│</span>           <span class="s">0x080485c3</span>      a130a00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout
+<span class="k">│</span>           <span class="s">0x080485c8</span>      6a00           <span class="k">push</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x080485ca</span>      6a00           <span class="k">push</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x080485cc</span>      6a02           <span class="k">push</span> <span class="m">2</span>
+<span class="k">│</span>           <span class="s">0x080485ce</span>      50             <span class="k">push</span> <span class="k">eax</span>
+<span class="k">│</span>           <span class="s">0x080485cf</span>      e83cfeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()
+<span class="k">│</span>           <span class="s">0x080485d4</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x080485d7</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>           <span class="s">0x080485da</span>      68de860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Enter_the_secret_word:
+<span class="k">│</span>           <span class="s">0x080485df</span>      e80cfeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
+<span class="k">│</span>           <span class="s">0x080485e4</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x080485e7</span>      c745f4000000.  dword [<span class="k">local_ch</span>] <span class="o">=</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x080485ee</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x080485f1</span>      8d45d9         <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_27h</span>]
+</span><span class="hll"><span class="k">│</span>           <span class="s">0x080485f4</span>      50             <span class="k">push</span> <span class="k">eax</span>
+</span><span class="hll"><span class="k">│</span>           <span class="s">0x080485f5</span>      e8d6fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()
+</span><span class="k">│</span>           <span class="s">0x080485fa</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x080485fd</span>      817df41eab11.  <span class="mh">var</span> <span class="o">=</span> dword [<span class="k">local_ch</span>] <span class="o">-</span> <span class="mh">0xca11ab1e</span>
+</span><span class="hll"><span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x08048604</span>      7507           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x804860d</span>
+</span><span class="hll"><span class="k">│</span>       <span class="k">│</span>   <span class="s">0x08048606</span>      e840ffffff     <span class="k">sym</span><span class="o">.</span>print_flag ()
+</span><span class="k">│</span>      <span class="k">┌──&lt;</span> <span class="s">0x0804860b</span>      eb10           <span class="mh">goto</span> <span class="mh">0x804861d</span>
+<span class="k">│</span>      <span class="k">││</span>      <span class="c">; JMP XREF from 0x08048604 (main)</span>
+<span class="k">│</span>      <span class="k">│└─&gt;</span> <span class="s">0x0804860d</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>      <span class="k">│</span>    <span class="s">0x08048610</span>      68f5860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>That_is_not_the_secret_word_
+<span class="k">│</span>      <span class="k">│</span>    <span class="s">0x08048615</span>      e8d6fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()             <span class="c">; int puts(const char *s)</span>
+<span class="k">│</span>      <span class="k">│</span>    <span class="s">0x0804861a</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>      <span class="k">│</span>       <span class="c">; JMP XREF from 0x0804860b (main)</span>
+<span class="k">│</span>      <span class="k">└──&gt;</span> <span class="s">0x0804861d</span>      b800000000     <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x08048622</span>      8b4dfc         <span class="k">ecx</span> <span class="o">=</span> dword [<span class="k">local_4h_2</span>]
+<span class="k">│</span>           <span class="s">0x08048625</span>      c9             
+<span class="k">│</span>           <span class="s">0x08048626</span>      8d61fc         <span class="k">esp</span> <span class="o">=</span> [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
+<span class="k">└</span>           <span class="s">0x08048629</span>      c3             
 </code></pre></div>
 </p>
 
