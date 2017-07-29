@@ -25,12 +25,12 @@ We are told that there is a binary running remotely and its code is available to
 
 ```bash
 $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1
-$ r2 -A pwn1
+$ r2 -A pwn1  
 ```
 
 Now that the binary is opened, we need to analyze its content.
 
-{{< highlight r2 "hl_lines=17 18" >}} 
+{{< highlight r2 "hl_lines=17 18" >}}
 [0x08048450]> afl
 0x08048390    3 35           sym._init
 0x080483d0    1 6            sym.imp.gets
@@ -47,20 +47,19 @@ Now that the binary is opened, we need to analyze its content.
 0x080484c0    4 53           sym.register_tm_clones
 0x08048500    3 30           sym.__do_global_dtors_aux
 0x08048520    4 43   -> 40   sym.frame_dummy
-0x0804854b    4 103          sym.print_flag                                                             
-0x080485b2    4 120          main                                                                       
+0x0804854b    4 103          sym.print_flag
+0x080485b2    4 120          main
 0x08048630    4 93           sym.__libc_csu_init
 0x08048690    1 2            sym.__libc_csu_fini
 0x08048694    1 20           sym._fini
-
 {{< /highlight >}}
 
 Interesting, there is `print_flag` function at `0x0804854b`. Lets see what's inside.
 
 {{< highlight r2 "hl_lines=17 18" >}}
-[0x08048450]> s sym.print_flag
+[0x08048450]> s sym.print_flag 
 [0x0804854b]> pdf 
-┌ (fcn) sym.print_flag 103
+┌ (fcn) sym.print_flag 103 
 │   sym.print_flag ();
 │           ; var int local_dh @ ebp-0xd
 │           ; var int local_ch @ ebp-0xc
@@ -74,8 +73,8 @@ Interesting, there is `print_flag` function at `0x0804854b`. Lets see what's ins
 │           0x0804855e      83c410         esp += 0x10
 │           0x08048561      83ec08         esp -= 8
 │           0x08048564      68d3860408     push 0x80486d3
-│           0x08048569      68d5860408     push str.flag.txt                                           
-│           0x0804856e      e8adfeffff     sym.imp.fopen ()                                            
+│           0x08048569      68d5860408     push str.flag.txt
+│           0x0804856e      e8adfeffff     sym.imp.fopen ()
 │           0x08048573      83c410         esp += 0x10
 │           0x08048576      8945f4         dword [local_ch] = eax
 │       ┌─< 0x08048579      eb10           goto 0x804858b
@@ -140,13 +139,13 @@ Cool, so this function will be called from offset `0x8048606` which belongs to `
 │           0x080485e4      83c410         esp += 0x10
 │           0x080485e7      c745f4000000.  dword [local_ch] = 0
 │           0x080485ee      83ec0c         esp -= 0xc
-│           0x080485f1      8d45d9         eax = [local_27h]                                           
-│           0x080485f4      50             push eax                                                    
-│           0x080485f5      e8d6fdffff     sym.imp.gets ()                                             
+│           0x080485f1      8d45d9         eax = [local_27h]
+│           0x080485f4      50             push eax
+│           0x080485f5      e8d6fdffff     sym.imp.gets ()
 │           0x080485fa      83c410         esp += 0x10
-│           0x080485fd      817df41eab11.  var = dword [local_ch] - 0xca11ab1e                         
-│       ┌─< 0x08048604      7507           if (var) goto 0x804860d                                     
-│       │   0x08048606      e840ffffff     sym.print_flag ()                                           
+│           0x080485fd      817df41eab11.  var = dword [local_ch] - 0xca11ab1e
+│       ┌─< 0x08048604      7507           if (var) goto 0x804860d
+│       │   0x08048606      e840ffffff     sym.print_flag ()
 │      ┌──< 0x0804860b      eb10           goto 0x804861d
 │      ││      ; JMP XREF from 0x08048604 (main)
 │      │└─> 0x0804860d      83ec0c         esp -= 0xc
