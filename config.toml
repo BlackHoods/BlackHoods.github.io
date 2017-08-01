@@ -4,6 +4,8 @@ title = "BlackHoods Site"
 theme = "HugoMDL"
 MetaDataFormat = "yaml"
 
+googleAnalytic = "UA-103806632-1"
+
 pygmentsuseclasses = true
 PygmentsCodeFences = true
 PygmentsStyle = "monokai"
