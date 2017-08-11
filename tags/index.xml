@@ -6,10 +6,19 @@
     <description>Recent content in Tags on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 18 Aug 2015 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>2017</title>
+      <link>http://BlackHoods.github.io/tags/2017/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/tags/2017/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Bio</title>
@@ -17,6 +26,15 @@
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
       <guid>http://BlackHoods.github.io/tags/bio/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ctf</title>
+      <link>http://BlackHoods.github.io/tags/ctf/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/tags/ctf/</guid>
       <description></description>
     </item>
     
@@ -35,6 +53,15 @@
       <pubDate>Mon, 05 Oct 2015 02:27:08 +0000</pubDate>
       
       <guid>http://BlackHoods.github.io/tags/project/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tamuctf</title>
+      <link>http://BlackHoods.github.io/tags/tamuctf/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/tags/tamuctf/</guid>
       <description></description>
     </item>
     

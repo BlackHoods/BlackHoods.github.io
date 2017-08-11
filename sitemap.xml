@@ -38,6 +38,12 @@
   </url>
   
   <url>
+    <loc>http://BlackHoods.github.io/tags/2017/</loc>
+    <lastmod>2017-05-27T18:56:18+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://BlackHoods.github.io/about_categories/</loc>
     <priority>0</priority>
   </url>
@@ -57,6 +63,12 @@
   <url>
     <loc>http://BlackHoods.github.io/</loc>
     <lastmod>2017-05-30T18:56:18+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://BlackHoods.github.io/tags/ctf/</loc>
+    <lastmod>2017-05-27T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -103,7 +115,13 @@
   
   <url>
     <loc>http://BlackHoods.github.io/tags/</loc>
-    <lastmod>2015-08-18T00:00:00+00:00</lastmod>
+    <lastmod>2017-05-27T18:56:18+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://BlackHoods.github.io/tags/tamuctf/</loc>
+    <lastmod>2017-05-27T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   

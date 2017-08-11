@@ -51,8 +51,9 @@ $ wget https://ctf.tamu.edu/files/dacdf9d7951deede662f1b89e4ec2a90/pwn2 $ r2 pwn
       
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
       <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
-$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1  Now that the binary is opened, we need to analyze its content.
-[0x08048450]&amp;gt; afl 0x08048390 3 35  sym._init 0x080483d0 1 6  sym.imp.gets 0x080483e0 1 6  sym.imp._IO_getc 0x080483f0 1 6  sym.imp.puts 0x08048400 1 6  sym.</description>
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1   At some point the link will be broken, if so you can use the one from the repository.
+ Now that the binary is opened, lets see some stuff inside it.
+[0x08048450]&amp;gt; afl 0x08048390 3 35  sym.</description>
     </item>
     
     <item>

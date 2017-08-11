@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ctf on BlackHoods Site</title>
+    <link>http://BlackHoods.github.io/tags/ctf/</link>
+    <description>Recent content in Ctf on BlackHoods Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
+    
+	<atom:link href="http://BlackHoods.github.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>TamuCTF 2017 - Pwn 1</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</link>
+      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
+      <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1   At some point the link will be broken, if so you can use the one from the repository.
+ Now that the binary is opened, lets see some stuff inside it.
+[0x08048450]&amp;gt; afl 0x08048390 3 35  sym.</description>
+    </item>
+    
+  </channel>
+</rss>
