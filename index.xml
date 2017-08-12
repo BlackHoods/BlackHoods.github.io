@@ -6,10 +6,21 @@
     <description>Recent content on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Aug 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 12 Aug 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title></title>
+      <link>http://BlackHoods.github.io/about/tzaoh/</link>
+      <pubDate>Sat, 12 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://BlackHoods.github.io/about/tzaoh/</guid>
+      <description>Hey there, my name is Diego. I am a simple guy who is currently working as security analyst in Ireland. I use to play CTFs so the idea to create a simple blog to post some of their solutions came soon to my mind.
+Inside computing security I am mainly, but not uniquely, interested in:
+ Reverse engineering. Exploitation in general (binaries, web, etc). Device hacking.  One friend and I ran this site as a hobbie.</description>
+    </item>
     
     <item>
       <title>TamuCTF 2017 - Pwn 4</title>
@@ -70,17 +81,6 @@ $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A 
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
       <guid>http://BlackHoods.github.io/about/alejo/</guid>
-      <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
-Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
- 2013 - Bachelor of Arts , University of British Columbia</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>http://BlackHoods.github.io/about/diego/</link>
-      <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
-      
-      <guid>http://BlackHoods.github.io/about/diego/</guid>
       <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
 Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
  2013 - Bachelor of Arts , University of British Columbia</description>
