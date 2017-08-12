@@ -337,10 +337,8 @@ Answer: gigem{F0RM@1NG_1S_H4RD}
  * [radare2](https://github.com/radare/radare2) - To analyze the binary.
  * [draw.io](https://www.draw.io/) - To draw some graphics.
  * [asciinema](https://asciinema.org) - To record the session.
-
-### Some references
-* [PicoCTF format string challenge](https://0x00sec.org/t/picoctf-write-up-bypassing-aslr-via-format-string-bug/1920)
-* [C is For C Programming - Cask J. Thomson (Fragment)](https://books.google.es/books?id=qeWyAAAAQBAJ&lpg=PA120&ots=Yk45UQR7EU&dq=Speci%EF%AC%81es%20that%20a%20following%20d%2C%20i%2C%20o%2C%20u%2C%20x%2C%20or%20X%20conversion%20speci%EF%AC%81er%20applies%20to%20a%20short%20int%20or%20unsigned%20short%20int%20argument%20(the%20argument%20will%20have%20been%20promoted%20according%20to%20the%20integer%20promotions%2C%20but%20its%20value%20shall%20be%20converted%20to%20short%20int%20or%20unsigned%20short%20int%20before%20printing)%3B%20or%20that%20a%20following%20n%20conversion%20speci%EF%AC%81er%20applies%20to%20a%20pointer%20to%20a%20short%20int%20argument.&hl=es&pg=PA120#v=onepage&q&f=false)
+ * [PicoCTF format string challenge](https://0x00sec.org/t/picoctf-write-up-bypassing-aslr-via-format-string-bug/1920)
+ * [C is For C Programming - Cask J. Thomson (Fragment)](https://books.google.es/books?id=qeWyAAAAQBAJ&lpg=PA120&ots=Yk45UQR7EU&dq=Speci%EF%AC%81es%20that%20a%20following%20d%2C%20i%2C%20o%2C%20u%2C%20x%2C%20or%20X%20conversion%20speci%EF%AC%81er%20applies%20to%20a%20short%20int%20or%20unsigned%20short%20int%20argument%20(the%20argument%20will%20have%20been%20promoted%20according%20to%20the%20integer%20promotions%2C%20but%20its%20value%20shall%20be%20converted%20to%20short%20int%20or%20unsigned%20short%20int%20before%20printing)%3B%20or%20that%20a%20following%20n%20conversion%20speci%EF%AC%81er%20applies%20to%20a%20pointer%20to%20a%20short%20int%20argument.&hl=es&pg=PA120#v=onepage&q&f=false)
 
 
 #### Some notes for the author
