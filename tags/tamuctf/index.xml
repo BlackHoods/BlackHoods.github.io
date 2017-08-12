@@ -6,15 +6,25 @@
     <description>Recent content in Tamuctf on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 May 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 09 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/tags/tamuctf/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>TamuCTF 2017 - Pwn 2</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn2/</link>
+      <pubDate>Wed, 09 Aug 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn2/</guid>
+      <description>We are given a source code file and a binary which is being run remotely. Let&amp;rsquo;s a analyze it with radare2:
+$ wget https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn2/pwn2 $ r2 pwn2  [0x08048450]&amp;gt; aaa [x] Analyze all flags starting with sym. and entry0 (aa) [x] Analyze len bytes of instructions for references (aar) [x] Analyze function calls (aac) [x] Use -AA or aaaa to perform additional experimental analysis. [x] Constructing a function name for fcn.</description>
+    </item>
+    
+    <item>
       <title>TamuCTF 2017 - Pwn 1</title>
       <link>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</link>
-      <pubDate>Sat, 27 May 2017 18:56:18 +0200</pubDate>
+      <pubDate>Tue, 08 Aug 2017 18:56:18 +0200</pubDate>
       
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
       <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.

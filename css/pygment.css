@@ -1,10 +1,11 @@
 .highlight pre
 { 
-    background: #272822;
     color: #f8f8f2 !important;
+    background: #272822;
     border: 1px solid #272822;
-	white-space: pre-wrap;
     border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 /*.highlight .hll { background-color: #4b238a }*/
 .highlight .hll {
