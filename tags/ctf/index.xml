@@ -6,10 +6,21 @@
     <description>Recent content in Ctf on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 09 Aug 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 10 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>TamuCTF 2017 - Pwn 3</title>
+      <link>http://BlackHoods.github.io/post/tamuctf2017/pwn3/</link>
+      <pubDate>Thu, 10 Aug 2017 18:56:18 +0200</pubDate>
+      
+      <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn3/</guid>
+      <description>And here we are, with another pwning challenge 😁.
+$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/tree/master/assets/TamuCTF2017/pwn3 $ r2 pwn3  Once downloaded and opened with radare2, go for it and list its functions.
+[0x080484b0]&amp;gt; aaa [x] Analyze all flags starting with sym. and entry0 (aa) [x] Analyze len bytes of instructions for references (aar) [x] Analyze function calls (aac) [x] Use -AA or aaaa to perform additional experimental analysis. [x] Constructing a function name for fcn.</description>
+    </item>
     
     <item>
       <title>TamuCTF 2017 - Pwn 2</title>
