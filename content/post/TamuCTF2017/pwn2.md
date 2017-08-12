@@ -73,7 +73,7 @@ $ r2 pwn2
 0x08048692    1 22           fcn.08048692
 {{< /highlight >}}
 
-We can see similar functions to the [previous]({{< relref "TamuCTF2017/pwn1.md" >}}) pwning challenge, but there a complication here: if we look closely...
+We can see similar functions to the [previous]({{< relref "post/TamuCTF2017/pwn1.md" >}}) pwning challenge, but there a complication here: if we look closely...
 
 ```r2
 [0x080485c0]> s sym.print_flag 
