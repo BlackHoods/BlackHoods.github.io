@@ -10,8 +10,8 @@ cardbackground: 'white'
 cardtitlecolor: 'orange'
 post_categories:
 - CTFs
-date: 2017-05-27T18:56:18+02:00
-description: a
+date: 2017-08-08T18:56:18+02:00
+description: TamuCTF 2017 - pwn1
 tags:
 - CTF
 - TamuCTF
