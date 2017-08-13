@@ -3,11 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://BlackHoods.github.io/post/garage_door/rfcommunication/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://BlackHoods.github.io/about/tzaoh/</loc>
     <lastmod>2017-08-12T00:00:00+00:00</lastmod>
   </url>
@@ -62,7 +57,7 @@
   
   <url>
     <loc>http://BlackHoods.github.io/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -86,24 +81,12 @@
   
   <url>
     <loc>http://BlackHoods.github.io/post/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://BlackHoods.github.io/project_categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://BlackHoods.github.io/post_categories/reversing/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://BlackHoods.github.io/post_categories/rf/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -116,12 +99,6 @@
   <url>
     <loc>http://BlackHoods.github.io/tags/tamuctf/</loc>
     <lastmod>2017-08-11T18:56:18+02:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://BlackHoods.github.io/tags/test/</loc>
-    <lastmod>2017-09-01T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   

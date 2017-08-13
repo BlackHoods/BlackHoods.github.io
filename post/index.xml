@@ -6,20 +6,10 @@
     <description>Recent content in Posts on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Sep 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Fri, 11 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Garage door RF communication</title>
-      <link>http://BlackHoods.github.io/post/garage_door/rfcommunication/</link>
-      <pubDate>Fri, 01 Sep 2017 18:56:18 +0200</pubDate>
-      
-      <guid>http://BlackHoods.github.io/post/garage_door/rfcommunication/</guid>
-      <description>Abstract This the first of a serie of post where we are going to revese engineered a garage radio control to undertand how it works. In this first post we will describe how we have proceed in order to revese engineered the signal, present our first conclusions about our findings and which are going to be our next steps to hack the device.
-This summer I wanted to introduce my self into the security RF world and what better way than take the first RF device that we have in our home and take a look how it works.</description>
-    </item>
     
     <item>
       <title>TamuCTF 2017 - Pwn 4</title>
