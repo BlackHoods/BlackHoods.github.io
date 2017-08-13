@@ -35,9 +35,9 @@ email: "doop3lgang3r@gmail.com"
 - 2011-2016 - Information technology, Jaume I University
  
 
-#### Publications
+<!---#### Publications
 
-- Circutor SGE-PLC1000/50 concentrator Multiple Vulnerabilities (2017) 
+ Circutor SGE-PLC1000/50 concentrator Multiple Vulnerabilities (2017) -->
 
 #### Places I've worked
 
