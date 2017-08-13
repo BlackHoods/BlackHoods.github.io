@@ -6,8 +6,7 @@ author:
   - /images/Doopel_Profile/dopelrIcon.png
   name:
   - Doopel
-cardbackground: 'transparent'
-cardbackground2: 'white'
+
 cardtitlecolor: 'orange'
 post_categories:
 - RF
@@ -19,6 +18,7 @@ tags:
 title: "Garage door RF communication"
 summary: "Reversing an unknown radio signal protocol "
 cardthumbimage: "/assets/Garage_Door_RF_communication/ProtocolRerversing/title.jpg"
+cardbackground: '#FFF'
 ---
 
 ## Abstract 
