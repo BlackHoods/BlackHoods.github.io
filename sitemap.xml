@@ -28,12 +28,7 @@
   </url>
   
   <url>
-    <loc>http://BlackHoods.github.io/project/collaborativeproject/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://BlackHoods.github.io/about/alejo/</loc>
+    <loc>http://BlackHoods.github.io/about/doopel/</loc>
     <lastmod>2015-08-18T00:00:00+00:00</lastmod>
   </url>
   
@@ -79,12 +74,6 @@
   </url>
   
   <url>
-    <loc>http://BlackHoods.github.io/tags/meta/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://BlackHoods.github.io/post_categories/</loc>
     <lastmod>2017-08-11T18:56:18+02:00</lastmod>
     <priority>0</priority>
@@ -97,19 +86,7 @@
   </url>
   
   <url>
-    <loc>http://BlackHoods.github.io/tags/project/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://BlackHoods.github.io/project_categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://BlackHoods.github.io/project/</loc>
-    <lastmod>2015-10-05T02:27:08+00:00</lastmod>
     <priority>0</priority>
   </url>
   

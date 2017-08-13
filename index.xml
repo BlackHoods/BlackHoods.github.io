@@ -67,23 +67,18 @@ $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A 
     </item>
     
     <item>
-      <title>Awesome Collaborative Project</title>
-      <link>http://BlackHoods.github.io/project/collaborativeproject/</link>
-      <pubDate>Mon, 05 Oct 2015 02:27:08 +0000</pubDate>
-      
-      <guid>http://BlackHoods.github.io/project/collaborativeproject/</guid>
-      <description>Mustache keytar disrupt ugh PBR. Before they sold out Brooklyn pickled, lumbersexual lo-fi mustache hoodie Tumblr Banksy semiotics salvia seitan 8-bit four loko PBR. Readymade mumblecore selfies, forage Schlitz Truffaut Portland PBR&amp;amp;B brunch sustainable chia retro 90&amp;rsquo;s tofu actually. Cold-pressed synth pickled Blue Bottle, chambray photo booth Schlitz Austin leggings distillery. Whatever kogi gastropub hashtag, 90&amp;rsquo;s wayfarers church-key ennui chia actually. Disrupt Bushwick trust fund, bicycle rights umami pork belly sartorial lumbersexual scenester asymmetrical Schlitz.</description>
-    </item>
-    
-    <item>
       <title></title>
-      <link>http://BlackHoods.github.io/about/alejo/</link>
+      <link>http://BlackHoods.github.io/about/doopel/</link>
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://BlackHoods.github.io/about/alejo/</guid>
-      <description>90&amp;rsquo;s slow-carb Schlitz Shoreditch mixtape typewriter, wayfarers Austin keffiyeh Helvetica artisan flexitarian. Health goth vinyl scenester pickled kitsch. Organic slow-carb stumptown freegan, PBR ugh chia Intelligentsia pork belly locavore retro kale chips. Tofu put a bird on it squid tattooed beard master cleanse, mumblecore keytar mustache blog direct trade PBR&amp;amp;B quinoa.
-Education  2015 - Master of Arts in Wine Tasting, University of British Columbia
- 2013 - Bachelor of Arts , University of British Columbia</description>
+      <guid>http://BlackHoods.github.io/about/doopel/</guid>
+      <description> Education  2016-2017 - Master in cybersecurity, Charles III University of Madrid
+ 2014-2015 - Information technology, Lapland University of Applied Sciences
+ 2011-2016 - Information technology, Jaume I University
+  Publications  Circutor SGE-PLC1000/50 concentrator Multiple Vulnerabilities (2017)  Places I&amp;rsquo;ve worked  Malware Analyst in Panda Security
+ Security Intern in IOActive
+ Java developer in PaynoPain
+  </description>
     </item>
     
   </channel>
