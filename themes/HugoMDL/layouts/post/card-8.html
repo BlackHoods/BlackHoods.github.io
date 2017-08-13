@@ -1,12 +1,12 @@
                 <!-- Make a card view for posts -->
                 <div class="mdl-card mdl-cell mdl-cell--8-col">
-					<div class="mdl-card__media mdl-color-text--grey-50">
+					<div style= "{{with .Params.cardbackground}}background-color:{{.}};text-align: center;{{end}}" class="mdl-card__media mdl-color-text--grey-50">
 					{{- if .RelPermalink }}
 						<a href="{{ .RelPermalink }}">
 							<img src="{{.Params.cardthumbimage}}"></img>
 						</a>
 					</div>
-					<div style="{{with .Params.cardbackground}}background-color:{{.}};text-align: center;{{end}}">
+					<div style="{{with .Params.cardbackground2}}background-color:{{.}};text-align: center;{{end}}">
 						<h3><a href="{{ .RelPermalink }}" {{ with .Params.cardtitlecolor }}style="color:{{.}};"{{end}}>{{ title .Title }}</a></h3>
 					</div>
 					{{else}}
