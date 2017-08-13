@@ -6,7 +6,8 @@ author:
   - /images/avatar-64x64.png
   name:
   - Tzaoh
-cardbackground: 'white'
+cardbackground: 'default'
+cardbackground2: 'white'
 cardtitlecolor: 'orange'
 post_categories:
 - CTFs
