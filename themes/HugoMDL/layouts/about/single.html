@@ -16,25 +16,26 @@
                                 {{ .Content }}
                             {{- end }}
 
-                            {{- if .Params.recentprojects }}
-                            <div class="list">
-                                <h4>Recent Projects</h4>
-                                <ul>
-                                    {{- range $key, $value := first .Params.recentprojects (where .Site.Pages "Section" "project") }}
-                                    	{{- if in $value.Params.author.name $nick}}
-                                    		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
-										{{- end }}
-                                    {{- end }}
-                                </ul>
-                            </div>
+                            {{- if .Params.recentprojects}}
+		                        <div class="list">
+		                           
+		                            <ul>
+		                                {{- range $key, $value := first .Params.recentprojects (where .Site.Pages "Section" "project") }}
+											<h4>Recent Projects</h4>
+		                                	{{- if in $value.Params.author.name $nick}}
+		                                		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+											{{- end }}
+		                                {{- end }}
+		                            </ul>
+		                        </div>
                             {{- end }}
 
                             {{- if .Params.recentposts }}
 							
                             <div class="list">
-                                <h4>Recent Posts</h4>
                                 <ul>
                                     {{- range $key, $value := first .Params.recentposts (where .Site.Pages "Section" "post") }}
+										<h4>Recent Posts</h4>
 										{{- if in  $value.Params.author.name $nick}}
                                     		<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
 										{{- end }}
