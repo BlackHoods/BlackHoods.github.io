@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="Hugo 0.27-DEV" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="My thoughts and rambles">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="icon" type="image/png" href="/images/favicon.ico">
+
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-103806632-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+    <title>Garage door RF communication</title>
+</head>
+
+<body style="background-image: url('/images/background.jpg');">
+    <div id="MainCnt" class="hmdl-body mdl-layout mdl-js-layout has-drawer is-upgraded">        
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/post/">Articles</a>
+                <a class="mdl-navigation__link" href="/project/">Projects</a>
+                <a class="mdl-navigation__link" href="/about/">About</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/post/">Articles</a>
+            <a class="mdl-navigation__link" href="/project/">Projects</a>
+            <a class="mdl-navigation__link" href="/about/">About</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+		
+
+            <div class="hmdl-page mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__media mdl-color-text--grey-50" style=" background-color:transparent;">
+                        <h3 style="color:orange;">Garage Door RF Communication</h3>
+                    </div>
+                    <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
+                        <div class="minilogo" style="background-image: url('/images/Doopel_Profile/dopelrIcon.png');"></div>
+
+                        <div>
+							<strong>
+                            		<strong>Doopel</strong>
+							</strong>
+                            <span>Sep 1, 2017</span>
+                        </div>
+                        <div class="section-spacer"></div>
+                    </div>
+                    <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
+                        
+
+<h2 id="key-words">Key words</h2>
+
+<ul>
+<li>Radio frequency(RF)</li>
+<li>Software Difine Radio (SDR)</li>
+<li>Universal Hacker Radio (UHR)</li>
+</ul>
+
+<h2 id="abstract">Abstract</h2>
+
+<p>This in the first one of a serie of post where we are going to revese engineered a garage radio control to undertand how it works. In this first post I will describe how we have proceed in order to revese engineered the RF signal, present our conclusions about our findings and which are going to be our next steps to hack the device.</p>
+
+<p>This summer I wanted to introduce my self into the security RF world and what better way than take the a day-to-dat RF device that we have in our homes and take a look how it works. We are writing this post to help those like us want to start in the radio security world explaing how we have start and proced to do our first investigation of a real device.</p>
+
+<p>We highly recommened to take a look to <a href="https://greatscottgadgets.com/sdr/">Michael Ossmann&rsquo;s video classes</a> to get introduceded into the SDR wolrd. It has used a software named <em>Universal Hacker Radio (UHR)</em> because it provides multiple useful fuctionalities such as:</p>
+
+<ul>
+<li>Spectrum analyser</li>
+<li>Signal Recorder</li>
+<li>Oscilloscope view</li>
+<li>Analyze interface<br /></li>
+</ul>
+
+<h2 id="indentify-the-signal-frequency">Indentify the signal frequency</h2>
+
+<p>To begin it is necesary to discover in which frequency the device is working. I recommened to check if your device is in <a href="https://fccid.io/">FCCID database</a>. It is a unique identifier assigned to a device registered with the United States Federal Communications Commission. Unfortunatly in our case it was not registed so we dig a little bit around Internet and we found that the device plays around the 868 KHz.</p>
+
+<p>In order to check it <strong>UHR</strong> has an spectrum analyzer functionality but I prefer to used the  <strong>osmocom_fft</strong> tool.
+<img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/Finding-Signal.png" alt="Spectrum analyzer" /></p>
+
+<h4 id="tips">Tips</h4>
+
+<ul>
+<li>To visulize properlly the signal, set the frequecy a little bit lower or higher that the one which you are checking.</li>
+<li>Check the peak hold option</li>
+<li>Send multiple signal to confirm that it is the signal that you are looking for.</li>
+<li>Remenber the <strong>HackRF</strong> has a limit of 2M samples per rate.</li>
+</ul>
+
+<h2 id="recording-the-signal">Recording the signal</h2>
+
+<p>To record the signal I like to used the <strong>URH</strong> recording tool because it show you in real time what you are recoding and it add the record stream automatically to the analysis tab.</p>
+
+<h2 id="signal-analysis">Signal analysis</h2>
+
+<p>There are two esential things that it is necesary to know about the signal, which kind of modulation has been used and which is the bit legth/symbol length.
+Taking a look to the recorded signal and zooming in looks like it is a form of amplitude modulation that represents digital data, specifically it is <em>On-Off-keys</em> modulation. It is the simplest form of <em>amplitude-shift keying (ASK)</em> modulation that represents digital data at the presence or absence of a carrier wave.In its simplest form, the presence of a carrier for a specific duration represents a binary one, while its absence for the same duration represents a binary zero.</p>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/RawStream.png" alt="Raw stream" />
+<img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/RawStream2.png" alt="Raw stream 2" />
+<img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/RawStream3.png" alt="Raw stream 3" /></p>
+
+<p>Now that we know what kind of modulation has been used it is easy to calculate the bit lenght using <strong>URH</strong> as is shown. Selecting manually the area that represents a single bit and introducing the output value into the &ldquo;Bit Length&rdquo; box. Another really useful thing is that in the bottom it is displayed the stream in bits, hex or ASCII and just by selecting in this case the first bit it is possible to check if the selected value is the appropriate.</p>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/BitLenght.png" alt="Bit lenght " /></p>
+
+<h2 id="reversing-the-communication-protocol">Reversing the communication protocol</h2>
+
+<p>Now we can proceed to the analysis tab to reverse enginired the protocol. The first thing it is displaed in the interface are the stream of samples (one sampel per line) and the coding and view options.</p>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/AnalysisInterface.png" alt="Analysis interface" /></p>
+
+<p>In order to analyse more easyly the sample I prefer to displayed it in hexadecial. The next thing that it is necessary to know is which encoding algorith has been used in the raw signal. To help us <em>URH</em> has already some of the classical algorithm implemeted: NRZ, NRZ-I, Manchester I (G.E Thomas), Manchester II (IEEE 802.3) and differential Manchester.</p>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/Decoding.png" alt="Analysis interface" /></p>
+
+<p>In this case the signal has been encoded with Manchester II. Basically what Manchester does is: A 0 is expressed by a low-to-high transition, a 1 by high-to-low transition (according to G. E. Thomas&rsquo; convention — in the IEEE 802.3 convention, the reverse is true)
+<img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/manchester.png" alt="Analysis interface" /></p>
+
+<p><strong>Note</strong> : However if the signal had been encoding with a custom encoding algorithm the program provided  a tool to import or generate custom algorithms.</p>
+
+<p>Once the encodig algorith has been identified is time to look for patterns and  differencies beetween samples, group them by type and divide them in section/labels.</p>
+
+<p>To do it is as simple as selecting the messages, assinging a new type and divide it in diferent labels</p>
+
+<p>As result it has been identified three types of messages send by the device:</p>
+
+<ul>
+<li><p>Preamble (0xffff8): This packet is sent before any other packet as a premble to say to the recepetor that an order is going to be sent.</p></li>
+
+<li><p>Start (0xfe1ea2ff): It is sent before the open-close message and indicates the sequence number that the follwing messages are going to have in case the open-close button is clicked multiple times.</p></li>
+
+<li><p>Open/close (0xfee15d00): It is the open/close message which is sent multiple times to garante that the command is recived by the receptor.</p></li>
+</ul>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/AllMessages.png" alt="Analysis interface" /></p>
+
+<p>From here there are three interesting things the open/close payload, the start payload and the sequence number. Every time that the controlle is clicked the sequence number and the payloads change which indicated that  the device has a rolling code system to prevent replay attacks.</p>
+
+<p><img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/sequence1.png" alt="Analysis interface" />
+<img src="/assets/Garage_Door_RF_communication/ProtocolRerversing/sequence2.png" alt="Analysis interface" /></p>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>Thanks to the reversing protocol process now we know how the device works but we are not able to guess and replay a valid crafted message due to the rollig system and because it is unknown which algorith is been used so in the next posts we pretend to access the password seed or seeds that are saved inside the device via hardware, find out which algorinth is used and try to brute force the key in order to open de garage door.</p>
+
+<h2 id="tools-used">Tools used:</h2>
+
+<ul>
+<li><a href="https://greatscottgadgets.com/hackrf/">HackRF</a></li>
+<li><a href="https://github.com/sthysel/urh">Universal hacker radio</a></li>
+<li><a href="https://github.com/osmocom/gr-osmosdr">osmocom_fft</a></li>
+</ul>
+
+                    </div>
+                    <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
+                        <strong>
+                            	<strong>Doopel</strong>
+						</strong>
+                        <p></p>
+                    </div>  
+                </div>                
+                <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+                    <a href="/post/tamuctf2017/pwn4/">
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                        <i class="icon ion-android-arrow-back"></i>
+                        </button>
+                        Older
+                    </a>
+                    <div class="section-spacer"></div>
+                </nav>
+ 
+            </div>        
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">                
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="mailto:Firstname@example.com?subject=Hi">
+                    <i class="material-icons_lg icon ion-email"></i>
+                    <span class="visuallyhidden">Email</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://github.com/BlackHoods">
+                    <i class="material-icons_lg icon ion-social-github"></i>
+                    <span class="visuallyhidden">Github</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://twitter.com/firstname_lastname">
+                    <i class="material-icons_lg icon ion-social-twitter "></i>
+                    <span class="visuallyhidden">Twitter</span>
+                </a>
+
+
+            </div>
+            <div class="mdl-mini-footer--right-section">
+                <span>© 2017 </span>
+            </div>
+        </footer>
+        <div class="mdl-layout__obfuscator"></div>
+    </div>
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+</body>
+</html>
+
