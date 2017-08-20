@@ -6,7 +6,7 @@
     <description>Recent content on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Sep 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 20 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Garage door RF communication</title>
       <link>http://BlackHoods.github.io/post/garage_door/rfcommunication/</link>
-      <pubDate>Fri, 01 Sep 2017 18:56:18 +0200</pubDate>
+      <pubDate>Sun, 20 Aug 2017 18:56:18 +0200</pubDate>
       
       <guid>http://BlackHoods.github.io/post/garage_door/rfcommunication/</guid>
       <description>Key words  Radio frequency(RF) Software Difine Radio (SDR) Universal Hacker Radio (UHR)  Abstract This in the first one of a serie of post where we are going to revese engineered a garage radio control to undertand how it works. In this first post I will describe how we have proceed in order to revese engineered the RF signal, present our conclusions about our findings and which are going to be our next steps to hack the device.</description>
