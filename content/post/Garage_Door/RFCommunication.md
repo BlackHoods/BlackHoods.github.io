@@ -27,11 +27,11 @@ cardthumbimage: "/assets/Garage_Door_RF_communication/ProtocolRerversing/title.p
 
 ## Abstract 
 
-This in the first one of a serie of post where we are going to revese engineered a garage radio control to undertand how it works. In this first post I will describe how we have proceed in order to revese engineered the RF signal, present our conclusions about our findings and which are going to be our next steps to hack the device.
+This in the first one of a serie of posts where we are going to revese engineered a garage radio control to undertand how it works. In this first post We will describe how we have proceed in order to revese engineered the RF signal, present our conclusions about our findings and indicate which are going to be our next steps to hack the device.
 
-This summer I wanted to introduce my self into the security RF world and what better way than take the a day-to-dat RF device that we have in our homes and take a look how it works. We are writing this post to help those like us want to start in the radio security world explaing how we have start and proced to do our first investigation of a real device.
+This summer I wanted to introduce my self into the security RF world and what better way than take a day-to-dat RF device that we have in our homes and check how it works. We are writing this post to help those like us want to start in the radio security world explaing how we have start and proced to do our first investigation of a real device.
 
-We highly recommened to take a look to [Michael Ossmann's video classes](https://greatscottgadgets.com/sdr/) to get introduceded into the SDR wolrd. It has used a software named *Universal Hacker Radio (UHR)* because it provides multiple useful fuctionalities such as:
+We highly recommened to take a look to [Michael Ossmann's video classes](https://greatscottgadgets.com/sdr/) to get introduceded into the SDR wolrd. Also, we have used a software named *Universal Hacker Radio (UHR)* because it provides multiple useful fuctionalities such as:
 
 - Spectrum analyser
 - Signal Recorder
@@ -40,7 +40,7 @@ We highly recommened to take a look to [Michael Ossmann's video classes](https:/
 
 ## Indentify the signal frequency 
 
-To begin it is necesary to discover in which frequency the device is working. I recommened to check if your device is in [FCCID database] (https://fccid.io/). It is a unique identifier assigned to a device registered with the United States Federal Communications Commission. Unfortunatly in our case it was not registed so we dig a little bit around Internet and we found that the device plays around the 868 KHz.
+To begin it is necesary to discover in which frequency the device is working. We recommened to check if your device is in [FCCID database] (https://fccid.io/). It is a unique identifier assigned to a device registered with the United States Federal Communications Commission. Unfortunatly in our case it was not registed so we dag a little bit around Internet and we found that the device plays around the 868 KHz.
 
 In order to check it **UHR** has an spectrum analyzer functionality but I prefer to used the  **osmocom_fft** tool. 
 ![Spectrum analyzer](/assets/Garage_Door_RF_communication/ProtocolRerversing/Finding-Signal.png)
@@ -54,7 +54,7 @@ In order to check it **UHR** has an spectrum analyzer functionality but I prefer
 
 ## Recording the signal
 
-To record the signal I like to used the **URH** recording tool because it show you in real time what you are recoding and it add the record stream automatically to the analysis tab.  
+To record the signal we like to used the **URH** recording tool because it show you in real time what you are recoding and it adds the record stream automatically to the analysis tab.  
 
 ## Signal analysis
 
@@ -70,11 +70,11 @@ Now that we know what kind of modulation has been used it is easy to calculate t
 ![Bit lenght ](/assets/Garage_Door_RF_communication/ProtocolRerversing/BitLenght.png)
 
 ## Reversing the communication protocol
-Now we can proceed to the analysis tab to reverse enginired the protocol. The first thing it is displaed in the interface are the stream of samples (one sampel per line) and the coding and view options.
+Now we can proceed to the analysis tab to reverse enginired the protocol. The first thing it is displayed in the interface are the stream of samples (one sampel per line) and the coding and view options.
 
 ![Analysis interface](/assets/Garage_Door_RF_communication/ProtocolRerversing/AnalysisInterface.png)
 
-In order to analyse more easyly the sample I prefer to displayed it in hexadecial. The next thing that it is necessary to know is which encoding algorith has been used in the raw signal. To help us *URH* has already some of the classical algorithm implemeted: NRZ, NRZ-I, Manchester I (G.E Thomas), Manchester II (IEEE 802.3) and differential Manchester.
+In order to analyse more easyly the sample we prefer to displayed it in hexadecial. The next thing that it is necessary to know is which encoding algorith has been used in the raw signal. To help us *URH* has already some of the classical algorithm implemeted: NRZ, NRZ-I, Manchester I (G.E Thomas), Manchester II (IEEE 802.3) and differential Manchester.
 
 ![Analysis interface](/assets/Garage_Door_RF_communication/ProtocolRerversing/Decoding.png)
 
@@ -83,7 +83,7 @@ In this case the signal has been encoded with Manchester II. Basically what Manc
 
 **Note** : However if the signal had been encoding with a custom encoding algorithm the program provided  a tool to import or generate custom algorithms.
 
-Once the encodig algorith has been identified is time to look for patterns and  differencies beetween samples, group them by type and divide them in section/labels.
+Once the encodig algorith has been identified is time to look for patterns and  differencies beetween samples, group them by type and divide them in sections/labels.
 
 To do it is as simple as selecting the messages, assinging a new type and divide it in diferent labels
 
@@ -91,19 +91,19 @@ As result it has been identified three types of messages send by the device:
 
 - Preamble (0xffff8): This packet is sent before any other packet as a premble to say to the recepetor that an order is going to be sent.
 
-- Start (0xfe1ea2ff): It is sent before the open-close message and indicates the sequence number that the follwing messages are going to have in case the open-close button is clicked multiple times.
+- Start (0xfe1ea2ff): It is sent before the open-close message stream and indicates the sequence number that the follwing messages are going to have in case the open-close button is clicked multiple times.
 
 - Open/close (0xfee15d00): It is the open/close message which is sent multiple times to garante that the command is recived by the receptor.
 
 ![Analysis interface](/assets/Garage_Door_RF_communication/ProtocolRerversing/AllMessages.png)
 
-From here there are three interesting things the open/close payload, the start payload and the sequence number. Every time that the controlle is clicked the sequence number and the payloads change which indicated that  the device has a rolling code system to prevent replay attacks.
+From here there are three interesting things the open/close payload, the start payload and the sequence number. Every time that the controller is clicked the sequence number and the payloads change which indicated that the device has a rolling code system to prevent replay attacks.
 
 ![Analysis interface](/assets/Garage_Door_RF_communication/ProtocolRerversing/sequence1.png)
 ![Analysis interface](/assets/Garage_Door_RF_communication/ProtocolRerversing/sequence2.png)
 
 ## Conclusions
-Thanks to the reversing protocol process now we know how the device works but we are not able to guess and replay a valid crafted message due to the rollig system and because it is unknown which algorith is been used so in the next posts we pretend to access the password seed or seeds that are saved inside the device via hardware, find out which algorinth is used and try to brute force the key in order to open de garage door.
+Thanks to the reversing protocol process now we know how the device works but we are not able to guess and replay a valid crafted message due to the rollig system and because it is unknown which algorith is been used. In the next posts we pretend to access the password seed or seeds that are saved inside the device via hardware, find out which algorinth is used and try to brute force the key in order to open de garage door.
 
 
 ## Tools used:
