@@ -8,6 +8,11 @@
   </url>
   
   <url>
+    <loc>http://BlackHoods.github.io/post/googlectf2017/inst_prof/</loc>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://BlackHoods.github.io/about/tzaoh/</loc>
     <lastmod>2017-08-12T00:00:00+00:00</lastmod>
   </url>
@@ -39,7 +44,7 @@
   
   <url>
     <loc>http://BlackHoods.github.io/tags/2017/</loc>
-    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -68,19 +73,25 @@
   
   <url>
     <loc>http://BlackHoods.github.io/tags/ctf/</loc>
-    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://BlackHoods.github.io/post_categories/ctfs/</loc>
-    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://BlackHoods.github.io/tags/googlectf/</loc>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://BlackHoods.github.io/post_categories/</loc>
-    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -109,7 +120,7 @@
   
   <url>
     <loc>http://BlackHoods.github.io/tags/</loc>
-    <lastmod>2017-08-11T18:56:18+02:00</lastmod>
+    <lastmod>2017-08-12T18:56:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
