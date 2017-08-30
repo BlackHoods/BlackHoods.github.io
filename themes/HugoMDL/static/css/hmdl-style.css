@@ -460,4 +460,13 @@ main {
     margin-right: 16px;
     width: 44px
 }
+
+.hmg {
+    width: 100%;
+    table-layout: fixed;    
+}
+
+.hmg td {
+    vertical-align: top;
+}
 /*# sourceMappingURL=hmdl-style.css.map */
