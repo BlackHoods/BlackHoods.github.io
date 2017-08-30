@@ -10,14 +10,14 @@ cardbackground: 'white'
 cardtitlecolor: 'orange'
 post_categories:
 - CTFs
-date: 2017-08-12T18:56:18+02:00
-description: GoogleCTF 2017 - Inst prof
+date: 2017-08-30T18:56:18+02:00
+description: GoogleCTF 2017 - Inst prof (Part 1)
 tags:
 - CTF
 - GoogleCTF
 - 2017
 title: "GoogleCTF 2017 - Inst Prof"
-summary: "This was one of the initial challenges during the GoogleCTF 2017. I really enjoyed this one. Lets go for it."
+summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two.
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 
@@ -49,7 +49,7 @@ initializing prof...ready
 Segmentation fault
 ```
 
-If you execute it, you will realized that there is a delay of 5 seconds between **initializing prof...** and **ready** strings. I do not want to wait 5 seconds everytime I want to test something, so lets patch it. I also used **1234** as input but it resulted in a segmentation fault (we will realize the reason later).
+If you execute it, you will realized that there is a delay of 5 seconds between **initializing prof...** and **ready** strings. We do not want to wait 5 seconds everytime we want to test something, so lets patch it. I also used **1234** as input but it resulted in a segmentation fault (we will realize the reason later).
 
 ```r2
 $ r2 -A -w inst_prof
@@ -232,7 +232,7 @@ va       true
 
 What matters here is the NX and PIE flags.
 
-1. `NX` is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that this part of the memory is marked as executable.  
+1. `NX` is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.  
 2. `PIE` tells us that the executable will be load in a randomly aligned address, so we will not be able to use fixed memory addresses to call functions.
 
 Okay! 
@@ -314,7 +314,7 @@ Which are your first thoughts about the highlighted lines? mines are:
 2. `obj.template`: what is that? a template? of what?  
 3. `sym.read_inst ()`: mmmh ok, it suggests that is going to read an instruction.  
 4. `sym.make_page_executable ()`: aparently this is the one in charge of making a page executable (probably it will be used for the recently-created page).  
-5. `rbx ()`: it calls a zone of memory whose address is stored in `rbx` register. What is most logical is to think that this address will be the address of the page it has already allocated (through `sym.alloc_page`) and made executable (through `sym.make_page_executable`)
+5. `rbx ()`: it calls a zone of memory whose address is stored in `rbx` register. What is most logical is to think that this address will be the address of the page which has already allocated (through `sym.alloc_page`) and marked as executable (through `sym.make_page_executable`)
 6. `sym.free_page ()` or `sym.imp.exit ()`: Depending on the condition `do_test` will be called again (so this flow will happen once more) or `exit` will be the chosen one, causing the process to be terminated.  
 
 ---
@@ -386,7 +386,7 @@ Obviously, it is allocating some space in memory to put something in there. `obj
 
 Interesting, it is just a small loop, which is going to iterate `0x1000 = 4096` times. But thats all, because inside of the loop there is only NOPs opcodes.
 
-Now that we know what is in there, we can keep going with the flow we were explaining before. Right after the `sym.alloc_page` call, are the following instructions. I will explain line-by-line what they do.
+Now that we know what is in there, we can keep going with the flow we were explaining before. Right after the `sym.alloc_page` call, there are the following instructions. I will explain line-by-line what they do.
 
 ```r2
 │           0x00000acd      e81effffff     sym.alloc_page ()
@@ -629,7 +629,7 @@ It will **execute** something we provide to it!
 
 We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.
 
-{{< highlight r2 "hl_lines=10" >}}
+{{< highlight r2 "hl_lines=14 18" >}}
 0x7fdeaba18000 240 /root/inst_prof]> ?0;f tmp;s.. @ rbx                                                                                                                         
 - offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
 0x7fff40b82ac8  189b 0f42 cf55 0000 b08c 80ab de7f 0000  ...B.U..........
@@ -650,8 +650,9 @@ orax 0xffffffffffffffff
         ┌─> 0x7fdeaba18005      4141414183e9.  r9d -= 1                ; orax
         └─< 0x7fdeaba1800c      75f7           if (var) goto 0x7fdeaba18005
             0x7fdeaba1800e      c3             
-            0x7fdeaba1800f      0000           byte [rax] += al
 {{< /highlight >}}
+
+
 
 ##### sym.free_page
 
