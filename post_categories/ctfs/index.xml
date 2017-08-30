@@ -6,7 +6,7 @@
     <description>Recent content in Ctfs on BlackHoods Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 12 Aug 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 30 Aug 2017 18:56:18 +0200</lastBuildDate>
     
 	<atom:link href="http://BlackHoods.github.io/post_categories/ctfs/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>GoogleCTF 2017 - Inst Prof</title>
       <link>http://BlackHoods.github.io/post/googlectf2017/inst_prof/</link>
-      <pubDate>Sat, 12 Aug 2017 18:56:18 +0200</pubDate>
+      <pubDate>Wed, 30 Aug 2017 18:56:18 +0200</pubDate>
       
       <guid>http://BlackHoods.github.io/post/googlectf2017/inst_prof/</guid>
       <description>In this challenge we are given a binary that is running remotely at inst-prof.ctfcompetition.com:1337.
