@@ -16,7 +16,7 @@ tags:
 - CTF
 - GoogleCTF
 - 2017
-title: "GoogleCTF 2017 - Inst Prof"
+title: "GoogleCTF 2017 - Inst Prof (Part 1)"
 summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two parts."
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
