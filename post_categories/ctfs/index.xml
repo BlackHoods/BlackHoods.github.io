@@ -64,7 +64,7 @@ $ wget https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/Tamu
       <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
 $ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1   At some point the link will be broken, if so you can use the one from the repository.
  Now that the binary is opened, lets see some stuff inside it.
-[0x08048450]&amp;gt; afl 0x08048390 3 35  sym.</description>
+[0x08048450]&amp;gt; afl 0x080483903 35 sym._init 0x080483d01 6 sym.</description>
     </item>
     
   </channel>

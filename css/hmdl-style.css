@@ -419,7 +419,8 @@ main {
     padding: 8px
 }
 .hmdl-page .hmdl-page-content .highlight pre {
-    margin: 0
+    margin: 0;
+    overflow: auto;
 }
 .hmdl-page .custom-header {
     background-color: transparent

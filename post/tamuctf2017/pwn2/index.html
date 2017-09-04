@@ -104,38 +104,38 @@ $ r2 pwn2
 [x] Use -AA or aaaa to perform additional experimental analysis.
 [x] Constructing a function name for fcn.* and sym.func.* functions (aan)
 [<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
-<span class="s">0x08048390</span>  <span class="mh">  3 35         </span>  sym._init
-<span class="s">0x080483b3</span>  <span class="mh">  1 25         </span>  fcn.080483b3
-<span class="s">0x080483cc</span>  <span class="mh">  1 4          </span>  sub.gets_12_3cc
-<span class="s">0x080483d0</span>  <span class="mh">  1 6          </span>  sym.imp.gets
-<span class="s">0x080483d6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483d6
-<span class="s">0x080483e0</span>  <span class="mh">  1 6          </span>  sym.imp._IO_getc
-<span class="s">0x080483e6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483e6
-<span class="s">0x080483f0</span>  <span class="mh">  1 6          </span>  sym.imp.puts
-<span class="s">0x080483f6</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.080483f6
-<span class="s">0x08048400</span>  <span class="mh">  1 6          </span>  sym.imp.__libc_start_main
-<span class="s">0x08048406</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048406
-<span class="s">0x08048410</span>  <span class="mh">  1 6          </span>  sym.imp.setvbuf
-<span class="s">0x08048416</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048416
-<span class="s">0x08048420</span>  <span class="mh">  1 6          </span>  sym.imp.fopen
-<span class="s">0x08048426</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048426
-<span class="s">0x08048430</span>  <span class="mh">  1 6          </span>  sym.imp.putchar
-<span class="s">0x08048436</span>  <span class="mh">  2 10   -&gt; 22 </span>  fcn.08048436
-<span class="s">0x08048440</span>  <span class="mh">  1 1          </span>  sub.__gmon_start___252_440
-<span class="s">0x08048441</span>  <span class="mh">  1 15         </span>  fcn.08048441
-<span class="s">0x08048450</span>  <span class="mh">  1 33         </span>  entry0
-<span class="s">0x08048471</span>  <span class="mh">  1 1          </span>  fcn.08048471
-<span class="s">0x08048480</span>  <span class="mh">  1 4          </span>  sym.__x86.get_pc_thunk.bx
-<span class="s">0x08048490</span>  <span class="mh">  4 43         </span>  sym.deregister_tm_clones
-<span class="s">0x080484bc</span>  <span class="mh">  4 57         </span>  fcn.080484bc
-<span class="s">0x080484f5</span>  <span class="mh">  3 41         </span>  fcn.080484f5
-<span class="s">0x08048520</span>  <span class="mh">  8 43   -&gt; 93 </span>  sym.frame_dummy
-<span class="hll"><span class="s">0x0804854b</span>  <span class="mh">  4 103        </span>  sym.print_flag
-</span><span class="hll"><span class="s">0x080485b2</span>  <span class="mh">  1 84         </span>  sym.echo
-</span><span class="hll"><span class="s">0x08048606</span>  <span class="mh">  1 36         </span>  sym.main
-</span><span class="s">0x08048630</span>  <span class="mh">  4 93         </span>  sym.__libc_csu_init
-<span class="s">0x0804868d</span>  <span class="mh">  1 5          </span>  fcn.0804868d
-<span class="s">0x08048692</span>  <span class="mh">  1 22         </span>  fcn.08048692
+<span class="s">0x08048390</span><span class="mh">    3 35           </span>sym._init
+<span class="s">0x080483b3</span><span class="mh">    1 25           </span>fcn.080483b3
+<span class="s">0x080483cc</span><span class="mh">    1 4            </span>sub.gets_12_3cc
+<span class="s">0x080483d0</span><span class="mh">    1 6            </span>sym.imp.gets
+<span class="s">0x080483d6</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.080483d6
+<span class="s">0x080483e0</span><span class="mh">    1 6            </span>sym.imp._IO_getc
+<span class="s">0x080483e6</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.080483e6
+<span class="s">0x080483f0</span><span class="mh">    1 6            </span>sym.imp.puts
+<span class="s">0x080483f6</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.080483f6
+<span class="s">0x08048400</span><span class="mh">    1 6            </span>sym.imp.__libc_start_main
+<span class="s">0x08048406</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048406
+<span class="s">0x08048410</span><span class="mh">    1 6            </span>sym.imp.setvbuf
+<span class="s">0x08048416</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048416
+<span class="s">0x08048420</span><span class="mh">    1 6            </span>sym.imp.fopen
+<span class="s">0x08048426</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048426
+<span class="s">0x08048430</span><span class="mh">    1 6            </span>sym.imp.putchar
+<span class="s">0x08048436</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048436
+<span class="s">0x08048440</span><span class="mh">    1 1            </span>sub.__gmon_start___252_440
+<span class="s">0x08048441</span><span class="mh">    1 15           </span>fcn.08048441
+<span class="s">0x08048450</span><span class="mh">    1 33           </span>entry0
+<span class="s">0x08048471</span><span class="mh">    1 1            </span>fcn.08048471
+<span class="s">0x08048480</span><span class="mh">    1 4            </span>sym.__x86.get_pc_thunk.bx
+<span class="s">0x08048490</span><span class="mh">    4 43           </span>sym.deregister_tm_clones
+<span class="s">0x080484bc</span><span class="mh">    4 57           </span>fcn.080484bc
+<span class="s">0x080484f5</span><span class="mh">    3 41           </span>fcn.080484f5
+<span class="s">0x08048520</span><span class="mh">    8 43</span><span class="o">   -&gt;</span><span class="mh"> 93</span>   sym.frame_dummy
+<span class="hll"><span class="s">0x0804854b</span><span class="mh">    4 103          </span>sym.print_flag
+</span><span class="hll"><span class="s">0x080485b2</span><span class="mh">    1 84           </span>sym.echo
+</span><span class="hll"><span class="s">0x08048606</span><span class="mh">    1 36           </span>sym.main
+</span><span class="s">0x08048630</span><span class="mh">    4 93           </span>sym.__libc_csu_init
+<span class="s">0x0804868d</span><span class="mh">    1 5            </span>fcn.0804868d
+<span class="s">0x08048692</span><span class="mh">    1 22           </span>fcn.08048692
 </code></pre></div>
 
 

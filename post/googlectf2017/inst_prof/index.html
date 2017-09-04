@@ -134,36 +134,36 @@ So if you want to debug it, you need to open a new r2 session.</p>
 </blockquote>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
-<span class="s">0x00000778</span>  <span class="mh">  3 26         </span>  sym._init
-<span class="s">0x000007b0</span>  <span class="mh">  2 16   -&gt; 32 </span>  sym.imp.write
-<span class="s">0x000007c0</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.mmap
-<span class="s">0x000007d0</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.alarm
-<span class="s">0x000007e0</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.read
-<span class="s">0x000007f0</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.__libc_start_main
-<span class="s">0x00000800</span>  <span class="mh">  2 16   -&gt; 48 </span>  loc.imp.__gmon_start__
-<span class="s">0x00000810</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.munmap
-<span class="s">0x00000820</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.mprotect
-<span class="s">0x00000830</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.exit
-<span class="s">0x00000840</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.sleep
-<span class="s">0x00000850</span>  <span class="mh">  2 16   -&gt; 48 </span>  sym.imp.__cxa_finalize
-<span class="hll"><span class="s">0x00000860</span>  <span class="mh">  5 96   -&gt; 105</span>  main
-</span><span class="s">0x000008c9</span>  <span class="mh">  1 41         </span>  entry0
-<span class="s">0x000008f2</span>  <span class="mh">  1 1          </span>  fcn.000008f2
-<span class="s">0x00000900</span>  <span class="mh">  4 44         </span>  sym.deregister_tm_clones
-<span class="s">0x00000930</span>  <span class="mh">  4 60         </span>  sym.register_tm_clones
-<span class="s">0x00000970</span>  <span class="mh">  5 50         </span>  sym.__do_global_dtors_aux
-<span class="s">0x000009b0</span>  <span class="mh">  4 53   -&gt; 46 </span>  sym.frame_dummy
-<span class="hll"><span class="s">0x000009f0</span>  <span class="mh">  1 36         </span>  sym.alloc_page
-</span><span class="hll"><span class="s">0x00000a20</span>  <span class="mh">  1 20         </span>  sym.make_page_executable
-</span><span class="hll"><span class="s">0x00000a40</span>  <span class="mh">  1 15         </span>  sym.free_page
-</span><span class="hll"><span class="s">0x00000a50</span>  <span class="mh">  3 47         </span>  sym.read_byte
-</span><span class="hll"><span class="s">0x00000a80</span>  <span class="mh">  4 48         </span>  sym.read_n
-</span><span class="hll"><span class="s">0x00000ab0</span>  <span class="mh">  1 15         </span>  sym.read_inst
-</span><span class="hll"><span class="s">0x00000ac0</span>  <span class="mh">  3 153        </span>  sym.do_test
-</span><span class="s">0x00000b60</span>  <span class="mh">  4 101        </span>  sym.__libc_csu_init
-<span class="s">0x00000bd0</span>  <span class="mh">  1 2          </span>  sym.__libc_csu_fini
-<span class="s">0x00000bd2</span>  <span class="mh">  1 11         </span>  fcn.00000bd2
-<span class="s">0x00000bdd</span>  <span class="mh">  1 30         </span>  fcn.00000bdd
+<span class="s">0x00000778</span><span class="mh">    3 26           </span>sym._init
+<span class="s">0x000007b0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 32</span>   sym.imp.write
+<span class="s">0x000007c0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.mmap
+<span class="s">0x000007d0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.alarm
+<span class="s">0x000007e0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.read
+<span class="s">0x000007f0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.__libc_start_main
+<span class="s">0x00000800</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   loc.imp.__gmon_start__
+<span class="s">0x00000810</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.munmap
+<span class="s">0x00000820</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.mprotect
+<span class="s">0x00000830</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.exit
+<span class="s">0x00000840</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.sleep
+<span class="s">0x00000850</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.__cxa_finalize
+<span class="hll"><span class="s">0x00000860</span><span class="mh">    5 96</span><span class="o">   -&gt;</span><span class="mh"> 105</span>  main
+</span><span class="s">0x000008c9</span><span class="mh">    1 41           </span>entry0
+<span class="s">0x000008f2</span><span class="mh">    1 1            </span>fcn.000008f2
+<span class="s">0x00000900</span><span class="mh">    4 44           </span>sym.deregister_tm_clones
+<span class="s">0x00000930</span><span class="mh">    4 60           </span>sym.register_tm_clones
+<span class="s">0x00000970</span><span class="mh">    5 50           </span>sym.__do_global_dtors_aux
+<span class="s">0x000009b0</span><span class="mh">    4 53</span><span class="o">   -&gt;</span><span class="mh"> 46</span>   sym.frame_dummy
+<span class="hll"><span class="s">0x000009f0</span><span class="mh">    1 36           </span>sym.alloc_page
+</span><span class="hll"><span class="s">0x00000a20</span><span class="mh">    1 20           </span>sym.make_page_executable
+</span><span class="hll"><span class="s">0x00000a40</span><span class="mh">    1 15           </span>sym.free_page
+</span><span class="hll"><span class="s">0x00000a50</span><span class="mh">    3 47           </span>sym.read_byte
+</span><span class="hll"><span class="s">0x00000a80</span><span class="mh">    4 48           </span>sym.read_n
+</span><span class="hll"><span class="s">0x00000ab0</span><span class="mh">    1 15           </span>sym.read_inst
+</span><span class="hll"><span class="s">0x00000ac0</span><span class="mh">    3 153          </span>sym.do_test
+</span><span class="s">0x00000b60</span><span class="mh">    4 101          </span>sym.__libc_csu_init
+<span class="s">0x00000bd0</span><span class="mh">    1 2            </span>sym.__libc_csu_fini
+<span class="s">0x00000bd2</span><span class="mh">    1 11           </span>fcn.00000bd2
+<span class="s">0x00000bdd</span><span class="mh">    1 30           </span>fcn.00000bdd
 </code></pre></div>
 
 
@@ -702,13 +702,13 @@ It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and
 <span class="s">0x7fff40b82ac8</span>  <span class="mh">189b 0f42 cf55 0000 b08c 80ab de7f 0000</span>  ...B.U..........
 <span class="s">0x7fff40b82ad8</span>  <span class="mh">0000 0000 0000 0000 0000 0000 0000 0000</span>  ................
 <span class="s">0x7fff40b82ae8</span>  <span class="mh">c998 0f42 cf55 0000 002b b840 ff7f 0000</span>  ...B.U...+.@....
-<span class="s">0x7fff40b82af8</span>  <span class="mh">c798 0f42 cf55 0000 609b 0f42 cf55 0000  ...B.U..`..B.U..</span>
- rax 0x00000000           rbx 0x7fdeaba18000       rcx 0x7fdeab53e497
-<span class="k"> rdx</span> <span class="s">0x8ec00000000</span>         <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>
-<span class="k"> r10</span> <span class="s">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000202</span>           <span class="k">r12</span> <span class="mh">0x8ecf3e8e3d8</span>
-<span class="k"> r13</span> <span class="s">0x7fff40b82be0</span>       <span class="k">r14</span> <span class="mh">0x00000000</span>           <span class="k">r15</span> <span class="mh">0x00000000</span>
-<span class="k"> rsi</span> <span class="s">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rsp</span> <span class="mh">0x7fff40b82ac8</span>
-<span class="k"> rbp</span> <span class="s">0x7fff40b82af0</span>       <span class="k">rip</span> <span class="mh">0x7fdeaba18000</span>       
+<span class="s">0x7fff40b82af8</span>  <span class="mh">c798 0f42 cf55 0000 609b 0f42 cf55 0000</span>  ...B.U..`..B.U..
+<span class="k"> rax</span> <span class="mh">0x00000000</span>           <span class="k">rbx</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rcx</span> <span class="mh">0x7fdeab53e497</span>
+<span class="k"> rdx</span> <span class="mh">0x8ec00000000</span>         <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>
+<span class="k"> r10</span> <span class="mh">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000202</span>           <span class="k">r12</span> <span class="mh">0x8ecf3e8e3d8</span>
+<span class="k"> r13</span> <span class="mh">0x7fff40b82be0</span>       <span class="k">r14</span> <span class="mh">0x00000000</span>           <span class="k">r15</span> <span class="mh">0x00000000</span>
+<span class="k"> rsi</span> <span class="mh">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rsp</span> <span class="mh">0x7fff40b82ac8</span>
+<span class="k"> rbp</span> <span class="mh">0x7fff40b82af0</span>       <span class="k">rip</span> <span class="mh">0x7fdeaba18000</span>       
 orax <span class="mh">0xffffffffffffffff</span>
 <span class="hll"><span class="k"> </span>           <span class="c">;-- rbx:</span>
 </span><span class="k"> </span>           <span class="c">;-- rdi:</span>
