@@ -609,7 +609,7 @@ It will **execute** something we provide to it!
 We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.
 
 {{< highlight r2 "hl_lines=14 18" >}}
-0x7fdeaba18000 240 /root/inst_prof]> ?0;f tmp;s.. @ rbx                                                                                            
+0x7fdeaba18000 240 /root/inst_prof]> ?0;f tmp;s.. @ rbx
 - offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
 0x7fff40b82ac8  189b 0f42 cf55 0000 b08c 80ab de7f 0000  ...B.U..........
 0x7fff40b82ad8  0000 0000 0000 0000 0000 0000 0000 0000  ................
@@ -620,7 +620,7 @@ We can not create a 4-byte-lengh shellcode though, but hey we will deal with it 
  r10 0x00000487           r11 0x00000202           r12 0x8ecf3e8e3d8
  r13 0x7fff40b82be0       r14 0x00000000           r15 0x00000000
  rsi 0x00001000           rdi 0x7fdeaba18000       rsp 0x7fff40b82ac8
- rbp 0x7fff40b82af0       rip 0x7fdeaba18000       rflags 1PI
+ rbp 0x7fff40b82af0       rip 0x7fdeaba18000       
 orax 0xffffffffffffffff
             ;-- rbx:
             ;-- rdi:
