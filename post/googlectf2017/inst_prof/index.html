@@ -117,7 +117,7 @@ Segmentation fault
 </code></pre></div>
 
 <p>If you execute it, you will realized that there is a delay of 5 seconds between <strong>initializing prof&hellip;</strong> and <strong>ready</strong> strings. We do not want to wait 5 seconds everytime we want to test something, so lets patch it. I also used <strong>1234</strong> as input but it resulted in a segmentation fault (we will realize the reason later).</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Aw inst_prof
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Aw inst_prof
 [x] Analyze all flags starting with sym. and entry0 (aa)
 [x] Analyze len bytes of instructions for references (aar)
 [x] Analyze function calls (aac)
@@ -300,7 +300,7 @@ va       true
 
         </td>
         <td>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin<span class="mh">2</span> <span class="o">-</span>I inst_prof <span class="k">|</span> grep true
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin2 -I inst_prof <span class="o">|</span> grep true
 havecode true
 linenum  true
 lsyms    true
@@ -647,7 +647,7 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 
 <p>sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after <code>read_inst</code> call. Once there, we only need to check if the input string are there instead of the nop opdes</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Ad <span class="o">-</span>R <span class="err">&#39;</span>stdin<span class="o">=</span><span class="err">&quot;</span>AAAA<span class="err">&quot;&#39;</span> <span class="o">-</span>c <span class="err">&#39;</span>dcu <span class="err">`</span><span class="o">/</span>r sym<span class="o">.</span>read_inst<span class="err">~[</span><span class="mh">1</span><span class="err">]`;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;</span> dso<span class="err">;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;&#39;</span> inst_prof
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;&#39; inst_prof
 </code></pre></div>
 
 
@@ -697,7 +697,7 @@ It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and
 
 <p>We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="s">0x</span><span class="err">7fdeaba18000 240 /root/inst_prof]&gt; ?0;f tmp;s.. @ rbx                                                                                            </span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="s">0x7fdeaba18000 </span><span class="k">240 </span><span class="o">/root/inst_prof</span><span class="s">]&gt;</span> ?0;f tmp;s.. @ rbx
 - offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
 <span class="s">0x7fff40b82ac8</span>  <span class="mh">189b 0f42 cf55 0000 b08c 80ab de7f 0000</span>  ...B.U..........
 <span class="s">0x7fff40b82ad8</span>  <span class="mh">0000 0000 0000 0000 0000 0000 0000 0000</span>  ................
@@ -708,7 +708,7 @@ It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and
 <span class="k"> r10</span> <span class="s">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000202</span>           <span class="k">r12</span> <span class="mh">0x8ecf3e8e3d8</span>
 <span class="k"> r13</span> <span class="s">0x7fff40b82be0</span>       <span class="k">r14</span> <span class="mh">0x00000000</span>           <span class="k">r15</span> <span class="mh">0x00000000</span>
 <span class="k"> rsi</span> <span class="s">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rsp</span> <span class="mh">0x7fff40b82ac8</span>
-<span class="k"> rbp</span> <span class="s">0x7fff40b82af0</span>       <span class="k">rip</span> <span class="mh">0x7fdeaba18000</span>       <span class="err">r</span><span class="m">f</span><span class="err">l</span><span class="m">a</span><span class="err">gs</span> <span class="m">1</span><span class="err">PI</span>
+<span class="k"> rbp</span> <span class="s">0x7fff40b82af0</span>       <span class="k">rip</span> <span class="mh">0x7fdeaba18000</span>       
 orax <span class="mh">0xffffffffffffffff</span>
 <span class="hll"><span class="k"> </span>           <span class="c">;-- rbx:</span>
 </span><span class="k"> </span>           <span class="c">;-- rdi:</span>
@@ -746,13 +746,13 @@ orax <span class="mh">0xffffffffffffffff</span>
 <p>It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode 😁 ) and execute it.
 That is the main reason why it is a good idea to deallocate the page.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Ad <span class="o">-</span>R <span class="err">&#39;</span>stdin<span class="o">=</span><span class="err">&quot;</span>AAAA<span class="err">&quot;&#39;</span> <span class="o">-</span>c <span class="err">&#39;</span>dcu <span class="err">`</span><span class="o">/</span>r sym<span class="o">.</span>make_page_executable<span class="err">~[</span><span class="mh">1</span><span class="err">]`;</span> dm<span class="err">~</span>unk<span class="mh">2</span><span class="err">;</span> dso<span class="err">;</span> dm<span class="err">~</span>unk<span class="mh">2</span><span class="err">;&#39;</span> inst_prof
-Process with PID <span class="mh">11008</span> started<span class="o">...</span>
-= attach <span class="mh">11008</span> <span class="mh">11008</span>
-bin<span class="o">.</span>baddr <span class="mh">0x55e96f469000</span>
-Using <span class="mh">0x55e96f469000</span>
-Assuming filepath <span class="o">/</span>root<span class="o">/</span>inst_prof
-asm<span class="o">.</span>bits <span class="mh">64</span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;&#39; inst_prof
+Process with PID 11008 started...
+= attach 11008 11008
+bin.baddr 0x55e96f469000
+Using 0x55e96f469000
+Assuming filepath <span class="o">/</span>root/inst_prof
+asm.bits 64
 [x] Analyze all flags starting with sym. and entry0 (aa)
 TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
 [Cannot determine xref search boundariesr references (aar)
@@ -766,9 +766,9 @@ ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation no
 initializing prof<span class="o">...</span>ready
 hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b03</span>
 hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b08</span>
-<span class="hll">usr    <span class="mh">16</span>K <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b6000</span> s <span class="o">-</span>rw<span class="o">-</span> unk<span class="mh">2</span> unk<span class="mh">2</span>
-</span><span class="hll">usr     <span class="mh">4</span>K <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b3000</span> s <span class="o">-</span>r<span class="o">-</span>x unk<span class="mh">2</span> unk<span class="mh">2</span>
-</span><span class="k"> </span><span class="o">--</span> <span class="err">H</span><span class="m">e</span><span class="err">lp</span>in<span class="err">g</span> <span class="err">siol</span> <span class="err">m</span><span class="m">e</span><span class="err">rg</span><span class="m">e</span><span class="err">?</span> <span class="err">No</span> <span class="err">w</span><span class="m">a</span><span class="err">y</span><span class="o">,</span> <span class="err">th</span><span class="m">a</span><span class="err">t</span> <span class="err">woul</span><span class="m">d</span> <span class="m">be</span> <span class="err">l</span><span class="k">ike</span><span class="o">.</span>. <span class="err">w</span><span class="m">a</span><span class="err">y</span> <span class="err">too</span> <span class="err">mu</span><span class="k">ch</span> <span class="s">not</span> <span class="err">l</span><span class="m">a</span><span class="err">zy.</span> <span class="o">-</span> <span class="err">v</span><span class="mh">if</span>in<span class="err">o</span>
+<span class="hll"><span class="s">usr</span>    <span class="k">16K</span> <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b6000</span> s <span class="o">-rw-</span> unk2 unk2
+</span><span class="hll"><span class="s">usr</span>     <span class="k">4K</span> <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b3000</span> s <span class="o">-r-x</span> unk2 unk2
+</span> -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino
 </code></pre></div>
 
 
