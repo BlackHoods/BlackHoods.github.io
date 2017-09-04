@@ -268,8 +268,7 @@ Lets start with the <code>main</code> function.</p>
 
 
 <blockquote>
-<p><code>wao nop</code> assembles the nop opcode (which is <code>90</code> in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode.<br />
-Nop means &ldquo;<strong>N</strong>o <strong>OP</strong>eration&rdquo;.</p>
+<p><code>wao nop</code> assembles the nop opcode (which is <code>90</code> in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode. Nop means &ldquo;<strong>N</strong>o <strong>OP</strong>eration&rdquo;.</p>
 </blockquote>
 
 <p>Once we have patched them, we could continue checking the protections of the binary. This can be done through <a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">checksec</a> script or with the r2 suite itself.</p>
@@ -656,12 +655,13 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 <p><code>-Ad</code>: Again analyze and debug it.<br />
 <code>-R 'stdin=&quot;AAAA&quot;'</code>: To pass AAAA as the standard input.<br />
 <code>-c</code>: To execute commands once r2 has ended loading the binary.<br />
-<code>dcu `/r sym.read_inst~[1]`</code>: <code>/r sym.read_inst</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.
-<code>px 4 @r:rbx+5</code>: prints 4 hexadecimal values from the address of <code>rbx+5</code> which is the address where the input is going to be written.
-<code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.read_inst</code> flow but without going into it.
-<code>px 4 @r:rbx+5</code>: print the same 4 bytes again.
-This way we can check if the write has been done correctly</p>
+<code>dcu `/r sym.read_inst~[1]`</code>: <code>/r sym.read_inst</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.<br />
+<code>px 4 @r:rbx+5</code>: prints 4 hexadecimal values from the address of <code>rbx+5</code> which is the address where the input is going to be written.<br />
+<code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.read_inst</code> flow but without going into it.<br />
+<code>px 4 @r:rbx+5</code>: print the same 4 bytes again.</p>
 </blockquote>
+
+<p>This way we can check if the write has been done correctly.</p>
 
 <h5 id="sym-make-page-executable">sym.make_page_executable</h5>
 
@@ -773,13 +773,13 @@ hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b08</span>
 
 
 <blockquote>
-<p>The command used is pretty similar to the previous one
+<p>The command used is pretty similar to the previous one<br />
 <code>-Ad</code>: Again analyze and debug it.<br />
 <code>-R 'stdin=&quot;AAAA&quot;'</code>: To pass AAAA as the standard input.<br />
 <code>-c</code>: To execute commands once r2 has ended loading the binary.<br />
-<code>dcu `/r sym.make_page_executable~[1]`</code>: <code>/r sym.make_page_executable</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.
-<code>dm~unk2</code>: <code>dm</code> returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the <code>unk2</code> string.
-<code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.make_executable</code> flow but without going into it.
+<code>dcu `/r sym.make_page_executable~[1]`</code>: <code>/r sym.make_page_executable</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.<br />
+<code>dm~unk2</code>: <code>dm</code> returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the <code>unk2</code> string.<br />
+<code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.make_executable</code> flow but without going into it.<br />
 <code>dm~unk2</code>: to print the map of the region we are interested at, again.</p>
 </blockquote>
 
