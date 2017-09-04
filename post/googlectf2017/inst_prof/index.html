@@ -108,7 +108,7 @@ the return value is stored in <strong>RAX</strong> and <strong>RDX</strong>.</p>
 
 <p>Knowing this, we can get an idea of which data is going to be sent/received to/from a certain function.<br />
 All right! let&rsquo;s see what this binary does.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/GoogleCTF2017/Inst Prof/inst_prof
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://blackhoods.github.io/assets/GoogleCTF2017/Inst%20Prof/inst_prof
 $ chmod +x inst_prof 
 $ ./inst_prof 
 initializing prof...ready
@@ -117,7 +117,7 @@ Segmentation fault
 </code></pre></div>
 
 <p>If you execute it, you will realized that there is a delay of 5 seconds between <strong>initializing prof&hellip;</strong> and <strong>ready</strong> strings. We do not want to wait 5 seconds everytime we want to test something, so lets patch it. I also used <strong>1234</strong> as input but it resulted in a segmentation fault (we will realize the reason later).</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>A <span class="o">-</span>w inst_prof
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Aw inst_prof
 [x] Analyze all flags starting with sym. and entry0 (aa)
 [x] Analyze len bytes of instructions for references (aar)
 [x] Analyze function calls (aac)
@@ -219,8 +219,8 @@ Lets start with the <code>main</code> function.</p>
 
 <p>There are two functions here we want to get rid of: <code>sleep</code> which is the one we were looking for and another one which, aparently, setup an alarm. If you wait 0x1e (oops, sorry 30 seconds 😄 ) you will see that this <code>alarm</code> function will end the process. Let&rsquo;s patch it too.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wx</span> 9090909090 @ 0x0000088c
-[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wx</span> 9090909090 @ 0x00000896
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wao</span> nop @ 0x0000088c
+[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wao</span> nop @ 0x00000896
 [<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main
 <span class="k"> </span>           <span class="c">;-- section_end..plt:</span>
 <span class="k"> </span>           <span class="c">;-- section..text:</span>
@@ -268,11 +268,11 @@ Lets start with the <code>main</code> function.</p>
 
 
 <blockquote>
-<p><code>wx</code> writes hexadecimal values (five times 90 in this case) at the specified address.<br />
-90 is the opcode for <code>nop</code> assembly instruction. Nop means &ldquo;<strong>N</strong>o <strong>OP</strong>eration&rdquo;.</p>
+<p><code>wao nop</code> assembles the nop opcode (which is <code>90</code> in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode.<br />
+Nop means &ldquo;<strong>N</strong>o <strong>OP</strong>eration&rdquo;.</p>
 </blockquote>
 
-<p>Once we have patched them, we could continue checking the protections of the binary. This can be done through <a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">checksec</a> script or with r2 itself.</p>
+<p>Once we have patched them, we could continue checking the protections of the binary. This can be done through <a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">checksec</a> script or with the r2 suite itself.</p>
 
 <table class="hmg">
     <tr>
@@ -300,10 +300,22 @@ va       true
 </code></pre></div>
 
         </td>
+        <td>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin<span class="mh">2</span> <span class="o">-</span>I inst_prof <span class="k">|</span> grep true
+havecode true
+linenum  true
+lsyms    true
+<span class="hll">nx       true
+</span><span class="hll">pic      true
+</span>relocs   true
+va       true
+</code></pre></div>
+
+        </td>
     </tr>
 </table>
 
-<p>What matters here is the NX and PIE flags.</p>
+<p>What matters here is the <code>NX</code> and <code>PIE</code> flags.</p>
 
 <ol>
 <li><code>NX</code> is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.<br /></li>
@@ -597,7 +609,7 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 </code></pre></div>
 
 
-<p>This loop seems a bit confusing, but it just iterates 4 times (going from -3 to 0) calling <code>sym.read_byte()</code> to retrieve 1 byte of the input string and stores it overwriting one of the previously commented nops opcodes.</p>
+<p>This loop seems a bit confusing, but it is just iterating 4 times (going from -3 to 0) calling <code>sym.read_byte()</code> and retrieving <code>1 byte</code> of the input string. Then it just stores it overwriting one of the previously commented <code>nop</code> opcodes.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.read_byte
 <span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>read_byte <span class="m">47</span>
@@ -636,33 +648,7 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 
 <p>sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after <code>read_inst</code> call. Once there, we only need to check if the input string are there instead of the nop opdes</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Ad <span class="o">-</span>R <span class="err">&#39;</span>stdin<span class="o">=</span><span class="err">&quot;</span>AAAA<span class="err">&quot;&#39;</span> <span class="o">-</span>c <span class="err">&#39;</span>dcu main<span class="err">;</span> db <span class="err">`</span><span class="o">/</span>r sym<span class="o">.</span>read_inst<span class="err">~[</span><span class="mh">1</span><span class="err">]`;</span> dc<span class="err">;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;</span> dso<span class="err">;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;&#39;</span> inst_prof
-Process with PID <span class="mh">19524</span> started<span class="o">...</span>
-= attach <span class="mh">19524</span> <span class="mh">19524</span>
-bin<span class="o">.</span>baddr <span class="mh">0x56211a4cd000</span>
-Using <span class="mh">0x56211a4cd000</span>
-Assuming filepath <span class="o">/</span>root<span class="o">/</span>inst_prof
-asm<span class="o">.</span>bits <span class="mh">64</span>
-[x] Analyze all flags starting with sym. and entry0 (aa)
-TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
-[Cannot determine xref search boundariesr references (aar)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation not permitted
-= attach <span class="mh">19524</span> <span class="mh">19524</span>
-Continue until <span class="mh">0x56211a4cd860</span> using <span class="mh">1</span> bpsize
-hit breakpoint at<span class="o">:</span> <span class="mh">56211a4cd860</span>
-[0x56211a4cdf80-0x56211a4ce000] initializing prof...ready
-hit breakpoint at<span class="o">:</span> <span class="mh">56211a4cdafb</span>
-hit breakpoint at<span class="o">:</span> <span class="mh">56211a4cdb00</span>
-- offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
-<span class="hll"><span class="s">0x7f168de11005</span>  <span class="mh">9090 9090                              </span>  ....
-</span>- offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
-<span class="hll"><span class="s">0x7f168de11005</span>  <span class="mh">4141 4141                                AAAA</span>
-</span> -- There is no F5 key in radare2 yet
-[<span class="mh">0x56211a4cdafb</span>]<span class="o">&gt;</span> 
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Ad <span class="o">-</span>R <span class="err">&#39;</span>stdin<span class="o">=</span><span class="err">&quot;</span>AAAA<span class="err">&quot;&#39;</span> <span class="o">-</span>c <span class="err">&#39;</span>dcu <span class="err">`</span><span class="o">/</span>r sym<span class="o">.</span>read_inst<span class="err">~[</span><span class="mh">1</span><span class="err">]`;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;</span> dso<span class="err">;</span> px <span class="mh">4</span> <span class="err">@</span>r<span class="o">:</span>rbx<span class="o">+</span><span class="mh">5</span><span class="err">;&#39;</span> inst_prof
 </code></pre></div>
 
 
@@ -670,19 +656,12 @@ hit breakpoint at<span class="o">:</span> <span class="mh">56211a4cdb00</span>
 <p><code>-Ad</code>: Again analyze and debug it.<br />
 <code>-R 'stdin=&quot;AAAA&quot;'</code>: To pass AAAA as the standard input.<br />
 <code>-c</code>: To execute commands once r2 has ended loading the binary.<br />
-<code>dcu main</code>: run the process until the <code>main</code> function is reached.<br />
-<code>db `/r sym.read_inst~[1]`</code>: Once in the main function, look for references to <code>sym.read_inst</code>, filter its address (with <code>~[1]</code>) and place a breakpoint there.<br />
-<code>dc</code>: Once the breakpoint is placed, continue the execution to reach that breakpoint. If you were executing this commands one by one you could do <code>pd 1</code> to check if you really are where you should be.</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x5617b9bc3afb</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 1
-<span class="k">│</span>           <span class="s">0x5617b9bc3afb</span> b    <span class="m">e8b0ffffff</span>     <span class="k">sym</span><span class="o">.</span>read_inst ()
-</code></pre></div>
-
-<p><code>px 4 @r:rbx+5</code>: print 4 hexadecimal values from the address of <code>rbx+5</code> which is the address where the input is going to be written.
+<code>dcu `/r sym.read_inst~[1]`</code>: <code>/r sym.read_inst</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.
+<code>px 4 @r:rbx+5</code>: prints 4 hexadecimal values from the address of <code>rbx+5</code> which is the address where the input is going to be written.
 <code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.read_inst</code> flow but without going into it.
-<code>px 4 @r:rbx+5</code>: print the same 4 bytes again.</p>
+<code>px 4 @r:rbx+5</code>: print the same 4 bytes again.
+This way we can check if the write has been done correctly</p>
 </blockquote>
-
-<p>This way we can check if the write has been done correctly</p>
 
 <h5 id="sym-make-page-executable">sym.make_page_executable</h5>
 
@@ -712,13 +691,13 @@ It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and
 
 <h5 id="rbx">rbx ()</h5>
 
-<p>So&hellip; (cheer up we are finishing!) <code>rbx</code> register contains the address of the first instruction of the <code>obj.template</code> duplicate. Remember that this duplicate does not contain nop instructions anymore but our input of 4 bytes.</p>
+<p>So&hellip; (cheer up we are finishing!) <code>rbx</code> register contains the address of the first instruction of the <code>obj.template</code> duplicate. Remember that this duplicate does not contain <code>nop</code> instructions anymore but our input of 4 bytes.</p>
 
 <p>It will <strong>execute</strong> something we provide to it!</p>
 
 <p>We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="s">0x</span><span class="err">7fdeaba18000 240 /root/inst_prof]&gt; ?0;f tmp;s.. @ rbx                                                                                                                         </span>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="s">0x</span><span class="err">7fdeaba18000 240 /root/inst_prof]&gt; ?0;f tmp;s.. @ rbx                                                                                            </span>
 - offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
 <span class="s">0x7fff40b82ac8</span>  <span class="mh">189b 0f42 cf55 0000 b08c 80ab de7f 0000</span>  ...B.U..........
 <span class="s">0x7fff40b82ad8</span>  <span class="mh">0000 0000 0000 0000 0000 0000 0000 0000</span>  ................
@@ -734,7 +713,7 @@ orax <span class="mh">0xffffffffffffffff</span>
 <span class="hll"><span class="k"> </span>           <span class="c">;-- rbx:</span>
 </span><span class="k"> </span>           <span class="c">;-- rdi:</span>
 <span class="k"> </span>           <span class="c">;-- rip:</span>
-<span class="k"> </span>           <span class="s">0x7fdeaba18000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            <span class="c">; rsi ; rsi</span>
+<span class="k"> </span>           <span class="s">0x7fdeaba18000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            <span class="c">; rsi</span>
 <span class="hll"><span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7fdeaba18005</span>      4141414183e9.  <span class="k">r9d</span> <span class="o">-=</span> <span class="m">1</span>                <span class="c">; orax</span>
 </span><span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7fdeaba1800c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7fdeaba18005</span>
 <span class="k"> </span>           <span class="s">0x7fdeaba1800e</span>      c3             
@@ -743,25 +722,97 @@ orax <span class="mh">0xffffffffffffffff</span>
 
 <h5 id="sym-free-page">sym.free_page</h5>
 
+<p>The last function is <code>sym.free_page</code> and its the one in charge of deallocating the page the process was using during its entire flow execution.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x7fc9a5eeac20</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.free_page 
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>free_page <span class="m">15</span>
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>free_page ();
+<span class="k">│</span>       <span class="k">↑</span>      <span class="c">; CALL XREF from 0x5603de075b44 (sym.do_test)</span>
+<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a40</span>      55             <span class="k">push</span> <span class="k">rbp</span>                
+<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a41</span>      be00100000     <span class="k">esi</span> <span class="o">=</span> <span class="mh">0x1000</span>            
+<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a46</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>               
+<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a49</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                 
+<span class="hll"><span class="k">└</span>       <span class="k">└─&lt;</span> <span class="s">0x5603de075a4a</span>      e9c1fdffff     <span class="mh">goto</span> <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>munmap
+</span></code></pre></div>
+
+
+<p>Have in mind that this step is quite important. Until this point, the process has configured a memory area with:</p>
+
+<ol>
+<li><strong>Write</strong> privileges (Do you remember those <code>PROT_READ | PROT_WRITE</code> stuff right?)</li>
+<li>And <strong>execution</strong> privileges (using the <code>sym.make_page_executable</code>).</li>
+</ol>
+
+<p>It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode 😁 ) and execute it.
+That is the main reason why it is a good idea to deallocate the page.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r<span class="mh">2</span> <span class="o">-</span>Ad <span class="o">-</span>R <span class="err">&#39;</span>stdin<span class="o">=</span><span class="err">&quot;</span>AAAA<span class="err">&quot;&#39;</span> <span class="o">-</span>c <span class="err">&#39;</span>dcu <span class="err">`</span><span class="o">/</span>r sym<span class="o">.</span>make_page_executable<span class="err">~[</span><span class="mh">1</span><span class="err">]`;</span> dm<span class="err">~</span>unk<span class="mh">2</span><span class="err">;</span> dso<span class="err">;</span> dm<span class="err">~</span>unk<span class="mh">2</span><span class="err">;&#39;</span> inst_prof
+Process with PID <span class="mh">11008</span> started<span class="o">...</span>
+= attach <span class="mh">11008</span> <span class="mh">11008</span>
+bin<span class="o">.</span>baddr <span class="mh">0x55e96f469000</span>
+Using <span class="mh">0x55e96f469000</span>
+Assuming filepath <span class="o">/</span>root<span class="o">/</span>inst_prof
+asm<span class="o">.</span>bits <span class="mh">64</span>
+[x] Analyze all flags starting with sym. and entry0 (aa)
+TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
+[Cannot determine xref search boundariesr references (aar)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation not permitted
+= attach <span class="mh">11008</span> <span class="mh">11008</span>
+[0x7ff8a50b5ff0-0x7ff8a50b6000] Continue until 0x55e96f469b03 using 1 bpsize
+initializing prof<span class="o">...</span>ready
+hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b03</span>
+hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b08</span>
+<span class="hll">usr    <span class="mh">16</span>K <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b6000</span> s <span class="o">-</span>rw<span class="o">-</span> unk<span class="mh">2</span> unk<span class="mh">2</span>
+</span><span class="hll">usr     <span class="mh">4</span>K <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b3000</span> s <span class="o">-</span>r<span class="o">-</span>x unk<span class="mh">2</span> unk<span class="mh">2</span>
+</span><span class="k"> </span><span class="o">--</span> <span class="err">H</span><span class="m">e</span><span class="err">lp</span>in<span class="err">g</span> <span class="err">siol</span> <span class="err">m</span><span class="m">e</span><span class="err">rg</span><span class="m">e</span><span class="err">?</span> <span class="err">No</span> <span class="err">w</span><span class="m">a</span><span class="err">y</span><span class="o">,</span> <span class="err">th</span><span class="m">a</span><span class="err">t</span> <span class="err">woul</span><span class="m">d</span> <span class="m">be</span> <span class="err">l</span><span class="k">ike</span><span class="o">.</span>. <span class="err">w</span><span class="m">a</span><span class="err">y</span> <span class="err">too</span> <span class="err">mu</span><span class="k">ch</span> <span class="s">not</span> <span class="err">l</span><span class="m">a</span><span class="err">zy.</span> <span class="o">-</span> <span class="err">v</span><span class="mh">if</span>in<span class="err">o</span>
+</code></pre></div>
+
+
+<blockquote>
+<p>The command used is pretty similar to the previous one
+<code>-Ad</code>: Again analyze and debug it.<br />
+<code>-R 'stdin=&quot;AAAA&quot;'</code>: To pass AAAA as the standard input.<br />
+<code>-c</code>: To execute commands once r2 has ended loading the binary.<br />
+<code>dcu `/r sym.make_page_executable~[1]`</code>: <code>/r sym.make_page_executable</code> will return all the calls to that function. From those results, we filter the address with <code>~[1]</code>. Knowing the address we can use <code>dcu address</code> which will execute the process until that address.
+<code>dm~unk2</code>: <code>dm</code> returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the <code>unk2</code> string.
+<code>dso</code>: <strong>D</strong>ebug <strong>S</strong>tep <strong>O</strong>ver. To execute the entire <code>sym.make_executable</code> flow but without going into it.
+<code>dm~unk2</code>: to print the map of the region we are interested at, again.</p>
+</blockquote>
+
+<p>We are printing the maps of the process before and after the call to <code>sym.make_page_executable</code>. When writting our input, the memory area has the write privilege (<code>-rw-</code>), but
+after the call to <code>sym.make_page_executable</code> those permissions has been changed to <code>-r-x</code> which is perfect because otherwise the <code>rbx()</code> call would fail.</p>
+
+<hr />
+
 <p>Finally! we ended describing the entire flow of the program step by step.
-As this article is getting veyr long I have decided to stop writing here and explain the exploitation phase in part 2 (<strong>comming soon</strong>).</p>
+As this article is getting very long I have decided to stop writing here and to explain the exploitation phase in part 2 (<strong>comming soon</strong>).</p>
 
 <p>Congratz for reaching the end of the first part. Reading and understanding it must have been almost as tough as writing it. However, if something was not clear I recommend to re-read it that part again. Otherwise, you will likely get lost on the next part.</p>
 
-<h2 id="references">References</h2>
-
-<ol>
-<li><a href="https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html">https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Opcode">https://en.wikipedia.org/wiki/Opcode</a></li>
-<li><a href="https://es.wikipedia.org/wiki/Bit_NX">https://es.wikipedia.org/wiki/Bit_NX</a></li>
-<li>a</li>
-<li><a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec</a></li>
-<li>a</li>
-<li>aa</li>
-<li>a</li>
-<li>a</li>
-<li></li>
-</ol>
+<table class="hmg">
+    <tr>
+        <td>
+            <h3>References</h3>
+            <ol>
+                <li><a href="https://github.com/radare/radare2">radare2</a> - To analyze the binary.</li>
+                <li><a href="https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html">BinaryStud.io</a> - Another solution using r2!</li>
+                <li><a href="https://en.wikipedia.org/wiki/Opcode) and [Bit NX] (https://es.wikipedia.org/wiki/Bit_NX">OPCode</a></li>
+                <li><a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">CheckSec</a></li>
+            </ol>
+        </td>
+        <td>
+            <h3>Some thanks</h3>
+            <ol>
+                <li><a href="https://github.com/trufae">@pancake</a> - For reviewing this article and pointing some improvements on it.</li>
+                <li><a href="https://github.com/TobalJackson/radare2-pygments-lexer">@TobalJackson</a> - For his lexer for r2 highlighting in hugo engine.</li>
+            </ol>
+        </td>
+    </tr>
+</table>
 
                     </div>
                     <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
