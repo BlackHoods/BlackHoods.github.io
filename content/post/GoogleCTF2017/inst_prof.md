@@ -41,7 +41,7 @@ Knowing this, we can get an idea of which data is going to be sent/received to/f
 All right! let's see what this binary does.
 
 ```bash
-$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/GoogleCTF2017/Inst Prof/inst_prof
+$ wget -q https://blackhoods.github.io/assets/GoogleCTF2017/Inst%20Prof/inst_prof
 $ chmod +x inst_prof 
 $ ./inst_prof 
 initializing prof...ready
@@ -52,7 +52,7 @@ Segmentation fault
 If you execute it, you will realized that there is a delay of 5 seconds between **initializing prof...** and **ready** strings. We do not want to wait 5 seconds everytime we want to test something, so lets patch it. I also used **1234** as input but it resulted in a segmentation fault (we will realize the reason later).
 
 ```r2
-$ r2 -A -w inst_prof
+$ r2 -Aw inst_prof
 [x] Analyze all flags starting with sym. and entry0 (aa)
 [x] Analyze len bytes of instructions for references (aar)
 [x] Analyze function calls (aac)
@@ -149,8 +149,8 @@ Lets start with the `main` function.
 There are two functions here we want to get rid of: `sleep` which is the one we were looking for and another one which, aparently, setup an alarm. If you wait 0x1e (oops, sorry 30 seconds :smile: ) you will see that this `alarm` function will end the process. Let's patch it too.
 
 {{< highlight r2 "hl_lines=24 25 26 27 28 30 31 32 33 34" >}}
-[0x000008c9]> wx 9090909090 @ 0x0000088c
-[0x000008c9]> wx 9090909090 @ 0x00000896
+[0x000008c9]> wao nop @ 0x0000088c
+[0x000008c9]> wao nop @ 0x00000896
 [0x000008c9]> pdf @ main
             ;-- section_end..plt:
             ;-- section..text:
@@ -196,10 +196,10 @@ There are two functions here we want to get rid of: `sleep` which is the one we 
 │       └─< 0x000008c7      ebf7           goto 0x8c0
 {{< /highlight >}}
 
-> `wx` writes hexadecimal values (five times 90 in this case) at the specified address.  
-> 90 is the opcode for `nop` assembly instruction. Nop means "**N**o **OP**eration".
+> `wao nop` assembles the nop opcode (which is `90` in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode.  
+> Nop means "**N**o **OP**eration".
 
-Once we have patched them, we could continue checking the protections of the binary. This can be done through [checksec](https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec) script or with r2 itself.
+Once we have patched them, we could continue checking the protections of the binary. This can be done through [checksec](https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec) script or with the r2 suite itself.
 
 <table class="hmg">
     <tr>
@@ -227,10 +227,22 @@ relocs   true
 va       true
 {{< /highlight >}}
         </td>
+        <td>
+{{< highlight r2 "hl_lines=5 6" >}}
+$ rabin2 -I inst_prof | grep true
+havecode true
+linenum  true
+lsyms    true
+nx       true
+pic      true
+relocs   true
+va       true
+{{< /highlight >}}
+        </td>
     </tr>
 </table>
 
-What matters here is the NX and PIE flags.
+What matters here is the `NX` and `PIE` flags.
 
 1. `NX` is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.  
 2. `PIE` tells us that the executable will be load in a randomly aligned address, so we will not be able to use fixed memory addresses to call functions.
@@ -514,7 +526,7 @@ That 4 is probably going to be the number of bytes being copied. It makes sense 
 └           0x00000aaf      c3                                         
 {{< /highlight >}}
 
-This loop seems a bit confusing, but it just iterates 4 times (going from -3 to 0) calling `sym.read_byte()` to retrieve 1 byte of the input string and stores it overwriting one of the previously commented nops opcodes.
+This loop seems a bit confusing, but it is just iterating 4 times (going from -3 to 0) calling `sym.read_byte()` and retrieving `1 byte` of the input string. Then it just stores it overwriting one of the previously commented `nop` opcodes.
 
 {{< highlight r2 "hl_lines=14" >}}
 [0x000009f0]> pdf @ sym.read_byte
@@ -552,49 +564,16 @@ And nothing interesting inside `sym.read_byte`, it is just another wapper to cal
 sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after `read_inst` call. Once there, we only need to check if the input string are there instead of the nop opdes
 
 {{< highlight r2 "hl_lines=23 25" >}}
-$ r2 -Ad -R 'stdin="AAAA"' -c 'dcu main; db `/r sym.read_inst~[1]`; dc; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;' inst_prof
-Process with PID 19524 started...
-= attach 19524 19524
-bin.baddr 0x56211a4cd000
-Using 0x56211a4cd000
-Assuming filepath /root/inst_prof
-asm.bits 64
-[x] Analyze all flags starting with sym. and entry0 (aa)
-TODO: esil-vm not initialized
-[Cannot determine xref search boundariesr references (aar)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-ptrace (PT_ATTACH): Operation not permitted
-= attach 19524 19524
-Continue until 0x56211a4cd860 using 1 bpsize
-hit breakpoint at: 56211a4cd860
-[0x56211a4cdf80-0x56211a4ce000] initializing prof...ready
-hit breakpoint at: 56211a4cdafb
-hit breakpoint at: 56211a4cdb00
-- offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
-0x7f168de11005  9090 9090                                ....
-- offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
-0x7f168de11005  4141 4141                                AAAA
- -- There is no F5 key in radare2 yet
-[0x56211a4cdafb]> 
+$ r2 -Ad -R 'stdin="AAAA"' -c 'dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;' inst_prof
 {{< /highlight >}}
 
 > `-Ad`: Again analyze and debug it.  
 > `-R 'stdin="AAAA"'`: To pass AAAA as the standard input.  
 > `-c `: To execute commands once r2 has ended loading the binary.  
-> `dcu main`: run the process until the `main` function is reached.  
-> ``db `/r sym.read_inst~[1]` ``: Once in the main function, look for references to `sym.read_inst`, filter its address (with `~[1]`) and place a breakpoint there.  
-> `dc`: Once the breakpoint is placed, continue the execution to reach that breakpoint. If you were executing this commands one by one you could do `pd 1` to check if you really are where you should be.
-```r2
-[0x5617b9bc3afb]> pd 1
-│           0x5617b9bc3afb b    e8b0ffffff     sym.read_inst ()
-```
-> `px 4 @r:rbx+5`: print 4 hexadecimal values from the address of `rbx+5` which is the address where the input is going to be written.
+> ``dcu `/r sym.read_inst~[1]` ``: `/r sym.read_inst` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.
+> `px 4 @r:rbx+5`: prints 4 hexadecimal values from the address of `rbx+5` which is the address where the input is going to be written.
 > `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.read_inst` flow but without going into it.
 > `px 4 @r:rbx+5`: print the same 4 bytes again.
-
 This way we can check if the write has been done correctly
 
 ##### sym.make_page_executable
@@ -623,14 +602,14 @@ It is just saying: "Hey, please, from this address, count 0x1000 bytes and make 
 So now our input bytes could be executed, which is the purpose of the following entry: `rbx()`
 
 ##### rbx ()
-So... (cheer up we are finishing!) `rbx` register contains the address of the first instruction of the `obj.template` duplicate. Remember that this duplicate does not contain nop instructions anymore but our input of 4 bytes.
+So... (cheer up we are finishing!) `rbx` register contains the address of the first instruction of the `obj.template` duplicate. Remember that this duplicate does not contain `nop` instructions anymore but our input of 4 bytes.
 
 It will **execute** something we provide to it!
 
 We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.
 
 {{< highlight r2 "hl_lines=14 18" >}}
-0x7fdeaba18000 240 /root/inst_prof]> ?0;f tmp;s.. @ rbx                                                                                                                         
+0x7fdeaba18000 240 /root/inst_prof]> ?0;f tmp;s.. @ rbx                                                                                            
 - offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
 0x7fff40b82ac8  189b 0f42 cf55 0000 b08c 80ab de7f 0000  ...B.U..........
 0x7fff40b82ad8  0000 0000 0000 0000 0000 0000 0000 0000  ................
@@ -646,29 +625,99 @@ orax 0xffffffffffffffff
             ;-- rbx:
             ;-- rdi:
             ;-- rip:
-            0x7fdeaba18000      b900100000     ecx = 0x1000            ; rsi ; rsi
+            0x7fdeaba18000      b900100000     ecx = 0x1000            ; rsi
         ┌─> 0x7fdeaba18005      4141414183e9.  r9d -= 1                ; orax
         └─< 0x7fdeaba1800c      75f7           if (var) goto 0x7fdeaba18005
             0x7fdeaba1800e      c3             
 {{< /highlight >}}
 
-
-
 ##### sym.free_page
 
+The last function is `sym.free_page` and its the one in charge of deallocating the page the process was using during its entire flow execution.
+
+{{< highlight r2 "hl_lines=9" >}}
+[0x7fc9a5eeac20]> pdf @ sym.free_page 
+┌ (fcn) sym.free_page 15
+│   sym.free_page ();
+│       ↑      ; CALL XREF from 0x5603de075b44 (sym.do_test)
+│       |   0x5603de075a40      55             push rbp                
+│       |   0x5603de075a41      be00100000     esi = 0x1000            
+│       |   0x5603de075a46      4889e5         rbp = rsp               
+│       |   0x5603de075a49      5d             pop rbp                 
+└       └─< 0x5603de075a4a      e9c1fdffff     goto sym.imp.munmap
+{{< /highlight >}}
+
+Have in mind that this step is quite important. Until this point, the process has configured a memory area with:
+
+1. **Write** privileges (Do you remember those `PROT_READ | PROT_WRITE` stuff right?)
+2. And **execution** privileges (using the `sym.make_page_executable`).
+
+It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode :grin: ) and execute it. 
+That is the main reason why it is a good idea to deallocate the page. 
+
+{{< highlight r2 "hl_lines=21 22" >}}
+$ r2 -Ad -R 'stdin="AAAA"' -c 'dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;' inst_prof
+Process with PID 11008 started...
+= attach 11008 11008
+bin.baddr 0x55e96f469000
+Using 0x55e96f469000
+Assuming filepath /root/inst_prof
+asm.bits 64
+[x] Analyze all flags starting with sym. and entry0 (aa)
+TODO: esil-vm not initialized
+[Cannot determine xref search boundariesr references (aar)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+ptrace (PT_ATTACH): Operation not permitted
+= attach 11008 11008
+[0x7ff8a50b5ff0-0x7ff8a50b6000] Continue until 0x55e96f469b03 using 1 bpsize
+initializing prof...ready
+hit breakpoint at: 55e96f469b03
+hit breakpoint at: 55e96f469b08
+usr    16K 0x00007ff8a52b2000 - 0x00007ff8a52b6000 s -rw- unk2 unk2
+usr     4K 0x00007ff8a52b2000 - 0x00007ff8a52b3000 s -r-x unk2 unk2
+ -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino
+{{< /highlight >}}
+
+> The command used is pretty similar to the previous one
+> `-Ad`: Again analyze and debug it.  
+> `-R 'stdin="AAAA"'`: To pass AAAA as the standard input.  
+> `-c `: To execute commands once r2 has ended loading the binary.  
+> ``dcu `/r sym.make_page_executable~[1]` ``: `/r sym.make_page_executable` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.
+> `dm~unk2`: `dm` returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the `unk2` string.
+> `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.make_executable` flow but without going into it.
+> `dm~unk2`: to print the map of the region we are interested at, again.
+
+
+We are printing the maps of the process before and after the call to `sym.make_page_executable`. When writting our input, the memory area has the write privilege (`-rw-`), but 
+after the call to `sym.make_page_executable` those permissions has been changed to `-r-x` which is perfect because otherwise the `rbx()` call would fail.
+
+---
+
 Finally! we ended describing the entire flow of the program step by step.
-As this article is getting veyr long I have decided to stop writing here and explain the exploitation phase in part 2 (**comming soon**).
+As this article is getting very long I have decided to stop writing here and to explain the exploitation phase in part 2 (**comming soon**).
 
 Congratz for reaching the end of the first part. Reading and understanding it must have been almost as tough as writing it. However, if something was not clear I recommend to re-read it that part again. Otherwise, you will likely get lost on the next part.
 
-## References
-1. https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html
-2. https://en.wikipedia.org/wiki/Opcode
-3. https://es.wikipedia.org/wiki/Bit_NX
-4. a
-5. https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec
-6. a
-7. aa
-8. a
-9. a
-10. 
+<table class="hmg">
+    <tr>
+        <td>
+            <h3>References</h3>
+            <ol>
+                <li><a href="https://github.com/radare/radare2">radare2</a> - To analyze the binary.</li>
+                <li><a href="https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html">BinaryStud.io</a> - Another solution using r2!</li>
+                <li><a href="https://en.wikipedia.org/wiki/Opcode) and [Bit NX] (https://es.wikipedia.org/wiki/Bit_NX">OPCode</a></li>
+                <li><a href="https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec">CheckSec</a></li>
+            </ol>
+        </td>
+        <td>
+            <h3>Some thanks</h3>
+            <ol>
+                <li><a href="https://github.com/trufae">@pancake</a> - For reviewing this article and pointing some improvements on it.</li>
+                <li><a href="https://github.com/TobalJackson/radare2-pygments-lexer">@TobalJackson</a> - For his lexer for r2 highlighting in hugo engine.</li>
+            </ol>
+        </td>
+    </tr>
+</table>

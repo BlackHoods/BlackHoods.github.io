@@ -469,4 +469,8 @@ main {
 .hmg td {
     vertical-align: top;
 }
+
+p+ol, p+ul {
+    margin-top: -15px;
+}
 /*# sourceMappingURL=hmdl-style.css.map */
