@@ -473,4 +473,8 @@ main {
 p+ol, p+ul {
     margin-top: -15px;
 }
+
+blockquote>p+ol, blockquote>p+ul {
+    margin-top: 0;
+}
 /*# sourceMappingURL=hmdl-style.css.map */

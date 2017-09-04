@@ -196,8 +196,7 @@ There are two functions here we want to get rid of: `sleep` which is the one we 
 │       └─< 0x000008c7      ebf7           goto 0x8c0
 {{< /highlight >}}
 
-> `wao nop` assembles the nop opcode (which is `90` in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode.  
-> Nop means "**N**o **OP**eration".
+> `wao nop` assembles the nop opcode (which is `90` in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode. Nop means "**N**o **OP**eration".
 
 Once we have patched them, we could continue checking the protections of the binary. This can be done through [checksec](https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec) script or with the r2 suite itself.
 
@@ -570,11 +569,12 @@ $ r2 -Ad -R 'stdin="AAAA"' -c 'dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; p
 > `-Ad`: Again analyze and debug it.  
 > `-R 'stdin="AAAA"'`: To pass AAAA as the standard input.  
 > `-c `: To execute commands once r2 has ended loading the binary.  
-> ``dcu `/r sym.read_inst~[1]` ``: `/r sym.read_inst` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.
-> `px 4 @r:rbx+5`: prints 4 hexadecimal values from the address of `rbx+5` which is the address where the input is going to be written.
-> `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.read_inst` flow but without going into it.
-> `px 4 @r:rbx+5`: print the same 4 bytes again.
-This way we can check if the write has been done correctly
+> ``dcu `/r sym.read_inst~[1]` ``: `/r sym.read_inst` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.  
+> `px 4 @r:rbx+5`: prints 4 hexadecimal values from the address of `rbx+5` which is the address where the input is going to be written.  
+> `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.read_inst` flow but without going into it.  
+> `px 4 @r:rbx+5`: print the same 4 bytes again.  
+
+This way we can check if the write has been done correctly.
 
 ##### sym.make_page_executable
 As the title suggests the purpose of this function is to make a page executable. Of course, this is the page where we have copied the `obj.template` and overwritten the nop opcodes bytes (those 90 90 90 90) with our own 4 byte input.
@@ -681,14 +681,14 @@ usr     4K 0x00007ff8a52b2000 - 0x00007ff8a52b3000 s -r-x unk2 unk2
  -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino
 {{< /highlight >}}
 
-> The command used is pretty similar to the previous one
+> The command used is pretty similar to the previous one  
 > `-Ad`: Again analyze and debug it.  
 > `-R 'stdin="AAAA"'`: To pass AAAA as the standard input.  
 > `-c `: To execute commands once r2 has ended loading the binary.  
-> ``dcu `/r sym.make_page_executable~[1]` ``: `/r sym.make_page_executable` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.
-> `dm~unk2`: `dm` returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the `unk2` string.
-> `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.make_executable` flow but without going into it.
-> `dm~unk2`: to print the map of the region we are interested at, again.
+> ``dcu `/r sym.make_page_executable~[1]` ``: `/r sym.make_page_executable` will return all the calls to that function. From those results, we filter the address with `~[1]`. Knowing the address we can use `dcu address` which will execute the process until that address.  
+> `dm~unk2`: `dm` returns the mapping of the memory of the process. We are filtering the results because we already know that the interesting one has the `unk2` string.  
+> `dso`: **D**ebug **S**tep **O**ver. To execute the entire `sym.make_executable` flow but without going into it.  
+> `dm~unk2`: to print the map of the region we are interested at, again.  
 
 
 We are printing the maps of the process before and after the call to `sym.make_page_executable`. When writting our input, the memory area has the write privilege (`-rw-`), but 
