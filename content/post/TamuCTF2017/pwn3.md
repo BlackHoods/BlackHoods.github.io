@@ -121,15 +121,19 @@ Lets start checking what is happening inside the `main function.
 └           0x08048673      e8d8fdffff     sym.imp.exit ()             
 {{< /highlight >}}
 
-Well, it seems the execution is pretty straightforward:  
+Well, it seems the execution is pretty straightforward:
 
-1. Using `gets` function it saves your input in the memory address `local_208` is pointing to.  
-2. After that, `printf` is called pushing eax to the stack as a parameter.  
+1. Using `gets` function it saves your input in the memory address `local_208` is pointing to.
+
+2. After that, `printf` is called pushing eax to the stack as a parameter.
+
 3. And finally `exit` is called.
+
 
 We can extract the following conclusions:
 
-1. This time `print_flag` is not being called under some obscure conditional (like in [pwn1]({{< relref "post/TamuCTF2017/pwn1.md" >}})), so there is no variable to be altered.  
+1. This time `print_flag` is not being called under some obscure conditional (like in [pwn1]({{< relref "post/TamuCTF2017/pwn1.md" >}})), so there is no variable to be altered.
+
 2. There is no internal function to be called, so we can not try to overwrite EIP either (like in [pwn2]({{< relref "post/TamuCTF2017/pwn2.md" >}})).
 
 But, wait a moment, that `printf call is a bit strange.

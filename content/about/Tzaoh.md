@@ -22,17 +22,21 @@ cardheaderimage: "/images/default.jpg" #optional: default solid color if unset
 cardbackground: "#263238" #optional: card background color; only shows when no image specified
 ---
 
+#### About me
+
 Hey there, my name is Diego. I am a simple guy who is currently working as security analyst in Ireland. I use to play CTFs so the idea to create a simple blog to post some of their solutions came soon to my mind.
 
 Inside computing security I am mainly, but not uniquely, interested in:
 
 - Reverse engineering.
+
 - Exploitation in general (binaries, web, etc).
+
 - Device hacking.
 
 One friend and I ran this site as a hobbie. We will keep it updated with solutions, projects or simply stuff we consider interesting and curious to know, as much as our respective jobs allow us.
 
-Hope you all enjoy it.
+Hope you all enjoy it.  
 Cheers!
 
 #### Education

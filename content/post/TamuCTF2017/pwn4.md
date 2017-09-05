@@ -151,7 +151,7 @@ We can see four interesting functions:
 
 > By the way the command `s sym.flag_func; Vp` can be splitted and explained like this:  
 > `s sym.flag_func` - set the position of the cursor at the beginning of the function.  
-> `V` - Change the visual mode.  
+> `V` - change the visual mode.  
 > `p` - change mode view.
 
 Here they are, lets take a look at those functions.
@@ -164,7 +164,9 @@ Obviously we should try to execute `sym.flag_func()` function, it seems it will 
 Then we need to dig a bit more.
 
 1. `sym.func2()` is just printing a message (it even tells you not to waste your time with it). So we can ignore this one.
+
 2. `sym.func1()` is a bit more interesting because it is using the unsecure function `gets()`. If it is called somewhere, we would be able to overwrite the `$eip` register.
+
 3. We dont need to cross our fingers a lot of time because we fastly see that `sym.func1()` is being called from `main()`! yay! :v: .
 
 Lets figure out, how many bytes do we need to overwrite `$eip` register.
@@ -238,7 +240,8 @@ As you may know, in order to pass the arguments to `system` they need to be push
 Because we can overwrite the stack we can "imitate" a push into it:
 
 1. Instead of starting in the address of `sym.flag_func()` (`0x080484cb`) we will use `system()` one (`0x080484d9`).  
-`$ python -c 'print("A"*16 + "\xd9\x84\x04\x08")'`  
+`$ python -c 'print("A"*16 + "\xd9\x84\x04\x08")'`
+
 2. We need to push the pointer to the string to indicate `system()` which is its argument.  
 `$ python -c 'print("A"*16 + "\xd9\x84\x04\x08" + "\x28\xa0\x04\x08")'`
 

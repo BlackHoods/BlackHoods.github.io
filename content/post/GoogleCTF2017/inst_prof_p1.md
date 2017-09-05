@@ -17,8 +17,8 @@ tags:
 - GoogleCTF
 - 2017
 title: "GoogleCTF 2017 - Inst Prof (Part 1)"
-summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two parts."
-cardthumbimage: "/assets/TamuCTF2017/title.png"
+summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two parts. This part contains the description of the behavior of the entire binary. Have fun!"
+cardthumbimage: "/assets/GoogleCTF2017/title.jpg"
 ---
 
 ![inst_prof Description](/assets/GoogleCTF2017/Inst Prof/1-inst_prof_description.png)
@@ -243,7 +243,8 @@ va       true
 
 What matters here is the `NX` and `PIE` flags.
 
-1. `NX` is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.  
+1. `NX` is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.
+
 2. `PIE` tells us that the executable will be load in a randomly aligned address, so we will not be able to use fixed memory addresses to call functions.
 
 Okay! 
@@ -321,12 +322,17 @@ Are not you curious about its content?
 
 Which are your first thoughts about the highlighted lines? mines are:
 
-1. `sym.alloc_page ()`: We will start by this one. That name suggests that it will, somehow, reserve some memory right?  
-2. `obj.template`: what is that? a template? of what?  
-3. `sym.read_inst ()`: mmmh ok, it suggests that is going to read an instruction.  
-4. `sym.make_page_executable ()`: aparently this is the one in charge of making a page executable (probably it will be used for the recently-created page).  
+1. `sym.alloc_page ()`: We will start by this one. That name suggests that it will, somehow, reserve some memory right?
+
+2. `obj.template`: what is that? a template? of what?
+
+3. `sym.read_inst ()`: mmmh ok, it suggests that is going to read an instruction.
+
+4. `sym.make_page_executable ()`: aparently this is the one in charge of making a page executable (probably it will be used for the recently-created page).
+
 5. `rbx ()`: it calls a zone of memory whose address is stored in `rbx` register. What is most logical is to think that this address will be the address of the page which has already allocated (through `sym.alloc_page`) and marked as executable (through `sym.make_page_executable`)
-6. `sym.free_page ()` or `sym.imp.exit ()`: Depending on the condition `do_test` will be called again (so this flow will happen once more) or `exit` will be the chosen one, causing the process to be terminated.  
+
+6. `sym.free_page ()` or `sym.imp.exit ()`: Depending on the condition `do_test` will be called again (so this flow will happen once more) or `exit` will be the chosen one, causing the process to be terminated.
 
 ---
 

@@ -163,11 +163,10 @@ Cool, so this function will be called from offset `0x8048606` which belongs to `
 └           0x08048629      c3             
 {{< /highlight >}}
 
-
-
 We see that `print_flag` will be called if the condition `local_ch == 0xca11ab1e` is satisfied. But wait a moment, if we give a closer look to the assembly instrucctions we realized that the only variable we are supposed to edit is `local_27h` through the `gets` function.
 
-So what we need to do?  
+> So what we need to do?
+
 As maybe you know, `gets` is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then, if we input more characters than it is supposed to store, we will be able to overwrite neighbor local variables!
 
 How can we know the length of the string we must provide? By knowing where the variables are stored onto the stack
