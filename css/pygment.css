@@ -30,9 +30,9 @@ li>.highlight {
     line-height: 18px;
 }
 
-p + .highlight {
+/*p + .highlight {
     margin-top: -18px;
-}
+}*/
 
 .highlight + blockquote {
     margin-top: 0;

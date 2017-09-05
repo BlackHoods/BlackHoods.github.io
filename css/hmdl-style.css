@@ -381,7 +381,7 @@ main {
     max-width: 100%
 }
 .hmdl-page p {
-    margin: 16px auto;
+    margin: 0 auto;
     font-size: 16px;
     line-height: 28px
 }
@@ -471,8 +471,8 @@ main {
     vertical-align: top;
 }
 
-p+ol, p+ul {
-    margin-top: -15px;
+ol, ul {
+    margin-top: 0;
 }
 
 blockquote>p+ol, blockquote>p+ul {

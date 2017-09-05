@@ -188,16 +188,19 @@ Why do we have the exact same challenge again? something must be different.</p>
 <p>Well, it seems the execution is pretty straightforward:</p>
 
 <ol>
-<li>Using <code>gets</code> function it saves your input in the memory address <code>local_208</code> is pointing to.<br /></li>
-<li>After that, <code>printf</code> is called pushing eax to the stack as a parameter.<br /></li>
-<li>And finally <code>exit</code> is called.</li>
+<li><p>Using <code>gets</code> function it saves your input in the memory address <code>local_208</code> is pointing to.</p></li>
+
+<li><p>After that, <code>printf</code> is called pushing eax to the stack as a parameter.</p></li>
+
+<li><p>And finally <code>exit</code> is called.</p></li>
 </ol>
 
 <p>We can extract the following conclusions:</p>
 
 <ol>
-<li>This time <code>print_flag</code> is not being called under some obscure conditional (like in <a href="/post/tamuctf2017/pwn1/">pwn1</a>), so there is no variable to be altered.<br /></li>
-<li>There is no internal function to be called, so we can not try to overwrite EIP either (like in <a href="/post/tamuctf2017/pwn2/">pwn2</a>).</li>
+<li><p>This time <code>print_flag</code> is not being called under some obscure conditional (like in <a href="/post/tamuctf2017/pwn1/">pwn1</a>), so there is no variable to be altered.</p></li>
+
+<li><p>There is no internal function to be called, so we can not try to overwrite EIP either (like in <a href="/post/tamuctf2017/pwn2/">pwn2</a>).</p></li>
 </ol>
 
 <p>But, wait a moment, that `printf call is a bit strange.</p>

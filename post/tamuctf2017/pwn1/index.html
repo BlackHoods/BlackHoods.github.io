@@ -232,8 +232,11 @@ call <span class="mh">0x8048606</span> call sym<span class="o">.</span>print_fla
 
 <p>We see that <code>print_flag</code> will be called if the condition <code>local_ch == 0xca11ab1e</code> is satisfied. But wait a moment, if we give a closer look to the assembly instrucctions we realized that the only variable we are supposed to edit is <code>local_27h</code> through the <code>gets</code> function.</p>
 
-<p>So what we need to do?<br />
-As maybe you know, <code>gets</code> is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then, if we input more characters than it is supposed to store, we will be able to overwrite neighbor local variables!</p>
+<blockquote>
+<p>So what we need to do?</p>
+</blockquote>
+
+<p>As maybe you know, <code>gets</code> is an unsecure function, because it does not check how many characters it must copy in memory when you introduce them. Then, if we input more characters than it is supposed to store, we will be able to overwrite neighbor local variables!</p>
 
 <p>How can we know the length of the string we must provide? By knowing where the variables are stored onto the stack</p>
 

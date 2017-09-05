@@ -13,10 +13,10 @@
     
     <item>
       <title>GoogleCTF 2017 - Inst Prof (Part 1)</title>
-      <link>http://BlackHoods.github.io/post/googlectf2017/inst_prof/</link>
+      <link>http://BlackHoods.github.io/post/googlectf2017/inst_prof_p1/</link>
       <pubDate>Wed, 30 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/post/googlectf2017/inst_prof/</guid>
+      <guid>http://BlackHoods.github.io/post/googlectf2017/inst_prof_p1/</guid>
       <description>In this challenge we are given a binary that is running remotely at inst-prof.ctfcompetition.com:1337.
 Probably the flag will be somewhere in the server.
 We can start getting some basic information of the binary using the unix command file.
