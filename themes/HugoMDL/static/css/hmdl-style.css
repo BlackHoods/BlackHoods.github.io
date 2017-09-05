@@ -402,6 +402,14 @@ main {
     margin: 0;
     width: 100%
 }
+.hmdl-page .hmdl-page-content>p:first-child{
+    margin-top: 20px;
+}
+
+.hmdl-page .hmdl-page-content>p:first-child>img{
+    margin: 20px auto;
+}
+
 .hmdl-page .hmdl-page-content {
     border: 0;
     box-sizing: border-box;
