@@ -371,12 +371,15 @@ rax = mmap(0, 0x1000, 3, 0x22, -1, 0);
 
 Basically it is:
 
-1. Creating a memory region somewhere.  
-2. With a size of `0x1000` bytes.  
+1. Creating a memory region somewhere.
+
+2. With a size of `0x1000` bytes.
+
 3. That memory region will have **read** and **write** permissions. This come from "or-ing":  
-`PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3`  
+`PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3`
+
 4. The changes in memory are not visible to others processes and not are not backed by any file. Again, this explanation comes from "or-ing":  
-`MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22`.  
+`MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22`.
 
 
 ##### obj.template
@@ -687,7 +690,7 @@ usr     4K 0x00007ff8a52b2000 - 0x00007ff8a52b3000 s -r-x unk2 unk2
  -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino
 {{< /highlight >}}
 
-> The command used is pretty similar to the previous one  
+> The command used is pretty similar to the previous one:  
 > `-Ad`: Again analyze and debug it.  
 > `-R 'stdin="AAAA"'`: To pass AAAA as the standard input.  
 > `-c `: To execute commands once r2 has ended loading the binary.  

@@ -34,7 +34,7 @@ Inside computing security I am mainly, but not uniquely, interested in:
 
 - Device hacking.
 
-One friend and I ran this site as a hobbie. We will keep it updated with solutions, projects or simply stuff we consider interesting and curious to know, as much as our respective jobs allow us.
+One friend and I ran this site as a hobbie. We will keep it updated with solutions, projects or simply stuff we consider interesting and curious to know, as much as our respectives jobs allow us.
 
 Hope you all enjoy it.  
 Cheers!
