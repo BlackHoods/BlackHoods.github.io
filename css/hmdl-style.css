@@ -479,8 +479,16 @@ main {
     vertical-align: top;
 }
 
+p {
+    padding-top: 8px;
+}
+
 ol, ul {
     margin-top: 0;
+}
+
+blockquote>p {
+    padding-top: 0;
 }
 
 blockquote>p+ol, blockquote>p+ul {

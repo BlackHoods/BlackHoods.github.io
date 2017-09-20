@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.27-DEV" />
+    <meta name="generator" content="Hugo 0.28-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -446,12 +446,15 @@ void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t leng
 <p>Basically it is:</p>
 
 <ol>
-<li>Creating a memory region somewhere.<br /></li>
-<li>With a size of <code>0x1000</code> bytes.<br /></li>
-<li>That memory region will have <strong>read</strong> and <strong>write</strong> permissions. This come from &ldquo;or-ing&rdquo;:<br />
-<code>PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3</code><br /></li>
-<li>The changes in memory are not visible to others processes and not are not backed by any file. Again, this explanation comes from &ldquo;or-ing&rdquo;:<br />
-<code>MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22</code>.<br /></li>
+<li><p>Creating a memory region somewhere.</p></li>
+
+<li><p>With a size of <code>0x1000</code> bytes.</p></li>
+
+<li><p>That memory region will have <strong>read</strong> and <strong>write</strong> permissions. This come from &ldquo;or-ing&rdquo;:<br />
+<code>PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3</code></p></li>
+
+<li><p>The changes in memory are not visible to others processes and not are not backed by any file. Again, this explanation comes from &ldquo;or-ing&rdquo;:<br />
+<code>MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22</code>.</p></li>
 </ol>
 
 <h5 id="obj-template">obj.template</h5>
@@ -779,7 +782,7 @@ hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b08</span>
 
 
 <blockquote>
-<p>The command used is pretty similar to the previous one<br />
+<p>The command used is pretty similar to the previous one:<br />
 <code>-Ad</code>: Again analyze and debug it.<br />
 <code>-R 'stdin=&quot;AAAA&quot;'</code>: To pass AAAA as the standard input.<br />
 <code>-c</code>: To execute commands once r2 has ended loading the binary.<br />
