@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.28-DEV" />
+    <meta name="generator" content="Hugo 0.29-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -95,10 +95,9 @@ ga('send', 'pageview');
 Probably the flag will be somewhere in the server.</p>
 
 <p>We can start getting some basic information of the binary using the unix command <code>file</code>.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ file inst_prof
-inst_prof: ELF <span class="m">64</span>-bit LSB shared object, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, <span class="k">for</span> GNU/Linux <span class="m">2</span>.6.24, BuildID<span class="o">[</span>sha1<span class="o">]=</span>61e50b540c3c8e7bcef3cb73f3ad2a10c2589089, not stripped
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ file inst_prof
+</span><span class="">inst_prof: ELF </span><span class="m">64</span><span class="">-bit LSB shared object, x86-64, version </span><span class="m">1</span><span class=""> </span><span class="o">(</span><span class="">SYSV</span><span class="o">)</span><span class="">, dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, </span><span class="k">for</span><span class=""> GNU/Linux </span><span class="m">2</span><span class="">.6.24, BuildID</span><span class="o">[</span><span class="">sha1</span><span class="o">]=</span><span class="">61e50b540c3c8e7bcef3cb73f3ad2a10c2589089, not stripped</span></code></pre>
+</div>
 <p>Interesting! It is an <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a>, a binary for unix systems and it has been compiled for a 64 bits architecture. There is another interesting thing we will want to know about this architecture: <a href="https://en.wikipedia.org/wiki/X86_calling_conventions#x86-64_calling_conventions">the calling convention</a>. More specifically:</p>
 
 <blockquote>
@@ -108,24 +107,22 @@ the return value is stored in <strong>RAX</strong> and <strong>RDX</strong>.</p>
 
 <p>Knowing this, we can get an idea of which data is going to be sent/received to/from a certain function.<br />
 All right! let&rsquo;s see what this binary does.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://blackhoods.github.io/assets/GoogleCTF2017/Inst%20Prof/inst_prof
-$ chmod +x inst_prof 
-$ ./inst_prof 
-initializing prof...ready
-<span class="m">1234</span>
-Segmentation fault
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ wget -q https://blackhoods.github.io/assets/GoogleCTF2017/Inst%20Prof/inst_prof
+</span><span class="">$ chmod +x inst_prof 
+</span><span class="">$ ./inst_prof 
+</span><span class="">initializing prof...ready
+</span><span class=""></span><span class="m">1234</span><span class="">
+</span><span class="">Segmentation fault</span></code></pre>
+</div>
 <p>If you execute it, you will realized that there is a delay of 5 seconds between <strong>initializing prof&hellip;</strong> and <strong>ready</strong> strings. We do not want to wait 5 seconds everytime we want to test something, so lets patch it. I also used <strong>1234</strong> as input but it resulted in a segmentation fault (we will realize the reason later).</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Aw inst_prof
-[x] Analyze all flags starting with sym. and entry0 (aa)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">$ r2 -Aw inst_prof
+</span><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
+</span><span class="">[x] Analyze len bytes of instructions for references (aar)
+</span><span class="">[x] Analyze function calls (aac)
+</span><span class="">[x] Use -AA or aaaa to perform additional experimental analysis.
+</span><span class="">[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+</span><span class="">[0x000008c9]&gt;</span></code></pre>
+</div>
 <blockquote>
 <p><code>-A</code> tells radare to analyze automatically the binary (so we wont need to use <code>aaa</code> inside radare).<br />
 <code>-w</code> tells radare to open the binary in writable-mode to let us edit it.
@@ -133,39 +130,38 @@ Note that this time there is no <code>-d</code> (debug) flag. This is because, i
 So if you want to debug it, you need to open a new r2 session.</p>
 </blockquote>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
-<span class="s">0x00000778</span><span class="mh">    3 26           </span>sym._init
-<span class="s">0x000007b0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 32</span>   sym.imp.write
-<span class="s">0x000007c0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.mmap
-<span class="s">0x000007d0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.alarm
-<span class="s">0x000007e0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.read
-<span class="s">0x000007f0</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.__libc_start_main
-<span class="s">0x00000800</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   loc.imp.__gmon_start__
-<span class="s">0x00000810</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.munmap
-<span class="s">0x00000820</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.mprotect
-<span class="s">0x00000830</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.exit
-<span class="s">0x00000840</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.sleep
-<span class="s">0x00000850</span><span class="mh">    2 16</span><span class="o">   -&gt;</span><span class="mh"> 48</span>   sym.imp.__cxa_finalize
-<span class="hll"><span class="s">0x00000860</span><span class="mh">    5 96</span><span class="o">   -&gt;</span><span class="mh"> 105</span>  main
-</span><span class="s">0x000008c9</span><span class="mh">    1 41           </span>entry0
-<span class="s">0x000008f2</span><span class="mh">    1 1            </span>fcn.000008f2
-<span class="s">0x00000900</span><span class="mh">    4 44           </span>sym.deregister_tm_clones
-<span class="s">0x00000930</span><span class="mh">    4 60           </span>sym.register_tm_clones
-<span class="s">0x00000970</span><span class="mh">    5 50           </span>sym.__do_global_dtors_aux
-<span class="s">0x000009b0</span><span class="mh">    4 53</span><span class="o">   -&gt;</span><span class="mh"> 46</span>   sym.frame_dummy
-<span class="hll"><span class="s">0x000009f0</span><span class="mh">    1 36           </span>sym.alloc_page
-</span><span class="hll"><span class="s">0x00000a20</span><span class="mh">    1 20           </span>sym.make_page_executable
-</span><span class="hll"><span class="s">0x00000a40</span><span class="mh">    1 15           </span>sym.free_page
-</span><span class="hll"><span class="s">0x00000a50</span><span class="mh">    3 47           </span>sym.read_byte
-</span><span class="hll"><span class="s">0x00000a80</span><span class="mh">    4 48           </span>sym.read_n
-</span><span class="hll"><span class="s">0x00000ab0</span><span class="mh">    1 15           </span>sym.read_inst
-</span><span class="hll"><span class="s">0x00000ac0</span><span class="mh">    3 153          </span>sym.do_test
-</span><span class="s">0x00000b60</span><span class="mh">    4 101          </span>sym.__libc_csu_init
-<span class="s">0x00000bd0</span><span class="mh">    1 2            </span>sym.__libc_csu_fini
-<span class="s">0x00000bd2</span><span class="mh">    1 11           </span>fcn.00000bd2
-<span class="s">0x00000bdd</span><span class="mh">    1 30           </span>fcn.00000bdd
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; afl
+</span><span class="">0x00000778    3 26           sym._init
+</span><span class="">0x000007b0    2 16   -&gt; 32   sym.imp.write
+</span><span class="">0x000007c0    2 16   -&gt; 48   sym.imp.mmap
+</span><span class="">0x000007d0    2 16   -&gt; 48   sym.imp.alarm
+</span><span class="">0x000007e0    2 16   -&gt; 48   sym.imp.read
+</span><span class="">0x000007f0    2 16   -&gt; 48   sym.imp.__libc_start_main
+</span><span class="">0x00000800    2 16   -&gt; 48   loc.imp.__gmon_start__
+</span><span class="">0x00000810    2 16   -&gt; 48   sym.imp.munmap
+</span><span class="">0x00000820    2 16   -&gt; 48   sym.imp.mprotect
+</span><span class="">0x00000830    2 16   -&gt; 48   sym.imp.exit
+</span><span class="">0x00000840    2 16   -&gt; 48   sym.imp.sleep
+</span><span class="">0x00000850    2 16   -&gt; 48   sym.imp.__cxa_finalize
+</span><span class="hl"><span class="">0x00000860    5 96   -&gt; 105  main
+</span></span><span class="">0x000008c9    1 41           entry0
+</span><span class="">0x000008f2    1 1            fcn.000008f2
+</span><span class="">0x00000900    4 44           sym.deregister_tm_clones
+</span><span class="">0x00000930    4 60           sym.register_tm_clones
+</span><span class="">0x00000970    5 50           sym.__do_global_dtors_aux
+</span><span class="">0x000009b0    4 53   -&gt; 46   sym.frame_dummy
+</span><span class="hl"><span class="">0x000009f0    1 36           sym.alloc_page
+</span></span><span class="hl"><span class="">0x00000a20    1 20           sym.make_page_executable
+</span></span><span class="hl"><span class="">0x00000a40    1 15           sym.free_page
+</span></span><span class="hl"><span class="">0x00000a50    3 47           sym.read_byte
+</span></span><span class="hl"><span class="">0x00000a80    4 48           sym.read_n
+</span></span><span class="hl"><span class="">0x00000ab0    1 15           sym.read_inst
+</span></span><span class="hl"><span class="">0x00000ac0    3 153          sym.do_test
+</span></span><span class="">0x00000b60    4 101          sym.__libc_csu_init
+</span><span class="">0x00000bd0    1 2            sym.__libc_csu_fini
+</span><span class="">0x00000bd2    1 11           fcn.00000bd2
+</span><span class="">0x00000bdd    1 30           fcn.00000bdd</span></code></pre>
+</div>
 
 <blockquote>
 <p><code>afl</code> command stands for &ldquo;analyze function list&rdquo;. In short, to print the functions detected by r2.</p>
@@ -174,44 +170,43 @@ So if you want to debug it, you need to open a new r2 session.</p>
 <p>As you will see, there is a lot of functions we need to check (at least the names give an idea of what they are used for).<br />
 Lets start with the <code>main</code> function.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main
-<span class="k"> </span>           <span class="c">;-- section_end..plt:</span>
-<span class="k"> </span>           <span class="c">;-- section..text:</span>
-<span class="k"> </span>           <span class="c">;-- main:</span>
-<span class="k">┌</span> (<span class="o">fcn</span>) main <span class="m">105</span>
-<span class="k">│</span>   main ();
-<span class="k">│</span>              <span class="c">; DATA XREF from 0x000008e6 (entry0)</span>
-<span class="k">│</span>           <span class="s">0x00000860</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>           <span class="s">0x00000861</span>      488d357c0300.  <span class="k">rsi</span> <span class="o">=</span> <span class="k">str</span><span class="o">.</span>initializing_prof... 
-<span class="k">│</span>           <span class="s">0x00000868</span>      ba14000000     <span class="k">edx</span> <span class="o">=</span> <span class="mh">0x14</span>                  
-<span class="k">│</span>           <span class="s">0x0000086d</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>                     
-<span class="k">│</span>           <span class="s">0x00000872</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>           <span class="s">0x00000875</span>      e836ffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>write ()
-<span class="k">│</span>           <span class="s">0x0000087a</span>      4883f814       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="mh">0x14</span>            
-<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x0000087e</span>      7407           <span class="mh">if</span> (<span class="k">!var</span>) <span class="mh">goto</span> <span class="mh">0x887</span>        <span class="c">; unlikely</span>
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x000008b5 (main)</span>
-<span class="k">│</span>      <span class="k">┌──&gt;</span> <span class="s">0x00000880</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>      <span class="k">|│</span> <span class="c">; void exit(int status)</span>
-<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000882</span>      e8a9ffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()             
-<span class="k">│</span>      <span class="k">↑│</span>      <span class="c">; JMP XREF from 0x0000087e (main)</span>
-<span class="k">│</span>      <span class="k">|└─&gt;</span> <span class="s">0x00000887</span>      bf05000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">5</span>                     
-<span class="k">│</span>      <span class="k">|</span>  <span class="c">; int sleep(int s)</span>
-<span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000088c</span>      e8afffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>sleep ()            
-</span><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000891</span>      bf1e000000     <span class="k">edi</span> <span class="o">=</span> <span class="mh">0x1e</span>                  
-<span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000896</span>      e835ffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>alarm ()
-</span><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000089b</span>      488d35570300.  <span class="k">rsi</span> <span class="o">=</span> <span class="k">str</span><span class="o">.</span>ready_n 
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008a2</span>      ba06000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">6</span>                     
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008a7</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>                     
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008ac</span>      e8fffeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>write ()            
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008b1</span>      4883f806       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="m">6</span>               
-<span class="k">│</span>      <span class="k">└──&lt;</span> <span class="s">0x000008b5</span>      75c9           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x880</span>         <span class="c">; likely</span>
-<span class="k">└</span>           <span class="s">0x000008b7</span>      660f1f840000.                         
-<span class="k">│</span>              <span class="c">; JMP XREF from 0x000008c7 (main)</span>
-<span class="k">│</span>       <span class="k">┌─&gt;</span> <span class="s">0x000008c0</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000008c2</span>      e8f9010000     <span class="k">sym</span><span class="o">.</span>do_test ()
-<span class="k">│</span>       <span class="k">└─&lt;</span> <span class="s">0x000008c7</span>      ebf7           <span class="mh">goto</span> <span class="mh">0x8c0</span>     
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; pdf @ main
+</span><span class="">            ;-- section_end..plt:
+</span><span class="">            ;-- section..text:
+</span><span class="">            ;-- main:
+</span><span class="">┌ (fcn) main 105
+</span><span class="">│   main ();
+</span><span class="">│              ; DATA XREF from 0x000008e6 (entry0)
+</span><span class="">│           0x00000860      55             push rbp                    
+</span><span class="">│           0x00000861      488d357c0300.  rsi = str.initializing_prof... 
+</span><span class="">│           0x00000868      ba14000000     edx = 0x14                  
+</span><span class="">│           0x0000086d      bf01000000     edi = 1                     
+</span><span class="">│           0x00000872      4889e5         rbp = rsp                   
+</span><span class="">│           0x00000875      e836ffffff     sym.imp.write ()
+</span><span class="">│           0x0000087a      4883f814       var = rax - 0x14            
+</span><span class="">│       ┌─&lt; 0x0000087e      7407           if (!var) goto 0x887        ; unlikely
+</span><span class="">│       │      ; JMP XREF from 0x000008b5 (main)
+</span><span class="">│      ┌──&gt; 0x00000880      31ff           edi = 0                     
+</span><span class="">│      |│ ; void exit(int status)
+</span><span class="">│      |│   0x00000882      e8a9ffffff     sym.imp.exit ()             
+</span><span class="">│      ↑│      ; JMP XREF from 0x0000087e (main)
+</span><span class="">│      |└─&gt; 0x00000887      bf05000000     edi = 5                     
+</span><span class="">│      |  ; int sleep(int s)
+</span><span class="hl"><span class="">│      |    0x0000088c      e8afffffff     sym.imp.sleep ()            
+</span></span><span class="">│      |    0x00000891      bf1e000000     edi = 0x1e                  
+</span><span class="hl"><span class="">│      |    0x00000896      e835ffffff     sym.imp.alarm ()
+</span></span><span class="">│      |    0x0000089b      488d35570300.  rsi = str.ready_n 
+</span><span class="">│      |    0x000008a2      ba06000000     edx = 6                     
+</span><span class="">│      |    0x000008a7      bf01000000     edi = 1                     
+</span><span class="">│      |    0x000008ac      e8fffeffff     sym.imp.write ()            
+</span><span class="">│      |    0x000008b1      4883f806       var = rax - 6               
+</span><span class="">│      └──&lt; 0x000008b5      75c9           if (var) goto 0x880         ; likely
+</span><span class="">└           0x000008b7      660f1f840000.                         
+</span><span class="">│              ; JMP XREF from 0x000008c7 (main)
+</span><span class="">│       ┌─&gt; 0x000008c0      31c0           eax = 0
+</span><span class="">│       |   0x000008c2      e8f9010000     sym.do_test ()
+</span><span class="">│       └─&lt; 0x000008c7      ebf7           goto 0x8c0     </span></code></pre>
+</div>
 
 <blockquote>
 <p><code>pdf</code> means <strong>p</strong>rint <strong>d</strong>isassemble <strong>f</strong>unction. Adding <code>@ main</code> we are telling radare which function we want to see.</p>
@@ -219,53 +214,52 @@ Lets start with the <code>main</code> function.</p>
 
 <p>There are two functions here we want to get rid of: <code>sleep</code> which is the one we were looking for and another one which, aparently, setup an alarm. If you wait 0x1e (oops, sorry 30 seconds 😄 ) you will see that this <code>alarm</code> function will end the process. Let&rsquo;s patch it too.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wao</span> nop @ 0x0000088c
-[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">wao</span> nop @ 0x00000896
-[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main
-<span class="k"> </span>           <span class="c">;-- section_end..plt:</span>
-<span class="k"> </span>           <span class="c">;-- section..text:</span>
-<span class="k"> </span>           <span class="c">;-- main:</span>
-<span class="k">┌</span> (<span class="o">fcn</span>) main <span class="m">105</span>
-<span class="k">│</span>   main ();
-<span class="k">│</span>              <span class="c">; DATA XREF from 0x000008e6 (entry0)</span>
-<span class="k">│</span>           <span class="s">0x00000860</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>           <span class="s">0x00000861</span>      488d357c0300.  <span class="k">rsi</span> <span class="o">=</span> <span class="k">str</span><span class="o">.</span>initializing_prof... 
-<span class="k">│</span>           <span class="s">0x00000868</span>      ba14000000     <span class="k">edx</span> <span class="o">=</span> <span class="mh">0x14</span>                  
-<span class="k">│</span>           <span class="s">0x0000086d</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>                     
-<span class="k">│</span>           <span class="s">0x00000872</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>           <span class="s">0x00000875</span>      e836ffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>write ()
-<span class="k">│</span>           <span class="s">0x0000087a</span>      4883f814       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="mh">0x14</span>            
-<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x0000087e</span>      7407           <span class="mh">if</span> (<span class="k">!var</span>) <span class="mh">goto</span> <span class="mh">0x887</span>        <span class="c">; unlikely</span>
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x000008b5 (main)</span>
-<span class="k">│</span>      <span class="k">┌──&gt;</span> <span class="s">0x00000880</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>      <span class="k">|│</span> <span class="c">; void exit(int status)</span>
-<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000882</span>      e8a9ffffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()             
-<span class="k">│</span>      <span class="k">↑│</span>      <span class="c">; JMP XREF from 0x0000087e (main)</span>
-<span class="k">│</span>      <span class="k">|└─&gt;</span> <span class="s">0x00000887</span>      bf05000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">5</span>                     
-<span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000088c</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000088d</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000088e</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000088f</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000890</span>      90                                         
-</span><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000891</span>      bf1e000000     <span class="k">edi</span> <span class="o">=</span> <span class="mh">0x1e</span>                  
-<span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000896</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000897</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000898</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x00000899</span>      90                                         
-</span><span class="hll"><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000089a</span>      90 
-</span><span class="k">│</span>      <span class="k">|</span>    <span class="s">0x0000089b</span>      488d35570300.  <span class="k">rsi</span> <span class="o">=</span> <span class="k">str</span><span class="o">.</span>ready_n 
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008a2</span>      ba06000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">6</span>                     
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008a7</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>                     
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008ac</span>      e8fffeffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>write ()            
-<span class="k">│</span>      <span class="k">|</span>    <span class="s">0x000008b1</span>      4883f806       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="m">6</span>               
-<span class="k">│</span>      <span class="k">└──&lt;</span> <span class="s">0x000008b5</span>      75c9           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x880</span>         <span class="c">; likely</span>
-<span class="k">└</span>           <span class="s">0x000008b7</span>      660f1f840000.    
-<span class="k">│</span>              <span class="c">; JMP XREF from 0x000008c7 (main)</span>
-<span class="k">│</span>       <span class="k">┌─&gt;</span> <span class="s">0x000008c0</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000008c2</span>      e8f9010000     <span class="k">sym</span><span class="o">.</span>do_test ()
-<span class="k">│</span>       <span class="k">└─&lt;</span> <span class="s">0x000008c7</span>      ebf7           <span class="mh">goto</span> <span class="mh">0x8c0</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; wao nop @ 0x0000088c
+</span><span class="">[0x000008c9]&gt; wao nop @ 0x00000896
+</span><span class="">[0x000008c9]&gt; pdf @ main
+</span><span class="">            ;-- section_end..plt:
+</span><span class="">            ;-- section..text:
+</span><span class="">            ;-- main:
+</span><span class="">┌ (fcn) main 105
+</span><span class="">│   main ();
+</span><span class="">│              ; DATA XREF from 0x000008e6 (entry0)
+</span><span class="">│           0x00000860      55             push rbp                    
+</span><span class="">│           0x00000861      488d357c0300.  rsi = str.initializing_prof... 
+</span><span class="">│           0x00000868      ba14000000     edx = 0x14                  
+</span><span class="">│           0x0000086d      bf01000000     edi = 1                     
+</span><span class="">│           0x00000872      4889e5         rbp = rsp                   
+</span><span class="">│           0x00000875      e836ffffff     sym.imp.write ()
+</span><span class="">│           0x0000087a      4883f814       var = rax - 0x14            
+</span><span class="">│       ┌─&lt; 0x0000087e      7407           if (!var) goto 0x887        ; unlikely
+</span><span class="">│       │      ; JMP XREF from 0x000008b5 (main)
+</span><span class="">│      ┌──&gt; 0x00000880      31ff           edi = 0                     
+</span><span class="">│      |│ ; void exit(int status)
+</span><span class="">│      |│   0x00000882      e8a9ffffff     sym.imp.exit ()             
+</span><span class="">│      ↑│      ; JMP XREF from 0x0000087e (main)
+</span><span class="">│      |└─&gt; 0x00000887      bf05000000     edi = 5                     
+</span><span class="hl"><span class="">│      |    0x0000088c      90                                         
+</span></span><span class="hl"><span class="">│      |    0x0000088d      90                                         
+</span></span><span class="hl"><span class="">│      |    0x0000088e      90                                         
+</span></span><span class="hl"><span class="">│      |    0x0000088f      90                                         
+</span></span><span class="hl"><span class="">│      |    0x00000890      90                                         
+</span></span><span class="">│      |    0x00000891      bf1e000000     edi = 0x1e                  
+</span><span class="hl"><span class="">│      |    0x00000896      90                                         
+</span></span><span class="hl"><span class="">│      |    0x00000897      90                                         
+</span></span><span class="hl"><span class="">│      |    0x00000898      90                                         
+</span></span><span class="hl"><span class="">│      |    0x00000899      90                                         
+</span></span><span class="hl"><span class="">│      |    0x0000089a      90 
+</span></span><span class="">│      |    0x0000089b      488d35570300.  rsi = str.ready_n 
+</span><span class="">│      |    0x000008a2      ba06000000     edx = 6                     
+</span><span class="">│      |    0x000008a7      bf01000000     edi = 1                     
+</span><span class="">│      |    0x000008ac      e8fffeffff     sym.imp.write ()            
+</span><span class="">│      |    0x000008b1      4883f806       var = rax - 6               
+</span><span class="">│      └──&lt; 0x000008b5      75c9           if (var) goto 0x880         ; likely
+</span><span class="">└           0x000008b7      660f1f840000.    
+</span><span class="">│              ; JMP XREF from 0x000008c7 (main)
+</span><span class="">│       ┌─&gt; 0x000008c0      31c0           eax = 0
+</span><span class="">│       |   0x000008c2      e8f9010000     sym.do_test ()
+</span><span class="">│       └─&lt; 0x000008c7      ebf7           goto 0x8c0</span></code></pre>
+</div>
 
 <blockquote>
 <p><code>wao nop</code> assembles the nop opcode (which is <code>90</code> in hexadecimal) and writes it as many times as needed to overwrite the entire destination opcode. Nop means &ldquo;<strong>N</strong>o <strong>OP</strong>eration&rdquo;.</p>
@@ -276,40 +270,37 @@ Lets start with the <code>main</code> function.</p>
 <table class="hmg">
     <tr>
         <td>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ checksec inst_prof 
-<span class="o">[</span>*<span class="o">]</span> <span class="s1">&#39;/root/inst_prof&#39;</span>
-    Arch:     amd64-64-little
-    RELRO:    Partial RELRO
-    Stack:    No canary found
-<span class="hll">    NX:       NX enabled
-</span><span class="hll">    PIE:      PIE enabled
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ checksec inst_prof 
+</span><span class=""></span><span class="o">[</span><span class="">*</span><span class="o">]</span><span class=""> </span><span class="s">&#39;/root/inst_prof&#39;</span><span class="">
+</span><span class="">    Arch:     amd64-64-little
+</span><span class="">    RELRO:    Partial RELRO
+</span><span class="">    Stack:    No canary found
+</span><span class="hl"><span class="">    NX:       NX enabled
+</span></span><span class="hl"><span class="">    PIE:      PIE enabled</span></span></code></pre>
+</div>
         </td>
         <td>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">i</span>~true
-iorw     true
-havecode true
-linenum  true
-lsyms    true
-<span class="hll">nx       true
-</span><span class="hll">pic      true
-</span>relocs   true
-va       true
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; i~true
+</span><span class="">iorw     true
+</span><span class="">havecode true
+</span><span class="">linenum  true
+</span><span class="">lsyms    true
+</span><span class="hl"><span class="">nx       true
+</span></span><span class="hl"><span class="">pic      true
+</span></span><span class="">relocs   true
+</span><span class="">va       true</span></code></pre>
+</div>
         </td>
         <td>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ rabin2 -I inst_prof | grep true
-havecode true
-linenum  true
-lsyms    true
-<span class="hll">nx       true
-</span><span class="hll">pic      true
-</span>relocs   true
-va       true
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">$ rabin2 -I inst_prof | grep true
+</span><span class="">havecode true
+</span><span class="">linenum  true
+</span><span class="">lsyms    true
+</span><span class="hl"><span class="">nx       true
+</span></span><span class="hl"><span class="">pic      true
+</span></span><span class="">relocs   true
+</span><span class="">va       true</span></code></pre>
+</div>
         </td>
     </tr>
 </table>
@@ -325,75 +316,73 @@ va       true
 <p>Okay!
 We can start analyzing the binary flow. We can now move to the last part of the <code>main</code> function, right after the patched calls.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k">│</span>              <span class="c">; JMP XREF from 0x000008c7 (main)</span>
-<span class="k">│</span>       <span class="k">┌─&gt;</span> <span class="s">0x000008c0</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="hll"><span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000008c2</span>      e8f9010000     <span class="k">sym</span><span class="o">.</span>do_test ()
-</span><span class="k">│</span>       <span class="k">└─&lt;</span> <span class="s">0x000008c7</span>      ebf7           <span class="mh">goto</span> <span class="mh">0x8c0</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">│              ; JMP XREF from 0x000008c7 (main)
+</span><span class="">│       ┌─&gt; 0x000008c0      31c0           eax = 0
+</span><span class="hl"><span class="">│       |   0x000008c2      e8f9010000     sym.do_test ()
+</span></span><span class="">│       └─&lt; 0x000008c7      ebf7           goto 0x8c0</span></code></pre>
+</div>
 
 <p>Just an infinite loop to a function called <code>sym.do_test</code>. Unless there is some logic inside <code>sym.do_test</code> to end the program (like an <code>exit</code> function) it could never end!</p>
 
 <p>Are not you curious about its content?</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.do_test
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>do_test <span class="m">153</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>do_test ();
-<span class="k">│</span>           <span class="c">; var int local_18h @ rbp-0x18</span>
-<span class="k">│</span>              <span class="c">; CALL XREF from 0x000008c2 (main)</span>
-<span class="k">│</span>           <span class="s">0x00000ac0</span>      55             <span class="k">push</span> <span class="k">rbp</span>
-<span class="k">│</span>           <span class="s">0x00000ac1</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x00000ac3</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>
-<span class="k">│</span>           <span class="s">0x00000ac6</span>      4154           <span class="k">push</span> <span class="k">r12</span>
-<span class="k">│</span>           <span class="s">0x00000ac8</span>      53             <span class="k">push</span> <span class="k">rbx</span>
-<span class="k">│</span>           <span class="s">0x00000ac9</span>      4883ec10       <span class="k">rsp</span> <span class="o">-=</span> <span class="mh">0x10</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000acd</span>      e81effffff     <span class="k">sym</span><span class="o">.</span>alloc_page ()
-</span><span class="k">│</span>           <span class="s">0x00000ad2</span>      4889c3         <span class="k">rbx</span> <span class="o">=</span> <span class="k">rax</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000ad5</span>      488d05240100.  <span class="k">rax</span> <span class="o">=</span> <span class="k">obj</span><span class="o">.</span>template
-</span><span class="k">│</span>           <span class="s">0x00000adc</span>      488d7b05       <span class="k">rdi</span> <span class="o">=</span> [<span class="k">rbx</span> <span class="o">+</span> <span class="m">5</span>]
-<span class="k">│</span>           <span class="s">0x00000ae0</span>      488b10         <span class="k">rdx</span> <span class="o">=</span> qword [<span class="k">rax</span>]
-<span class="k">│</span>           <span class="s">0x00000ae3</span>      488913         qword [<span class="k">rbx</span>] <span class="o">=</span> <span class="k">rdx</span>
-<span class="k">│</span>           <span class="s">0x00000ae6</span>      8b5008         <span class="k">edx</span> <span class="o">=</span> dword [<span class="k">rax</span> <span class="o">+</span> <span class="m">8</span>]
-<span class="k">│</span>           <span class="s">0x00000ae9</span>      895308         dword [<span class="k">rbx</span> <span class="o">+</span> <span class="m">8</span>] <span class="o">=</span> <span class="k">edx</span>
-<span class="k">│</span>           <span class="s">0x00000aec</span>      0fb7500c       <span class="k">edx</span> <span class="o">=</span> <span class="s">word</span> [<span class="k">rax</span> <span class="o">+</span> <span class="mh">0xc</span>]
-<span class="k">│</span>           <span class="s">0x00000af0</span>      0fb6400e       <span class="k">eax</span> <span class="o">=</span> byte [<span class="k">rax</span> <span class="o">+</span> <span class="mh">0xe</span>]
-<span class="k">│</span>           <span class="s">0x00000af4</span>      6689530c       <span class="s">word</span> [<span class="k">rbx</span> <span class="o">+</span> <span class="mh">0xc</span>] <span class="o">=</span> <span class="k">dx</span>
-<span class="k">│</span>           <span class="s">0x00000af8</span>      88430e         byte [<span class="k">rbx</span> <span class="o">+</span> <span class="mh">0xe</span>] <span class="o">=</span> <span class="k">al</span>
-<span class="k">│</span>         <span class="c">; ssize_t read(int fildes, void *buf, size_t nbyte)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000afb</span>      e8b0ffffff     <span class="k">sym</span><span class="o">.</span>read_inst ()
-</span><span class="k">│</span>           <span class="s">0x00000b00</span>      4889df         <span class="k">rdi</span> <span class="o">=</span> <span class="k">rbx</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000b03</span>      e818ffffff     <span class="k">sym</span><span class="o">.</span>make_page_executable ()
-</span><span class="k">│</span>           <span class="s">0x00000b08</span>      0f31          
-<span class="k">│</span>           <span class="s">0x00000b0a</span>      48c1e220       <span class="k">rdx</span> <span class="k">&lt;&lt;&lt;</span><span class="o">=</span> <span class="mh">0x20</span>
-<span class="k">│</span>           <span class="s">0x00000b0e</span>      4989c4         <span class="k">r12</span> <span class="o">=</span> <span class="k">rax</span>
-<span class="k">│</span>           <span class="s">0x00000b11</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x00000b13</span>      4909d4         <span class="k">r12</span> <span class="k">|</span><span class="o">=</span> <span class="k">rdx</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000b16</span>      ffd3           <span class="k">rbx</span> ()
-</span><span class="k">│</span>           <span class="s">0x00000b18</span>      0f31               
-<span class="k">│</span>           <span class="s">0x00000b1a</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>
-<span class="k">│</span>           <span class="s">0x00000b1f</span>      48c1e220       <span class="k">rdx</span> <span class="k">&lt;&lt;&lt;</span><span class="o">=</span> <span class="mh">0x20</span>
-<span class="k">│</span>           <span class="s">0x00000b23</span>      488d75e8       <span class="k">rsi</span> <span class="o">=</span> [<span class="k">local_18h</span>]
-<span class="k">│</span>           <span class="s">0x00000b27</span>      4809c2         <span class="k">rdx</span> <span class="k">|</span><span class="o">=</span> <span class="k">rax</span>
-<span class="k">│</span>           <span class="s">0x00000b2a</span>      4c29e2         <span class="k">rdx</span> <span class="o">-=</span> <span class="k">r12</span>
-<span class="k">│</span>           <span class="s">0x00000b2d</span>      488955e8       qword [<span class="k">local_18h</span>] <span class="o">=</span> <span class="k">rdx</span>
-<span class="k">│</span>           <span class="s">0x00000b31</span>      ba08000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">8</span>
-<span class="k">│</span>           <span class="s">0x00000b36</span>      e875fcffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>write ()
-<span class="k">│</span>           <span class="s">0x00000b3b</span>      4883f808       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="m">8</span>
-<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x00000b3f</span>      7511           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0xb52</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b41</span>      4889df         <span class="k">rdi</span> <span class="o">=</span> <span class="k">rbx</span>
-<span class="k">│</span>       <span class="k">│</span> <span class="c">; void free(void *ptr)</span>
-<span class="hll"><span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b44</span>      e8f7feffff     <span class="k">sym</span><span class="o">.</span>free_page ()
-</span><span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b49</span>      4883c410       <span class="k">rsp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b4d</span>      5b             <span class="k">pop</span> <span class="k">rbx</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b4e</span>      415c           <span class="k">pop</span> <span class="k">r12</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b50</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000b51</span>      c3             
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x00000b3f (sym.do_test)</span>
-<span class="k">│</span>       <span class="k">└─&gt;</span> <span class="s">0x00000b52</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>         <span class="c">; void exit(int status)</span>
-<span class="hll"><span class="k">└</span>           <span class="s">0x00000b54</span>      e8d7fcffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; pdf @ sym.do_test
+</span><span class="">┌ (fcn) sym.do_test 153
+</span><span class="">│   sym.do_test ();
+</span><span class="">│           ; var int local_18h @ rbp-0x18
+</span><span class="">│              ; CALL XREF from 0x000008c2 (main)
+</span><span class="">│           0x00000ac0      55             push rbp
+</span><span class="">│           0x00000ac1      31c0           eax = 0
+</span><span class="">│           0x00000ac3      4889e5         rbp = rsp
+</span><span class="">│           0x00000ac6      4154           push r12
+</span><span class="">│           0x00000ac8      53             push rbx
+</span><span class="">│           0x00000ac9      4883ec10       rsp -= 0x10
+</span><span class="hl"><span class="">│           0x00000acd      e81effffff     sym.alloc_page ()
+</span></span><span class="">│           0x00000ad2      4889c3         rbx = rax
+</span><span class="hl"><span class="">│           0x00000ad5      488d05240100.  rax = obj.template
+</span></span><span class="">│           0x00000adc      488d7b05       rdi = [rbx + 5]
+</span><span class="">│           0x00000ae0      488b10         rdx = qword [rax]
+</span><span class="">│           0x00000ae3      488913         qword [rbx] = rdx
+</span><span class="">│           0x00000ae6      8b5008         edx = dword [rax + 8]
+</span><span class="">│           0x00000ae9      895308         dword [rbx + 8] = edx
+</span><span class="">│           0x00000aec      0fb7500c       edx = word [rax + 0xc]
+</span><span class="">│           0x00000af0      0fb6400e       eax = byte [rax + 0xe]
+</span><span class="">│           0x00000af4      6689530c       word [rbx + 0xc] = dx
+</span><span class="">│           0x00000af8      88430e         byte [rbx + 0xe] = al
+</span><span class="">│         ; ssize_t read(int fildes, void *buf, size_t nbyte)
+</span><span class="hl"><span class="">│           0x00000afb      e8b0ffffff     sym.read_inst ()
+</span></span><span class="">│           0x00000b00      4889df         rdi = rbx
+</span><span class="hl"><span class="">│           0x00000b03      e818ffffff     sym.make_page_executable ()
+</span></span><span class="">│           0x00000b08      0f31          
+</span><span class="">│           0x00000b0a      48c1e220       rdx &lt;&lt;&lt;= 0x20
+</span><span class="">│           0x00000b0e      4989c4         r12 = rax
+</span><span class="">│           0x00000b11      31c0           eax = 0
+</span><span class="">│           0x00000b13      4909d4         r12 |= rdx
+</span><span class="hl"><span class="">│           0x00000b16      ffd3           rbx ()
+</span></span><span class="">│           0x00000b18      0f31               
+</span><span class="">│           0x00000b1a      bf01000000     edi = 1
+</span><span class="">│           0x00000b1f      48c1e220       rdx &lt;&lt;&lt;= 0x20
+</span><span class="">│           0x00000b23      488d75e8       rsi = [local_18h]
+</span><span class="">│           0x00000b27      4809c2         rdx |= rax
+</span><span class="">│           0x00000b2a      4c29e2         rdx -= r12
+</span><span class="">│           0x00000b2d      488955e8       qword [local_18h] = rdx
+</span><span class="">│           0x00000b31      ba08000000     edx = 8
+</span><span class="">│           0x00000b36      e875fcffff     sym.imp.write ()
+</span><span class="">│           0x00000b3b      4883f808       var = rax - 8
+</span><span class="">│       ┌─&lt; 0x00000b3f      7511           if (var) goto 0xb52
+</span><span class="">│       │   0x00000b41      4889df         rdi = rbx
+</span><span class="">│       │ ; void free(void *ptr)
+</span><span class="hl"><span class="">│       │   0x00000b44      e8f7feffff     sym.free_page ()
+</span></span><span class="">│       │   0x00000b49      4883c410       rsp += 0x10
+</span><span class="">│       │   0x00000b4d      5b             pop rbx
+</span><span class="">│       │   0x00000b4e      415c           pop r12
+</span><span class="">│       │   0x00000b50      5d             pop rbp
+</span><span class="">│       │   0x00000b51      c3             
+</span><span class="">│       │      ; JMP XREF from 0x00000b3f (sym.do_test)
+</span><span class="">│       └─&gt; 0x00000b52      31ff           edi = 0
+</span><span class="">│         ; void exit(int status)
+</span><span class="hl"><span class="">└           0x00000b54      e8d7fcffff     sym.imp.exit ()</span></span></code></pre>
+</div>
 
 <p>Which are your first thoughts about the highlighted lines? mines are:</p>
 
@@ -417,32 +406,29 @@ We can start analyzing the binary flow. We can now move to the last part of the 
 
 <h5 id="sym-alloc-page">sym.alloc_page</h5>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.alloc_page 
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>alloc_page <span class="m">36</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>alloc_page ();
-<span class="k">│</span>       <span class="k">↑</span>      <span class="c">; CALL XREF from 0x00000acd (sym.do_test)</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000009f0</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000009f1</span>      4531c9         <span class="k">r9d</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000009f4</span>      41b8ffffffff   <span class="k">r8d</span> <span class="o">=</span> <span class="mh">0xffffffff</span>            <span class="c">; -1 </span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000009fa</span>      b922000000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x22</span>                  <span class="c">; &#39;&quot;&#39; </span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x000009ff</span>      ba03000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">3</span>                     
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a04</span>      be00100000     <span class="k">esi</span> <span class="o">=</span> <span class="mh">0x1000</span>                
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a09</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a0c</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a0e</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                     
-<span class="hll"><span class="k">└</span>       <span class="k">└─&lt;</span> <span class="s">0x00000a0f</span>      e9acfdffff     <span class="mh">goto</span> <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>mmap           <span class="c">; sym.imp.mmap</span>
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000009f0]&gt; pdf @ sym.alloc_page 
+</span><span class="">┌ (fcn) sym.alloc_page 36
+</span><span class="">│   sym.alloc_page ();
+</span><span class="">│       ↑      ; CALL XREF from 0x00000acd (sym.do_test)
+</span><span class="">│       |   0x000009f0      55             push rbp                    
+</span><span class="">│       |   0x000009f1      4531c9         r9d = 0                     
+</span><span class="">│       |   0x000009f4      41b8ffffffff   r8d = 0xffffffff            ; -1 
+</span><span class="">│       |   0x000009fa      b922000000     ecx = 0x22                  ; &#39;&#34;&#39; 
+</span><span class="">│       |   0x000009ff      ba03000000     edx = 3                     
+</span><span class="">│       |   0x00000a04      be00100000     esi = 0x1000                
+</span><span class="">│       |   0x00000a09      4889e5         rbp = rsp                   
+</span><span class="">│       |   0x00000a0c      31ff           edi = 0                     
+</span><span class="">│       |   0x00000a0e      5d             pop rbp                     
+</span><span class="hl"><span class="">└       └─&lt; 0x00000a0f      e9acfdffff     goto sym.imp.mmap           ; sym.imp.mmap</span></span></code></pre>
+</div>
 
 <p>It is calling an imported function called <code>mmap</code>. With a simple <code>man mmap</code> (or just looking at google) we can figure out which arguments it receives. The definition of the function was taken from manual.</p>
-<div class="highlight"><pre><code class="language-vim" data-lang="vim"><span></span>$ man mmap
-void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t length<span class="p">,</span> int prot<span class="p">,</span> int flags<span class="p">,</span> int fd<span class="p">,</span> off_t offset<span class="p">)</span>;
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-vim" data-lang="vim"><span class="">$ </span><span class="nx">man</span><span class=""> </span><span class="nx">mmap</span><span class="err">
+</span><span class="err"></span><span class="nx">void</span><span class=""> *</span><span class="nx">mmap</span><span class="p">(</span><span class="nx">void</span><span class=""> *</span><span class="nx">addr</span><span class="p">,</span><span class=""> </span><span class="nx">size_t</span><span class=""> </span><span class="nx">length</span><span class="p">,</span><span class=""> </span><span class="nx">int</span><span class=""> </span><span class="nx">prot</span><span class="p">,</span><span class=""> </span><span class="nx">int</span><span class=""> </span><span class="nx">flags</span><span class="p">,</span><span class=""> </span><span class="nx">int</span><span class=""> </span><span class="nx">fd</span><span class="p">,</span><span class=""> </span><span class="nx">off_t</span><span class=""> </span><span class="nx">offset</span><span class="p">)</span><span class="">;</span></code></pre>
+</div>
 <p>If we apply the calling convention we mentioned at the beginning of the post we will get that the function is being called like this:</p>
-<div class="highlight"><pre><code class="language-vim" data-lang="vim"><span></span>rax <span class="p">=</span> mmap<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span>x<span class="m">1000</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">0</span>x<span class="m">22</span><span class="p">,</span> <span class="m">-1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>;
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-vim" data-lang="vim"><span class="nx">rax</span><span class=""> </span><span class="p">=</span><span class=""> </span><span class="nx">mmap</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class=""> </span><span class="m">0</span><span class="nx">x1000</span><span class="p">,</span><span class=""> </span><span class="m">3</span><span class="p">,</span><span class=""> </span><span class="m">0</span><span class="nx">x22</span><span class="p">,</span><span class=""> </span><span class="m">-1</span><span class="p">,</span><span class=""> </span><span class="m">0</span><span class="p">)</span><span class="">;</span></code></pre>
+</div>
 <p>Basically it is:</p>
 
 <ol>
@@ -461,21 +447,20 @@ void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t leng
 
 <p>Obviously, it is allocating some space in memory to put something in there. <code>obj.template</code> has all the odds to has something to do with this. Lets see what is at that address:</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 8 @ obj.template 
-<span class="k"> </span>           <span class="c">;-- template:</span>
-<span class="k"> </span>              <span class="c">; DATA XREF from 0x00000ad5 (sym.do_test)</span>
-<span class="hll"><span class="k"> </span>           <span class="s">0x00000c00</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>                
-</span><span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x00000c05</span>      90                                         
-<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x00000c06</span>      90                                         
-<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x00000c07</span>      90                                         
-<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x00000c08</span>      90                                         
-<span class="hll"><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x00000c09</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>                    
-</span><span class="hll"><span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x00000c0c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0xc05</span>
-</span><span class="k"> </span>           <span class="s">0x00000c0e</span>      c3                                         
-[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> ? 0x1000
-4<span class="mh">096</span> <span class="mh">0x1000</span> <span class="mh">010000</span> <span class="mh">4</span>K <span class="mh">0000</span><span class="o">:</span><span class="mh">0000</span> <span class="mh">4096</span> <span class="err">&quot;\</span>x<span class="mh">10</span><span class="err">&quot;</span> <span class="mh">0001000000000000</span> <span class="mh">4096</span><span class="o">.</span><span class="mh">0</span> <span class="mh">4096</span><span class="o">.</span><span class="mh">000000f</span> <span class="mh">4096</span><span class="o">.</span><span class="mh">000000</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000009f0]&gt; pd 8 @ obj.template 
+</span><span class="">            ;-- template:
+</span><span class="">               ; DATA XREF from 0x00000ad5 (sym.do_test)
+</span><span class="hl"><span class="">            0x00000c00      b900100000     ecx = 0x1000                
+</span></span><span class="">        ┌─&gt; 0x00000c05      90                                         
+</span><span class="">        |   0x00000c06      90                                         
+</span><span class="">        |   0x00000c07      90                                         
+</span><span class="">        |   0x00000c08      90                                         
+</span><span class="hl"><span class="">        |   0x00000c09      83e901         ecx -= 1                    
+</span></span><span class="hl"><span class="">        └─&lt; 0x00000c0c      75f7           if (var) goto 0xc05
+</span></span><span class="">            0x00000c0e      c3                                         
+</span><span class="">[0x000009f0]&gt; ? 0x1000
+</span><span class="">4096 0x1000 010000 4K 0000:0000 4096 &#34;\x10&#34; 0001000000000000 4096.0 4096.000000f 4096.000000</span></code></pre>
+</div>
 
 <blockquote>
 <p><code>pd 8 @ obj.template</code> indicates radare to print 8 asm instructions starting from <code>obj.template</code> address.</p>
@@ -484,55 +469,53 @@ void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t leng
 <p>Interesting, it is just a small loop, which is going to iterate <code>0x1000 = 4096</code> times. But thats all, because inside of the loop there is only NOPs opcodes.</p>
 
 <p>Now that we know what is in there, we can keep going with the flow we were explaining before. Right after the <code>sym.alloc_page</code> call, there are the following instructions. I will explain line-by-line what they do.</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k">│</span>           <span class="s">0x00000acd</span>      e81effffff     <span class="k">sym</span><span class="o">.</span>alloc_page ()
-<span class="k">│</span>           <span class="s">0x00000ad2</span>      4889c3         <span class="k">rbx</span> <span class="o">=</span> <span class="k">rax</span>
-<span class="k">│</span> <span class="c">; The address of the recently-allocated page is saved in rbx (remember that by default</span>
-<span class="k">│</span> <span class="c">; the returned value of sym.alloc_page (and every function which follows the</span>
-<span class="k">│</span> <span class="c">; previously commented convention) is stored in rax).</span>
-<span class="k">│</span>           <span class="s">0x00000ad5</span>      488d05240100.  <span class="k">rax</span> <span class="o">=</span> <span class="k">obj</span><span class="o">.</span>template
-<span class="k">│</span> <span class="c">; It copies the address of the loop-template we have just described in rax.</span>
-<span class="k">│</span>           <span class="s">0x00000adc</span>      488d7b05       <span class="k">rdi</span> <span class="o">=</span> [<span class="k">rbx</span> <span class="o">+</span> <span class="m">5</span>]
-<span class="k">│</span> <span class="c">; It adds 5 to the address of rbx and saves the result in rdi. Note that rdi wont be used</span>
-<span class="k">│</span> <span class="c">; in the following instrucctions so we can assume it could be the argument of the next</span>
-<span class="k">│</span> <span class="c">; function. Remember it.</span>
-<span class="k">│</span>           <span class="s">0x00000ae0</span>      488b10         <span class="k">rdx</span> <span class="o">=</span> qword [<span class="k">rax</span>]
-<span class="k">│</span> <span class="c">; the first 8 bytes (a qword) rax is pointing to are copied in rdx.</span>
-<span class="k">│</span> <span class="c">; If you look again to obj.template you will realize that it is copying</span>
-<span class="k">│</span> <span class="c">; its first 8 bytes:</span>
-<span class="k">│</span> <span class="c">;     b900100000  ecx = 0x1000</span>
-<span class="k">│</span> <span class="c">;     90          nop</span>
-<span class="k">│</span> <span class="c">;     90          nop</span>
-<span class="k">│</span> <span class="c">;     90          nop</span>
-<span class="k">│</span> <span class="c">; 5 bytes which defines the first instruction: ecx = 0x1000</span>
-<span class="k">│</span> <span class="c">; and another extra 3 bytes (3 NOPs instructions).</span>
-<span class="k">│</span>           <span class="s">0x00000ae3</span>      488913         qword [<span class="k">rbx</span>] <span class="o">=</span> <span class="k">rdx</span>
-<span class="k">│</span> <span class="c">; After saving those 8 bytes in the rdx register, it copies them to the address </span>
-<span class="k">│</span> <span class="c">; rbx is pointing to (which is the beginning of the allocated page).</span>
-<span class="k">│</span>           <span class="s">0x00000ae6</span>      8b5008         <span class="k">edx</span> <span class="o">=</span> dword [<span class="k">rax</span> <span class="o">+</span> <span class="m">8</span>]
-<span class="k">│</span> <span class="c">; It copies 4 bytes (a dword) of the content of the address of rax+8.</span>
-<span class="k">│</span> <span class="c">; These bytes are 90 83 e9 01 and form the following instructions:</span>
-<span class="k">│</span> <span class="c">;     90          nop</span>
-<span class="k">│</span> <span class="c">;     83e901      ecx -= 1</span>
-<span class="k">│</span> <span class="c">; In short, it is copying the last nop instruction (there were 4) </span>
-<span class="k">│</span> <span class="c">; and new instruction in the edx register.</span>
-<span class="k">│</span>           <span class="s">0x00000ae9</span>      895308         dword [<span class="k">rbx</span> <span class="o">+</span> <span class="m">8</span>] <span class="o">=</span> <span class="k">edx</span>
-<span class="k">│</span> <span class="c">; And again it is saving those two instructions in memory, next to the previously ones. </span>
-<span class="k">│</span>           <span class="s">0x00000aec</span>      0fb7500c       <span class="k">edx</span> <span class="o">=</span> <span class="s">word</span> [<span class="k">rax</span> <span class="o">+</span> <span class="mh">0xc</span>]
-<span class="k">│</span>           <span class="s">0x00000af0</span>      0fb6400e       <span class="k">eax</span> <span class="o">=</span> byte [<span class="k">rax</span> <span class="o">+</span> <span class="mh">0xe</span>]
-<span class="k">│</span>           <span class="s">0x00000af4</span>      6689530c       <span class="s">word</span> [<span class="k">rbx</span> <span class="o">+</span> <span class="mh">0xc</span>] <span class="o">=</span> <span class="k">dx</span>
-<span class="k">│</span>           <span class="s">0x00000af8</span>      88430e         byte [<span class="k">rbx</span> <span class="o">+</span> <span class="mh">0xe</span>] <span class="o">=</span> <span class="k">al</span>
-<span class="k">│</span> <span class="c">; The rest instructions do the same operation but with less data: 2 bytes (a word)</span>
-<span class="k">│</span> <span class="c">; and 1 byte respectively. Those bytes represent the last 2 instructions:</span>
-<span class="k">│</span> <span class="c">;     75f7        if (var) goto 0x7ff2c49f0005</span>
-<span class="k">│</span> <span class="c">;     c3          ret</span>
-<span class="k">│</span>           <span class="s">0x00000afb</span>      e8b0ffffff     <span class="k">sym</span><span class="o">.</span>read_inst ()
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">│           0x00000acd      e81effffff     sym.alloc_page ()
+</span><span class="">│           0x00000ad2      4889c3         rbx = rax
+</span><span class="">│ ; The address of the recently-allocated page is saved in rbx (remember that by default
+</span><span class="">│ ; the returned value of sym.alloc_page (and every function which follows the
+</span><span class="">│ ; previously commented convention) is stored in rax).
+</span><span class="">│           0x00000ad5      488d05240100.  rax = obj.template
+</span><span class="">│ ; It copies the address of the loop-template we have just described in rax.
+</span><span class="">│           0x00000adc      488d7b05       rdi = [rbx + 5]
+</span><span class="">│ ; It adds 5 to the address of rbx and saves the result in rdi. Note that rdi wont be used
+</span><span class="">│ ; in the following instrucctions so we can assume it could be the argument of the next
+</span><span class="">│ ; function. Remember it.
+</span><span class="">│           0x00000ae0      488b10         rdx = qword [rax]
+</span><span class="">│ ; the first 8 bytes (a qword) rax is pointing to are copied in rdx.
+</span><span class="">│ ; If you look again to obj.template you will realize that it is copying
+</span><span class="">│ ; its first 8 bytes:
+</span><span class="">│ ;     b900100000  ecx = 0x1000
+</span><span class="">│ ;     90          nop
+</span><span class="">│ ;     90          nop
+</span><span class="">│ ;     90          nop
+</span><span class="">│ ; 5 bytes which defines the first instruction: ecx = 0x1000
+</span><span class="">│ ; and another extra 3 bytes (3 NOPs instructions).
+</span><span class="">│           0x00000ae3      488913         qword [rbx] = rdx
+</span><span class="">│ ; After saving those 8 bytes in the rdx register, it copies them to the address 
+</span><span class="">│ ; rbx is pointing to (which is the beginning of the allocated page).
+</span><span class="">│           0x00000ae6      8b5008         edx = dword [rax + 8]
+</span><span class="">│ ; It copies 4 bytes (a dword) of the content of the address of rax+8.
+</span><span class="">│ ; These bytes are 90 83 e9 01 and form the following instructions:
+</span><span class="">│ ;     90          nop
+</span><span class="">│ ;     83e901      ecx -= 1
+</span><span class="">│ ; In short, it is copying the last nop instruction (there were 4) 
+</span><span class="">│ ; and new instruction in the edx register.
+</span><span class="">│           0x00000ae9      895308         dword [rbx + 8] = edx
+</span><span class="">│ ; And again it is saving those two instructions in memory, next to the previously ones. 
+</span><span class="">│           0x00000aec      0fb7500c       edx = word [rax + 0xc]
+</span><span class="">│           0x00000af0      0fb6400e       eax = byte [rax + 0xe]
+</span><span class="">│           0x00000af4      6689530c       word [rbx + 0xc] = dx
+</span><span class="">│           0x00000af8      88430e         byte [rbx + 0xe] = al
+</span><span class="">│ ; The rest instructions do the same operation but with less data: 2 bytes (a word)
+</span><span class="">│ ; and 1 byte respectively. Those bytes represent the last 2 instructions:
+</span><span class="">│ ;     75f7        if (var) goto 0x7ff2c49f0005
+</span><span class="">│ ;     c3          ret
+</span><span class="">│           0x00000afb      e8b0ffffff     sym.read_inst ()</span></code></pre>
+</div>
 <blockquote>
 <p>If you do not trust me (yeah dont do it) you can check these explanations executing each instruction. For that you first need to open a new radare session and set some breakpoints to reach that memory zone. The fastest way to do it is using the following command.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 -Ad -c <span class="s1">&#39;dcu main; db `/c mov rbx, rax`; dc; Vpp&#39;</span> inst_prof
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -Ad -c </span><span class="s">&#39;dcu main; db `/c mov rbx, rax`; dc; Vpp&#39;</span><span class=""> inst_prof</span></code></pre>
+</div>
 <p>Ok, that is a long cmd right? but you will see how much interesting it is.
 First we tell r2 to analyze the binary and open it in <strong>debug</strong> mode <code>-Ad</code>.
 Thats not enough for us and we ask him to execute the following commands (<code>-c</code>).</p>
@@ -553,32 +536,30 @@ Thats not enough for us and we ask him to execute the following commands (<code>
 
 <p>Lets devour <code>sym.read_inst</code> now!
 Remember the <code>rdi = [rbx + 5]</code> instruction I told you to remember before? Look where it points to.
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x55cfea0bcacd</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 6 @ rdi -5
-<span class="k"> </span>           <span class="c">;-- rbx:</span>
-<span class="k"> </span>           <span class="s">0x7f2d9bae5000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>
-<span class="k"> </span>           <span class="c">;-- rdi:</span>
-<span class="hll"><span class="k"> </span>           <span class="s">0x7f2d9bae5005</span>      90                                    
-</span><span class="k"> </span>           <span class="s">0x7f2d9bae5006</span>      90                                     
-<span class="k"> </span>           <span class="s">0x7f2d9bae5007</span>      90                                     
-<span class="k"> </span>           <span class="s">0x7f2d9bae5008</span>      90                                     
-<span class="k"> </span>           <span class="s">0x7f2d9bae5009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>
-</code></pre></div>
-</p>
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x55cfea0bcacd]&gt; pd 6 @ rdi -5
+</span><span class="">            ;-- rbx:
+</span><span class="">            0x7f2d9bae5000      b900100000     ecx = 0x1000
+</span><span class="">            ;-- rdi:
+</span><span class="hl"><span class="">            0x7f2d9bae5005      90                                    
+</span></span><span class="">            0x7f2d9bae5006      90                                     
+</span><span class="">            0x7f2d9bae5007      90                                     
+</span><span class="">            0x7f2d9bae5008      90                                     
+</span><span class="">            0x7f2d9bae5009      83e901         ecx -= 1</span></code></pre>
+</div></p>
 
 <p>Its pointing to the first <code>nop</code> of the copy of <code>obj.template</code> which is in the recently-allocated page.
 I bet there is where <code>read_inst ()</code> is going to store the read instruction.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.read_inst 
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>read_inst <span class="m">15</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>read_inst ();
-<span class="k">│</span>       <span class="k">↑</span>      <span class="c">; CALL XREF from 0x00000afb (sym.do_test)</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000ab0</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="hll"><span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000ab1</span>      be04000000     <span class="k">esi</span> <span class="o">=</span> <span class="m">4</span>                     
-</span><span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000ab6</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000ab9</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                     
-<span class="hll"><span class="k">└</span>       <span class="k">└─&lt;</span> <span class="s">0x00000aba</span>      e9c1ffffff     <span class="mh">goto</span> <span class="k">sym</span><span class="o">.</span>read_n             
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000009f0]&gt; pdf @ sym.read_inst 
+</span><span class="">┌ (fcn) sym.read_inst 15
+</span><span class="">│   sym.read_inst ();
+</span><span class="">│       ↑      ; CALL XREF from 0x00000afb (sym.do_test)
+</span><span class="">│       |   0x00000ab0      55             push rbp                    
+</span><span class="hl"><span class="">│       |   0x00000ab1      be04000000     esi = 4                     
+</span></span><span class="">│       |   0x00000ab6      4889e5         rbp = rsp                   
+</span><span class="">│       |   0x00000ab9      5d             pop rbp                     
+</span><span class="hl"><span class="">└       └─&lt; 0x00000aba      e9c1ffffff     goto sym.read_n             </span></span></code></pre>
+</div>
 
 <p>Aparently, <code>sym.read_inst</code> is nothing but a wrapper of <code>sym.read_n</code>. It just adds a second argument. Now we have:</p>
 
@@ -589,62 +570,60 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 
 <p>That 4 is probably going to be the number of bytes being copied. It makes sense since there are exactly 4 nops instructions to be overwritten which occupy exactly 4 bytes in total.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.read_n
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>read_n <span class="m">48</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>read_n ();
-<span class="k">│</span>              <span class="c">; JMP XREF from 0x00000aba (sym.read_inst)</span>
-<span class="k">│</span>           <span class="s">0x00000a80</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>           <span class="s">0x00000a81</span>      4885f6         <span class="mh">var</span> <span class="o">=</span> <span class="k">rsi</span> <span class="o">&amp;</span> <span class="k">rsi</span>             
-<span class="k">│</span>           <span class="s">0x00000a84</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>           <span class="s">0x00000a87</span>      4154           <span class="k">push</span> <span class="k">r12</span>                    
-<span class="k">│</span>           <span class="s">0x00000a89</span>      4c8d2437       <span class="k">r12</span> <span class="o">=</span> [<span class="k">rdi</span> <span class="o">+</span> <span class="k">rsi</span>]           
-<span class="k">│</span>           <span class="s">0x00000a8d</span>      53             <span class="k">push</span> <span class="k">rbx</span>                    
-<span class="k">│</span>           <span class="s">0x00000a8e</span>      4889fb         <span class="k">rbx</span> <span class="o">=</span> <span class="k">rdi</span>                   
-<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x00000a91</span>      7418           <span class="mh">if</span> (<span class="k">!var</span>) <span class="mh">goto</span> <span class="mh">0xaab</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000a93</span>      0f1f440000                                 
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x00000aa9 (sym.read_n)</span>
-<span class="k">│</span>      <span class="k">┌──&gt;</span> <span class="s">0x00000a98</span>      31c0           <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000a9a</span>      4883c301       <span class="k">rbx</span> <span class="o">+=</span> <span class="m">1</span>                    
-<span class="hll"><span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000a9e</span>      e8adffffff     <span class="k">sym</span><span class="o">.</span>read_byte ()            
-</span><span class="hll"><span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000aa3</span>      8843ff         byte [<span class="k">rbx</span> <span class="o">-</span> <span class="m">1</span>] <span class="o">=</span> <span class="k">al</span>         
-</span><span class="k">│</span>      <span class="k">|│</span>   <span class="s">0x00000aa6</span>      4c39e3         <span class="mh">var</span> <span class="o">=</span> <span class="k">rbx</span> <span class="o">-</span> <span class="k">r12</span>             
-<span class="k">│</span>      <span class="k">└──&lt;</span> <span class="s">0x00000aa9</span>      75ed           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0xa98</span>
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x00000a91 (sym.read_n)</span>
-<span class="k">│</span>       <span class="k">└─&gt;</span> <span class="s">0x00000aab</span>      5b             <span class="k">pop</span> <span class="k">rbx</span>                     
-<span class="k">│</span>           <span class="s">0x00000aac</span>      415c           <span class="k">pop</span> <span class="k">r12</span>                     
-<span class="k">│</span>           <span class="s">0x00000aae</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                     
-<span class="k">└</span>           <span class="s">0x00000aaf</span>      c3                                         
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000009f0]&gt; pdf @ sym.read_n
+</span><span class="">┌ (fcn) sym.read_n 48
+</span><span class="">│   sym.read_n ();
+</span><span class="">│              ; JMP XREF from 0x00000aba (sym.read_inst)
+</span><span class="">│           0x00000a80      55             push rbp                    
+</span><span class="">│           0x00000a81      4885f6         var = rsi &amp; rsi             
+</span><span class="">│           0x00000a84      4889e5         rbp = rsp                   
+</span><span class="">│           0x00000a87      4154           push r12                    
+</span><span class="">│           0x00000a89      4c8d2437       r12 = [rdi + rsi]           
+</span><span class="">│           0x00000a8d      53             push rbx                    
+</span><span class="">│           0x00000a8e      4889fb         rbx = rdi                   
+</span><span class="">│       ┌─&lt; 0x00000a91      7418           if (!var) goto 0xaab
+</span><span class="">│       │   0x00000a93      0f1f440000                                 
+</span><span class="">│       │      ; JMP XREF from 0x00000aa9 (sym.read_n)
+</span><span class="">│      ┌──&gt; 0x00000a98      31c0           eax = 0                     
+</span><span class="">│      |│   0x00000a9a      4883c301       rbx += 1                    
+</span><span class="hl"><span class="">│      |│   0x00000a9e      e8adffffff     sym.read_byte ()            
+</span></span><span class="hl"><span class="">│      |│   0x00000aa3      8843ff         byte [rbx - 1] = al         
+</span></span><span class="">│      |│   0x00000aa6      4c39e3         var = rbx - r12             
+</span><span class="">│      └──&lt; 0x00000aa9      75ed           if (var) goto 0xa98
+</span><span class="">│       │      ; JMP XREF from 0x00000a91 (sym.read_n)
+</span><span class="">│       └─&gt; 0x00000aab      5b             pop rbx                     
+</span><span class="">│           0x00000aac      415c           pop r12                     
+</span><span class="">│           0x00000aae      5d             pop rbp                     
+</span><span class="">└           0x00000aaf      c3                                         </span></code></pre>
+</div>
 
 <p>This loop seems a bit confusing, but it is just iterating 4 times (going from -3 to 0) calling <code>sym.read_byte()</code> and retrieving <code>1 byte</code> of the input string. Then it just stores it overwriting one of the previously commented <code>nop</code> opcodes.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.read_byte
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>read_byte <span class="m">47</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>read_byte ();
-<span class="k">│</span>           <span class="c">; var int local_1h @ rbp-0x1</span>
-<span class="k">│</span>              <span class="c">; CALL XREF from 0x00000a9e (sym.read_n)</span>
-<span class="k">│</span>           <span class="s">0x00000a50</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>           <span class="s">0x00000a51</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>           <span class="s">0x00000a53</span>      ba01000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">1</span>                     
-<span class="k">│</span>           <span class="s">0x00000a58</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>           <span class="s">0x00000a5b</span>      4883ec10       <span class="k">rsp</span> <span class="o">-=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x00000a5f</span>      488d75ff       <span class="k">rsi</span> <span class="o">=</span> [<span class="k">local_1h</span>]            
-<span class="k">│</span>           <span class="s">0x00000a63</span>      c645ff00       byte [<span class="k">local_1h</span>] <span class="o">=</span> <span class="m">0</span>         
-<span class="k">│</span>         <span class="c">; ssize_t read(int fildes, void *buf, size_t nbyte)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x00000a67</span>      e874fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>read ()             
-</span><span class="k">│</span>           <span class="s">0x00000a6c</span>      4883f801       <span class="mh">var</span> <span class="o">=</span> <span class="k">rax</span> <span class="o">-</span> <span class="m">1</span>               
-<span class="k">│</span>       <span class="k">┌─&lt;</span> <span class="s">0x00000a70</span>      7506           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0xa78</span>         <span class="c">; likely</span>
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000a72</span>      0fb645ff       <span class="k">eax</span> <span class="o">=</span> byte [<span class="k">local_1h</span>]       
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000a76</span>      c9                                         
-<span class="k">│</span>       <span class="k">│</span>   <span class="s">0x00000a77</span>      c3                                         
-<span class="k">│</span>       <span class="k">│</span>      <span class="c">; JMP XREF from 0x00000a70 (sym.read_byte)</span>
-<span class="k">│</span>       <span class="k">└─&gt;</span> <span class="s">0x00000a78</span>      31ff           <span class="k">edi</span> <span class="o">=</span> <span class="m">0</span>                     
-<span class="k">│</span>         <span class="c">; void exit(int status) ; sym.imp.exit</span>
-<span class="k">└</span>           <span class="s">0x00000a7a</span>      e8b1fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()             
-[<span class="mh">0x000009f0</span>]<span class="o">&gt;</span> 
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000009f0]&gt; pdf @ sym.read_byte
+</span><span class="">┌ (fcn) sym.read_byte 47
+</span><span class="">│   sym.read_byte ();
+</span><span class="">│           ; var int local_1h @ rbp-0x1
+</span><span class="">│              ; CALL XREF from 0x00000a9e (sym.read_n)
+</span><span class="">│           0x00000a50      55             push rbp                    
+</span><span class="">│           0x00000a51      31ff           edi = 0                     
+</span><span class="">│           0x00000a53      ba01000000     edx = 1                     
+</span><span class="">│           0x00000a58      4889e5         rbp = rsp                   
+</span><span class="">│           0x00000a5b      4883ec10       rsp -= 0x10                 
+</span><span class="">│           0x00000a5f      488d75ff       rsi = [local_1h]            
+</span><span class="">│           0x00000a63      c645ff00       byte [local_1h] = 0         
+</span><span class="">│         ; ssize_t read(int fildes, void *buf, size_t nbyte)
+</span><span class="hl"><span class="">│           0x00000a67      e874fdffff     sym.imp.read ()             
+</span></span><span class="">│           0x00000a6c      4883f801       var = rax - 1               
+</span><span class="">│       ┌─&lt; 0x00000a70      7506           if (var) goto 0xa78         ; likely
+</span><span class="">│       │   0x00000a72      0fb645ff       eax = byte [local_1h]       
+</span><span class="">│       │   0x00000a76      c9                                         
+</span><span class="">│       │   0x00000a77      c3                                         
+</span><span class="">│       │      ; JMP XREF from 0x00000a70 (sym.read_byte)
+</span><span class="">│       └─&gt; 0x00000a78      31ff           edi = 0                     
+</span><span class="">│         ; void exit(int status) ; sym.imp.exit
+</span><span class="">└           0x00000a7a      e8b1fdffff     sym.imp.exit ()             
+</span><span class="">[0x000009f0]&gt; </span></code></pre>
+</div>
 
 <p>And nothing interesting inside <code>sym.read_byte</code>, it is just another wapper to call <code>read</code> with the following fixes values:</p>
 
@@ -656,9 +635,8 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 
 <p>sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after <code>read_inst</code> call. Once there, we only need to check if the input string are there instead of the nop opdes</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;&#39; inst_prof
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">$ r2 -Ad -R &#39;stdin=&#34;AAAA&#34;&#39; -c &#39;dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;&#39; inst_prof</span></code></pre>
+</div>
 
 <blockquote>
 <p><code>-Ad</code>: Again analyze and debug it.<br />
@@ -676,23 +654,21 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 
 <p>As the title suggests the purpose of this function is to make a page executable. Of course, this is the page where we have copied the <code>obj.template</code> and overwritten the nop opcodes bytes (those 90 90 90 90) with our own 4 byte input.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.make_page_executable 
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>make_page_executable <span class="m">20</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>make_page_executable ();
-<span class="k">│</span>       <span class="k">↑</span>      <span class="c">; CALL XREF from 0x00000b03 (sym.do_test)</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a20</span>      55             <span class="k">push</span> <span class="k">rbp</span>                    
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a21</span>      ba05000000     <span class="k">edx</span> <span class="o">=</span> <span class="m">5</span>                     
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a26</span>      be00100000     <span class="k">esi</span> <span class="o">=</span> <span class="mh">0x1000</span>                
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a2b</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>                   
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x00000a2e</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                     
-<span class="hll"><span class="k">└</span>       <span class="k">└─&lt;</span> <span class="s">0x00000a2f</span>      e9ecfdffff     <span class="mh">goto</span> <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>mprotect
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x000008c9]&gt; pdf @ sym.make_page_executable 
+</span><span class="">┌ (fcn) sym.make_page_executable 20
+</span><span class="">│   sym.make_page_executable ();
+</span><span class="">│       ↑      ; CALL XREF from 0x00000b03 (sym.do_test)
+</span><span class="">│       |   0x00000a20      55             push rbp                    
+</span><span class="">│       |   0x00000a21      ba05000000     edx = 5                     
+</span><span class="">│       |   0x00000a26      be00100000     esi = 0x1000                
+</span><span class="">│       |   0x00000a2b      4889e5         rbp = rsp                   
+</span><span class="">│       |   0x00000a2e      5d             pop rbp                     
+</span><span class="hl"><span class="">└       └─&lt; 0x00000a2f      e9ecfdffff     goto sym.imp.mprotect</span></span></code></pre>
+</div>
 
 <p>As previously seen, the call is following the commented convention. It is using the registers <code>rdi</code> (it was set one instruction before the call to <code>sym.make_page_executable</code> in <code>0x00000ad2</code>), <code>rsi</code> and <code>rdx</code>. Three arguments. The entire call could me summarize like this:</p>
-<div class="highlight"><pre><code class="language-vim" data-lang="vim"><span></span>int mprotect<span class="p">(</span>address_to_copied_template<span class="p">,</span> <span class="m">0</span>x<span class="m">1000</span><span class="p">,</span> PROT_EXEC<span class="p">)</span>;
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-vim" data-lang="vim"><span class="nx">int</span><span class=""> </span><span class="nx">mprotect</span><span class="p">(</span><span class="nx">address_to_copied_template</span><span class="p">,</span><span class=""> </span><span class="m">0</span><span class="nx">x1000</span><span class="p">,</span><span class=""> </span><span class="nx">PROT_EXEC</span><span class="p">)</span><span class="">;</span></code></pre>
+</div>
 <p>At this point no further explanation is needed on this function, right?
 It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and make the entire region executable&rdquo;.</p>
 
@@ -706,44 +682,42 @@ It is just saying: &ldquo;Hey, please, from this address, count 0x1000 bytes and
 
 <p>We can not create a 4-byte-lengh shellcode though, but hey we will deal with it later.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="s">0x7fdeaba18000 </span><span class="k">240 </span><span class="o">/root/inst_prof</span><span class="s">]&gt;</span> ?0;f tmp;s.. @ rbx
-- offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
-<span class="s">0x7fff40b82ac8</span>  <span class="mh">189b 0f42 cf55 0000 b08c 80ab de7f 0000</span>  ...B.U..........
-<span class="s">0x7fff40b82ad8</span>  <span class="mh">0000 0000 0000 0000 0000 0000 0000 0000</span>  ................
-<span class="s">0x7fff40b82ae8</span>  <span class="mh">c998 0f42 cf55 0000 002b b840 ff7f 0000</span>  ...B.U...+.@....
-<span class="s">0x7fff40b82af8</span>  <span class="mh">c798 0f42 cf55 0000 609b 0f42 cf55 0000</span>  ...B.U..`..B.U..
-<span class="k"> rax</span> <span class="mh">0x00000000</span>           <span class="k">rbx</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rcx</span> <span class="mh">0x7fdeab53e497</span>
-<span class="k"> rdx</span> <span class="mh">0x8ec00000000</span>         <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>
-<span class="k"> r10</span> <span class="mh">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000202</span>           <span class="k">r12</span> <span class="mh">0x8ecf3e8e3d8</span>
-<span class="k"> r13</span> <span class="mh">0x7fff40b82be0</span>       <span class="k">r14</span> <span class="mh">0x00000000</span>           <span class="k">r15</span> <span class="mh">0x00000000</span>
-<span class="k"> rsi</span> <span class="mh">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7fdeaba18000</span>       <span class="k">rsp</span> <span class="mh">0x7fff40b82ac8</span>
-<span class="k"> rbp</span> <span class="mh">0x7fff40b82af0</span>       <span class="k">rip</span> <span class="mh">0x7fdeaba18000</span>       
-orax <span class="mh">0xffffffffffffffff</span>
-<span class="hll"><span class="k"> </span>           <span class="c">;-- rbx:</span>
-</span><span class="k"> </span>           <span class="c">;-- rdi:</span>
-<span class="k"> </span>           <span class="c">;-- rip:</span>
-<span class="k"> </span>           <span class="s">0x7fdeaba18000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            <span class="c">; rsi</span>
-<span class="hll"><span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7fdeaba18005</span>      4141414183e9.  <span class="k">r9d</span> <span class="o">-=</span> <span class="m">1</span>                <span class="c">; orax</span>
-</span><span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7fdeaba1800c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7fdeaba18005</span>
-<span class="k"> </span>           <span class="s">0x7fdeaba1800e</span>      c3             
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">0x7fdeaba18000 240 /root/inst_prof]&gt; ?0;f tmp;s.. @ rbx
+</span><span class="">- offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+</span><span class="">0x7fff40b82ac8  189b 0f42 cf55 0000 b08c 80ab de7f 0000  ...B.U..........
+</span><span class="">0x7fff40b82ad8  0000 0000 0000 0000 0000 0000 0000 0000  ................
+</span><span class="">0x7fff40b82ae8  c998 0f42 cf55 0000 002b b840 ff7f 0000  ...B.U...+.@....
+</span><span class="">0x7fff40b82af8  c798 0f42 cf55 0000 609b 0f42 cf55 0000  ...B.U..`..B.U..
+</span><span class=""> rax 0x00000000           rbx 0x7fdeaba18000       rcx 0x7fdeab53e497
+</span><span class=""> rdx 0x8ec00000000         r8 0xffffffffffffffff    r9 0x00000000
+</span><span class=""> r10 0x00000487           r11 0x00000202           r12 0x8ecf3e8e3d8
+</span><span class=""> r13 0x7fff40b82be0       r14 0x00000000           r15 0x00000000
+</span><span class=""> rsi 0x00001000           rdi 0x7fdeaba18000       rsp 0x7fff40b82ac8
+</span><span class=""> rbp 0x7fff40b82af0       rip 0x7fdeaba18000       
+</span><span class="">orax 0xffffffffffffffff
+</span><span class="hl"><span class="">            ;-- rbx:
+</span></span><span class="">            ;-- rdi:
+</span><span class="">            ;-- rip:
+</span><span class="">            0x7fdeaba18000      b900100000     ecx = 0x1000            ; rsi
+</span><span class="hl"><span class="">        ┌─&gt; 0x7fdeaba18005      4141414183e9.  r9d -= 1                ; orax
+</span></span><span class="">        └─&lt; 0x7fdeaba1800c      75f7           if (var) goto 0x7fdeaba18005
+</span><span class="">            0x7fdeaba1800e      c3             </span></code></pre>
+</div>
 
 <h5 id="sym-free-page">sym.free_page</h5>
 
 <p>The last function is <code>sym.free_page</code> and its the one in charge of deallocating the page the process was using during its entire flow execution.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x7fc9a5eeac20</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.free_page 
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>free_page <span class="m">15</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>free_page ();
-<span class="k">│</span>       <span class="k">↑</span>      <span class="c">; CALL XREF from 0x5603de075b44 (sym.do_test)</span>
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a40</span>      55             <span class="k">push</span> <span class="k">rbp</span>                
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a41</span>      be00100000     <span class="k">esi</span> <span class="o">=</span> <span class="mh">0x1000</span>            
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a46</span>      4889e5         <span class="k">rbp</span> <span class="o">=</span> <span class="k">rsp</span>               
-<span class="k">│</span>       <span class="k">|</span>   <span class="s">0x5603de075a49</span>      5d             <span class="k">pop</span> <span class="k">rbp</span>                 
-<span class="hll"><span class="k">└</span>       <span class="k">└─&lt;</span> <span class="s">0x5603de075a4a</span>      e9c1fdffff     <span class="mh">goto</span> <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>munmap
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x7fc9a5eeac20]&gt; pdf @ sym.free_page 
+</span><span class="">┌ (fcn) sym.free_page 15
+</span><span class="">│   sym.free_page ();
+</span><span class="">│       ↑      ; CALL XREF from 0x5603de075b44 (sym.do_test)
+</span><span class="">│       |   0x5603de075a40      55             push rbp                
+</span><span class="">│       |   0x5603de075a41      be00100000     esi = 0x1000            
+</span><span class="">│       |   0x5603de075a46      4889e5         rbp = rsp               
+</span><span class="">│       |   0x5603de075a49      5d             pop rbp                 
+</span><span class="hl"><span class="">└       └─&lt; 0x5603de075a4a      e9c1fdffff     goto sym.imp.munmap</span></span></code></pre>
+</div>
 
 <p>Have in mind that this step is quite important. Until this point, the process has configured a memory area with:</p>
 
@@ -755,31 +729,30 @@ orax <span class="mh">0xffffffffffffffff</span>
 <p>It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode 😁 ) and execute it.
 That is the main reason why it is a good idea to deallocate the page.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;&#39; inst_prof
-Process with PID <span class="mh">11008</span> started<span class="o">...</span>
-= attach <span class="mh">11008</span> <span class="mh">11008</span>
-bin<span class="o">.</span>baddr <span class="mh">0x55e96f469000</span>
-Using <span class="mh">0x55e96f469000</span>
-Assuming filepath <span class="o">/</span>root<span class="o">/</span>inst_prof
-asm<span class="o">.</span>bits <span class="mh">64</span>
-[x] Analyze all flags starting with sym. and entry0 (aa)
-TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
-[Cannot determine xref search boundariesr references (aar)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation not permitted
-= attach <span class="mh">11008</span> <span class="mh">11008</span>
-[0x7ff8a50b5ff0-0x7ff8a50b6000] Continue until 0x55e96f469b03 using 1 bpsize
-initializing prof<span class="o">...</span>ready
-hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b03</span>
-hit breakpoint at<span class="o">:</span> <span class="mh">55e96f469b08</span>
-<span class="hll"><span class="s">usr</span>    <span class="k">16K</span> <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b6000</span> s <span class="o">-rw-</span> unk2 unk2
-</span><span class="hll"><span class="s">usr</span>     <span class="k">4K</span> <span class="mh">0x00007ff8a52b2000</span> <span class="o">-</span> <span class="mh">0x00007ff8a52b3000</span> s <span class="o">-r-x</span> unk2 unk2
-</span> -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">$ r2 -Ad -R &#39;stdin=&#34;AAAA&#34;&#39; -c &#39;dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;&#39; inst_prof
+</span><span class="">Process with PID 11008 started...
+</span><span class="">= attach 11008 11008
+</span><span class="">bin.baddr 0x55e96f469000
+</span><span class="">Using 0x55e96f469000
+</span><span class="">Assuming filepath /root/inst_prof
+</span><span class="">asm.bits 64
+</span><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
+</span><span class="">TODO: esil-vm not initialized
+</span><span class="">[Cannot determine xref search boundariesr references (aar)
+</span><span class="">[x] Analyze len bytes of instructions for references (aar)
+</span><span class="">[x] Analyze function calls (aac)
+</span><span class="">[x] Use -AA or aaaa to perform additional experimental analysis.
+</span><span class="">[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+</span><span class="">ptrace (PT_ATTACH): Operation not permitted
+</span><span class="">= attach 11008 11008
+</span><span class="">[0x7ff8a50b5ff0-0x7ff8a50b6000] Continue until 0x55e96f469b03 using 1 bpsize
+</span><span class="">initializing prof...ready
+</span><span class="">hit breakpoint at: 55e96f469b03
+</span><span class="">hit breakpoint at: 55e96f469b08
+</span><span class="hl"><span class="">usr    16K 0x00007ff8a52b2000 - 0x00007ff8a52b6000 s -rw- unk2 unk2
+</span></span><span class="hl"><span class="">usr     4K 0x00007ff8a52b2000 - 0x00007ff8a52b3000 s -r-x unk2 unk2
+</span></span><span class=""> -- Helping siol merge? No way, that would be like.. way too much not lazy. - vifino</span></code></pre>
+</div>
 
 <blockquote>
 <p>The command used is pretty similar to the previous one:<br />

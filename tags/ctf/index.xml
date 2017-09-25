@@ -20,7 +20,7 @@
       <description>In this challenge we are given a binary that is running remotely at inst-prof.ctfcompetition.com:1337.
 Probably the flag will be somewhere in the server.
 We can start getting some basic information of the binary using the unix command file.
-$ file inst_prof inst_prof: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.24, BuildID[sha1]=61e50b540c3c8e7bcef3cb73f3ad2a10c2589089, not stripped  Interesting! It is an ELF, a binary for unix systems and it has been compiled for a 64 bits architecture.</description>
+$ file inst_prof inst_prof: ELF 64-bit LSB shared object, x86-64, version 1(SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, forGNU/Linux 2.6.24, BuildID[sha1]=61e50b540c3c8e7bcef3cb73f3ad2a10c2589089, not stripped  Interesting! It is an ELF, a binary for unix systems and it has been compiled for a 64 bits architecture.</description>
     </item>
     
     <item>
@@ -31,7 +31,7 @@ $ file inst_prof inst_prof: ELF 64-bit LSB shared object, x86-64, version 1 (SYS
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn4/</guid>
       <description>Is curious that this specific challenge had more value than the previous one (pwn3).
 As we will see below, it was way easier. Lets take a look with r2.
-$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4 $ r2 -A -c &amp;#39;afl&amp;#39; pwn4  [x] Analyze all flags starting with sym. and entry0 (aa) [x] Analyze len bytes of instructions for references (aar) [x] Analyze function calls (aac) [x] Use -AA or aaaa to perform additional experimental analysis.</description>
+$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4 $ r2 -A -c &amp;#39;afl&amp;#39;pwn4  [x] Analyze all flags starting with sym. and entry0 (aa) [x] Analyze len bytes of instructions for references (aar) [x] Analyze function calls (aac) [x] Use -AA or aaaa to perform additional experimental analysis.</description>
     </item>
     
     <item>
@@ -62,9 +62,9 @@ $ wget https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/Tamu
       
       <guid>http://BlackHoods.github.io/post/tamuctf2017/pwn1/</guid>
       <description>We are told that there is a binary running remotely and its code is available to download. Lets download and open it with r2.
-$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1   At some point the link will be broken, if so you can use the one from the repository.
+$ wget https://ctf.tamu.edu/files/7e968d03d9caa11a2f4f2909bd3cabc9/pwn1 $ r2 -A pwn1    At some point the link will be broken, if so you can use the one from the repository.
  Now that the binary is opened, lets see some stuff inside it.
-[0x08048450]&amp;gt; afl 0x080483903 35 sym._init 0x080483d01 6 sym.</description>
+[0x08048450]&amp;gt; afl 0x08048390 3 35 sym.</description>
     </item>
     
   </channel>
