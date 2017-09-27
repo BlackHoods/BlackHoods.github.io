@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.29-DEV" />
+    <meta name="generator" content="Hugo 0.30-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -271,7 +271,7 @@ Lets start with the <code>main</code> function.</p>
     <tr>
         <td>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ checksec inst_prof 
-</span><span class=""></span><span class="o">[</span><span class="">*</span><span class="o">]</span><span class=""> </span><span class="s">&#39;/root/inst_prof&#39;</span><span class="">
+</span><span class=""></span><span class="o">[</span><span class="">*</span><span class="o">]</span><span class=""> </span><span class="s1">&#39;/root/inst_prof&#39;</span><span class="">
 </span><span class="">    Arch:     amd64-64-little
 </span><span class="">    RELRO:    Partial RELRO
 </span><span class="">    Stack:    No canary found
@@ -514,7 +514,7 @@ We can start analyzing the binary flow. We can now move to the last part of the 
 </div>
 <blockquote>
 <p>If you do not trust me (yeah dont do it) you can check these explanations executing each instruction. For that you first need to open a new radare session and set some breakpoints to reach that memory zone. The fastest way to do it is using the following command.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -Ad -c </span><span class="s">&#39;dcu main; db `/c mov rbx, rax`; dc; Vpp&#39;</span><span class=""> inst_prof</span></code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -Ad -c </span><span class="s1">&#39;dcu main; db `/c mov rbx, rax`; dc; Vpp&#39;</span><span class=""> inst_prof</span></code></pre>
 </div>
 <p>Ok, that is a long cmd right? but you will see how much interesting it is.
 First we tell r2 to analyze the binary and open it in <strong>debug</strong> mode <code>-Ad</code>.
