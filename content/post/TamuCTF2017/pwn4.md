@@ -17,7 +17,7 @@ tags:
 - TamuCTF
 - 2017
 title: "TamuCTF 2017 - Pwn 4"
-summary: "Is curious that this specific challenge had more value than the previous one ([pwn3](../pwn3/pwn3.md)). As we will see it was way easier."
+summary: "Is curious that this specific challenge had more value than the previous one. As we will see it was way easier."
 cardthumbimage: "/assets/TamuCTF2017/title.png"
 ---
 

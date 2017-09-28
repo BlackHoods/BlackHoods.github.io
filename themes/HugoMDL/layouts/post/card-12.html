@@ -17,7 +17,7 @@
 					{{end}}
 
                     <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                        {{ .Params.summary | markdownify}}
+                        {{ .Params.summary | markdownify | emojify }}
                     </div>
                     <div class="hmdl-page-meta mdl-card__supporting-text mdl-color-text--grey-600">
                         {{- range .Params.author.image}}

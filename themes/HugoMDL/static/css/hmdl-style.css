@@ -155,6 +155,10 @@ main {
 
 }
 
+.hmdl-body .mdl-layout__header--transparent .mdl-navigation__link:hover{
+    color: rgb(255,171,64);
+}
+
 .hmdl-body .mdl-layout__header-row .mdl-navigation{
 	list-style-type: none;
 	font-size: 18px
@@ -360,8 +364,14 @@ main {
     margin-top: -3px
 }
 .hmdl-page blockquote {
-    background: #ddd;
-    border-left: 10px solid #aaa;
+    /*background: #ddd;
+    border-left: 10px solid #aaa;*/
+    background: #f1e0c8;
+    border-left: 10px solid #f3a433;
+    border-right: 2px solid #f3a433;
+    -moz-box-shadow: 2px 2px 15px #383838;
+    -webkit-box-shadow: 2px 2px 15px #383838;
+    box-shadow: 2px 2px 15px #383838;
     margin: 16px 10px;
     padding: 0.5em 10px;
     font-style: normal
