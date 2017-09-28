@@ -6,6 +6,7 @@ MetaDataFormat = "yaml"
 
 googleAnalytics = "UA-103806632-1"
 
+pygmentsUseClassic = true
 pygmentsuseclasses = true
 PygmentsCodeFences = true
 PygmentsStyle = "monokai"
