@@ -1,6 +1,6 @@
-baseurl = "http://BlackHoods.github.io/"
+baseurl = "http://Pwnation.github.io/"
 languageCode = "en-us"
-title = "BlackHoods Site"
+title = "Pwnation Site"
 theme = "HugoMDL"
 MetaDataFormat = "yaml"
 
@@ -24,7 +24,7 @@ project_category = "project_categories"
 
 [params]
   id = 1
-  group = "Bl4ckH00d5"
+  group = "Pwnation"
   avatar = "/images/blackHoodsIcon120x120.png"
   background = "/images/background.jpg"
   description = "A place to publish my incomprehensible ramblings" #meta description
@@ -34,7 +34,7 @@ project_category = "project_categories"
 
   email = "Firstname@example.com"
   twitter = "https://twitter.com/firstname_lastname"
-  github = "https://github.com/BlackHoods"
+  github = "https://github.com/Pwnation"
 
   copyrightyear = "2017"
   frontpageposts = 6 #number of post cards to display on frontpage
