@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on BlackHoods Site</title>
-    <link>http://BlackHoods.github.io/tags/</link>
-    <description>Recent content in Tags on BlackHoods Site</description>
+    <title>Tags on Pwnation Site</title>
+    <link>http://Pwnation.github.io/tags/</link>
+    <description>Recent content in Tags on Pwnation Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 30 Aug 2017 18:56:18 +0200</lastBuildDate>
     
-	<atom:link href="http://BlackHoods.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://Pwnation.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>2017</title>
-      <link>http://BlackHoods.github.io/tags/2017/</link>
+      <link>http://Pwnation.github.io/tags/2017/</link>
       <pubDate>Wed, 30 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/2017/</guid>
+      <guid>http://Pwnation.github.io/tags/2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Bio</title>
-      <link>http://BlackHoods.github.io/tags/bio/</link>
+      <link>http://Pwnation.github.io/tags/bio/</link>
       <pubDate>Sat, 12 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/bio/</guid>
+      <guid>http://Pwnation.github.io/tags/bio/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Ctf</title>
-      <link>http://BlackHoods.github.io/tags/ctf/</link>
+      <link>http://Pwnation.github.io/tags/ctf/</link>
       <pubDate>Wed, 30 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/ctf/</guid>
+      <guid>http://Pwnation.github.io/tags/ctf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Googlectf</title>
-      <link>http://BlackHoods.github.io/tags/googlectf/</link>
+      <link>http://Pwnation.github.io/tags/googlectf/</link>
       <pubDate>Wed, 30 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/googlectf/</guid>
+      <guid>http://Pwnation.github.io/tags/googlectf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tamuctf</title>
-      <link>http://BlackHoods.github.io/tags/tamuctf/</link>
+      <link>http://Pwnation.github.io/tags/tamuctf/</link>
       <pubDate>Fri, 11 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/tamuctf/</guid>
+      <guid>http://Pwnation.github.io/tags/tamuctf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Test</title>
-      <link>http://BlackHoods.github.io/tags/test/</link>
+      <link>http://Pwnation.github.io/tags/test/</link>
       <pubDate>Sun, 20 Aug 2017 18:56:18 +0200</pubDate>
       
-      <guid>http://BlackHoods.github.io/tags/test/</guid>
+      <guid>http://Pwnation.github.io/tags/test/</guid>
       <description></description>
     </item>
     

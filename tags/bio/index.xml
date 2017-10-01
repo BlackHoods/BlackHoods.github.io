@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Bio on BlackHoods Site</title>
-    <link>http://BlackHoods.github.io/tags/bio/</link>
-    <description>Recent content in Bio on BlackHoods Site</description>
+    <title>Bio on Pwnation Site</title>
+    <link>http://Pwnation.github.io/tags/bio/</link>
+    <description>Recent content in Bio on Pwnation Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 12 Aug 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://BlackHoods.github.io/tags/bio/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="http://Pwnation.github.io/tags/bio/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title></title>
-      <link>http://BlackHoods.github.io/about/tzaoh/</link>
+      <link>http://Pwnation.github.io/about/tzaoh/</link>
       <pubDate>Sat, 12 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://BlackHoods.github.io/about/tzaoh/</guid>
+      <guid>http://Pwnation.github.io/about/tzaoh/</guid>
       <description>About me Hey there, my name is Diego. I am a simple guy who is currently working as security analyst in Ireland. I use to play CTFs so the idea to create a simple blog to post some of their solutions came soon to my mind.
 Inside computing security I am mainly, but not uniquely, interested in:
  Reverse engineering.
@@ -26,10 +26,10 @@ Inside computing security I am mainly, but not uniquely, interested in:
     
     <item>
       <title></title>
-      <link>http://BlackHoods.github.io/about/doopel/</link>
+      <link>http://Pwnation.github.io/about/doopel/</link>
       <pubDate>Tue, 18 Aug 2015 00:00:00 +0000</pubDate>
       
-      <guid>http://BlackHoods.github.io/about/doopel/</guid>
+      <guid>http://Pwnation.github.io/about/doopel/</guid>
       <description> Education  2016-2017 - Master in cybersecurity, Charles III University of Madrid
  2014-2015 - Information technology, Lapland University of Applied Sciences
  2011-2016 - Information technology, Jaume I University
