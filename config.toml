@@ -32,8 +32,8 @@ project_category = "project_categories"
   mdlPrimary = "grey"
   mdlSecondary = "orange"
 
-  email = "Firstname@example.com"
-  twitter = "https://twitter.com/firstname_lastname"
+  email = "pwn4tion@gmail.com"
+  twitter = "https://twitter.com/PwnationBlog"
   github = "https://github.com/Pwnation"
 
   copyrightyear = "2017"
