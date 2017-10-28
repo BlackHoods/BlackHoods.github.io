@@ -752,7 +752,7 @@ orax <span class="mh">0xffffffffffffffff</span>
 <li>And <strong>execution</strong> privileges (using the <code>sym.make_page_executable</code>).</li>
 </ol>
 
-<p>It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode 😁 ) and execute it.
+<p>It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode 😁) and execute it.
 That is the main reason why it is a good idea to deallocate the page.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.make_page_executable~[1]`; dm~unk2; dso; dm~unk2;&#39; inst_prof
