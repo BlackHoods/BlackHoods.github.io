@@ -1,4 +1,12 @@
 ---
+title: "GoogleCTF 2017 - Inst Prof (Part 1)"
+description: GoogleCTF 2017 - Inst prof (Part 1)
+
+date: 2017-08-30T18:56:18+02:00
+
+summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two parts. This part contains the description of the behavior of the entire binary. Have fun!"
+cardthumbimage: "/assets/GoogleCTF2017/title.png"
+
 author:
   email: tzaoh1@gmail.com
   github: https://github.com/tzaoh
@@ -6,19 +14,18 @@ author:
   - /images/avatar-64x64.png
   name:
   - Tzaoh
+
 cardbackground: 'white'
 cardtitlecolor: 'orange'
+
 post_categories:
 - CTFs
-date: 2017-08-30T18:56:18+02:00
-description: GoogleCTF 2017 - Inst prof (Part 1)
+
 tags:
 - CTF
 - GoogleCTF
 - 2017
-title: "GoogleCTF 2017 - Inst Prof (Part 1)"
-summary: "Here there is an explanation and solution to one funny challenge published during the GoogleCTF 2017. As the explanation is a bit long I decided to split the post in two parts. This part contains the description of the behavior of the entire binary. Have fun!"
-cardthumbimage: "/assets/GoogleCTF2017/title.jpg"
+
 ---
 
 ![inst_prof Description](/assets/GoogleCTF2017/Inst Prof/1-inst_prof_description.png)
@@ -661,7 +668,7 @@ Have in mind that this step is quite important. Until this point, the process ha
 1. **Write** privileges (Do you remember those `PROT_READ | PROT_WRITE` stuff right?)
 2. And **execution** privileges (using the `sym.make_page_executable`).
 
-It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode :grin: ) and execute it. 
+It is not common to find memory regions with both privileges, because someone could use them to store unwanted stuff (like a shellcode :grin:) and execute it. 
 That is the main reason why it is a good idea to deallocate the page. 
 
 {{< highlight r2 "hl_lines=21 22" >}}

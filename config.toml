@@ -7,7 +7,7 @@ MetaDataFormat = "yaml"
 googleAnalytics = "UA-103806632-1"
 
 pygmentsUseClassic = true
-pygmentsuseclasses = true
+pygmentsUseClasses = true
 PygmentsCodeFences = true
 PygmentsStyle = "monokai"
 enableEmoji = true
