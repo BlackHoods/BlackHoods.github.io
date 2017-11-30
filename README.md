@@ -13,8 +13,7 @@ $ git clone git@github.com:Pwnation/radare2-pygments-lexer.git
 $ python radare2-pygments-lexer/setup.py install
 
 $ git clone -b source git@github.com:Pwnation/Pwnation.github.io.git pwnation
-$ sudo python setup.py install
-
 $ cd pwnation
-$ hugo server --ignoreCache --buildFuture
+
+$ hugo server --ignoreCache --buildFuture --buildDrafts --navigateToChanged
 ```
