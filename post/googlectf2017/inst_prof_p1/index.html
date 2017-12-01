@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.31-DEV" />
+    <meta name="generator" content="Hugo 0.32-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -171,7 +171,8 @@ So if you want to debug it, you need to open a new r2 session.</p>
 <p><code>afl</code> command stands for &ldquo;analyze function list&rdquo;. In short, to print the functions detected by r2.</p>
 </blockquote>
 
-<p>As you will see, there is a lot of functions we need to check (at least the names give an idea of what they are used for).<br />
+<p>As you will see, there is a lot of functions we need to check (at least the names give an idea of what they
+are used for).<br />
 Lets start with the <code>main</code> function.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x000008c9</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main
@@ -553,7 +554,7 @@ Thats not enough for us and we ask him to execute the following commands (<code>
 
 <p>Lets devour <code>sym.read_inst</code> now!
 Remember the <code>rdi = [rbx + 5]</code> instruction I told you to remember before? Look where it points to.
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x55cfea0bcacd</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 6 @ rdi -5
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x55cfea0bcacd</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 6 @ rdi+5
 <span class="k"> </span>           <span class="c">;-- rbx:</span>
 <span class="k"> </span>           <span class="s">0x7f2d9bae5000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>
 <span class="k"> </span>           <span class="c">;-- rdi:</span>
@@ -654,7 +655,8 @@ I bet there is where <code>read_inst ()</code> is going to store the read instru
 <li><code>rdx = 1</code> the expected length of the input.</li>
 </ol>
 
-<p>sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after <code>read_inst</code> call. Once there, we only need to check if the input string are there instead of the nop opdes</p>
+<p>Sigh, this is being long. To check all this out we can start radare with some random input and execute the binary
+until the instruction right after <code>read_inst</code> call. Once there, we only need to check if the input string are there instead of the nop opdes</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &#39;stdin=&quot;AAAA&quot;&#39; -c &#39;dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;&#39; inst_prof
 </code></pre></div>
@@ -839,6 +841,12 @@ As this article is getting very long I have decided to stop writing here and to 
                         Older
                     </a>
                     <div class="section-spacer"></div>
+                    <a href="/post/googlectf2017/inst_prof_p2/">
+                        Newer
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                            <i class="icon ion-android-arrow-forward"></i>
+                        </button>
+                    </a>
                 </nav>
  
             </div>        

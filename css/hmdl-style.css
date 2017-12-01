@@ -438,7 +438,15 @@ main {
 }
 .hmdl-page .hmdl-page-content .highlight pre {
     margin: 0;
-    overflow: auto;
+    overflow-x:; auto;
+    overflow-y: hidden;
+}
+.hmdl-page .hmdl-page-content .highlight.compact {
+    display: table;
+    margin: 0 auto;
+}
+.hmdl-page .hmdl-page-content .highlight.text-center pre {
+    text-align: center;
 }
 .hmdl-page .custom-header {
     background-color: transparent
