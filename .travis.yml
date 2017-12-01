@@ -1,13 +1,13 @@
 # dist: precise
 language: go
 go:
-- 1.7.1
+- 1.8
 
 env:
   global:
   - SSH_KEY="pwnation"
-  - GIT_NAME="CuckooProject"
-  - GIT_EMAIL="al3jokotama@gmail.com"
+  - GIT_NAME="Pwnation"
+  - GIT_EMAIL="tzaho1@gmail.com"
   - SOURCE_DIR="public"
   - DEPLOY_BRANCH="source"
 before_install:
