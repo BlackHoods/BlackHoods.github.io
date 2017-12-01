@@ -3,12 +3,11 @@ title: "GoogleCTF 2017 - Inst Prof (Part 2)"
 description: GoogleCTF 2017 - Inst prof (Part 2)
 
 date: 2017-09-24T18:56:18+02:00
-publishdate: 2017-10-25T18:56:18+02:00
-draft: true
+publishdate: 2017-12-01T21:45:18+02:00
 
 summary: "Once we have understood how the binary works (this was explained in part 1, we can move forward to 
 understand how can we exploit this."
-cardthumbimage: "/assets/GoogleCTF2017/title.jpg"
+cardthumbimage: "/assets/GoogleCTF2017/title.png"
 
 author:
   email: tzaoh1@gmail.com
@@ -31,11 +30,13 @@ tags:
 
 ---
 
+![inst_prof Description](/assets/GoogleCTF2017/Inst Prof/1-inst_prof_description.png)
+
 #### Introduction
 
-This post is the second part of [Google CTF - Inst Prof 1](../inst_prof_p1).  
-Basically, the analysis phase is already done, so, in this post, we are going to focus with the exploitation 
-phase.
+This post is the second part of the solucion of **Inst Prof**, an initial challenge of the GoogleCTF 2017.  
+Basically, the analysis phase was already donein [part1](../inst_prof_p1), so, in this post, we are going to 
+focus with the exploitation phase.
 
 ---
 
@@ -499,33 +500,34 @@ main`) and search for our desired gadget `"/R pop rdi;ret"`.
 
 Ok! so there we will have to write the following data in the stack:
 
-```bash
-   ----------------------------------------------------------------------
-                            address of the ROP gadget                   
-   ----------------------------------------------------------------------
-                  value we want to send to make_page_executable         
-                        which is the address of the GOT                 
-   ----------------------------------------------------------------------
-                         address of make_page_executable                
-   ----------------------------------------------------------------------
-```
+{{< highlight sh "cssclass=highlight compact text-center" >}}
+------------------------------------------------------------------------
+address of the ROP gadget
+------------------------------------------------------------------------
+value we want to send to make_page_executable
+which is the address of the GOT   
+------------------------------------------------------------------------
+address of make_page_executable
+------------------------------------------------------------------------
+{{< /highlight >}}
 
-We can write these wherever we want to into the stack, just have in mind they need to survive to several calls 
+Wee can write these wherever we want to into the stack, just have in mind they need to survive to several calls 
 of `sym.do_test()`. I decided to use the following addresses:
 
-```bash
-   ----------------------------------------------------------------------
-    rsp + 24  │              address of the ROP gadget             │ 
-   ----------------------------------------------------------------------
-    rsp + 32  │    value we want to send to make_page_executable   │ r13
-              │         which is the address of the GOT            │ 
-   ----------------------------------------------------------------------
-    rsp + 40  │           address of make_page_executable          │ 
-   ----------------------------------------------------------------------
-```
+{{< highlight sh "cssclass=highlight compact" >}}
+----------------------------------------------------------------------
+ rsp + 24  │              address of the ROP gadget             │ 
+----------------------------------------------------------------------
+ rsp + 32  │    value we want to send to make_page_executable   │ r13
+           │         which is the address of the GOT            │ 
+----------------------------------------------------------------------
+ rsp + 40  │           address of make_page_executable          │ 
+----------------------------------------------------------------------
+{{< /highlight >}}
 
-Once again, remember that we need to calculate the addresses on-runtime. Not the four of them, because we 
-already have address of the GOT in `r13` and the address of our shellcode in `r14`.
+Once again, remember that we need to calculate the addresses on-runtime. Not the threer of them, but two because 
+we already have address of the GOT in `r13`. `r14` is not shown in the previous schema but it will be used in 
+a latter phase.
 
 We only have `r15` free, so we are going to save `r13` in `rsp + 32` at first place to be able to use it too.
 
@@ -621,10 +623,11 @@ p.send(asm('mov [rsp], r14'))            # "\x4c\x89\x34\x24"
 p.interactive()
 {{< /highlight >}}
 
+[solve2.py](/assets/GoogleCTF2017/Inst Prof/solve2.py).
 
 Answer: CTF{0v3r_4ND_0v3r_4ND_0v3r_4ND_0v3r}
 
-### Solve video
+### Video
 
 <a href="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN?autoplay=1">
   <img src="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN.png"/>
