@@ -109,7 +109,8 @@ $ r2 -Aw inst_prof
 
 > `afl` command stands for "analyze function list". In short, to print the functions detected by r2.
 
-As you will see, there is a lot of functions we need to check (at least the names give an idea of what they are used for).  
+As you will see, there is a lot of functions we need to check (at least the names give an idea of what they 
+are used for).  
 Lets start with the `main` function.
 
 {{< highlight r2 "hl_lines=23 25" >}}
@@ -480,7 +481,7 @@ In summary, the instructions between `sym.alloc_page` and `sym.read_inst` functi
 Lets devour `sym.read_inst` now!
 Remember the `rdi = [rbx + 5]` instruction I told you to remember before? Look where it points to.
 {{< highlight r2 "hl_lines=5" >}}
-[0x55cfea0bcacd]> pd 6 @ rdi -5
+[0x55cfea0bcacd]> pd 6 @ rdi+5
             ;-- rbx:
             0x7f2d9bae5000      b900100000     ecx = 0x1000
             ;-- rdi:
@@ -576,7 +577,8 @@ And nothing interesting inside `sym.read_byte`, it is just another wapper to cal
 2. `rsi` is an address of a variable where `read` will store the input.
 3. `rdx = 1` the expected length of the input.
 
-sigh, this is being long. To check all this out we can start radare with some random input and execute the binary until the instruction right after `read_inst` call. Once there, we only need to check if the input string are there instead of the nop opdes
+Sigh, this is being long. To check all this out we can start radare with some random input and execute the binary 
+until the instruction right after `read_inst` call. Once there, we only need to check if the input string are there instead of the nop opdes
 
 {{< highlight r2 "hl_lines=23 25" >}}
 $ r2 -Ad -R 'stdin="AAAA"' -c 'dcu `/r sym.read_inst~[1]`; px 4 @r:rbx+5; dso; px 4 @r:rbx+5;' inst_prof

