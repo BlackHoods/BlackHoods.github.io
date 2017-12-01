@@ -5,7 +5,7 @@ description: GoogleCTF 2017 - Inst prof (Part 2)
 date: 2017-09-24T18:56:18+02:00
 publishdate: 2017-12-01T21:45:18+02:00
 
-summary: "Once we have understood how the binary works (this was explained in part 1, we can move forward to 
+summary: "Once we have understood how the binary works (this was explained in part 1), we can move forward to 
 understand how can we exploit this."
 cardthumbimage: "/assets/GoogleCTF2017/title.png"
 
@@ -17,8 +17,8 @@ author:
   name:
   - Tzaoh
 
-cardbackground: 'white'
-cardtitlecolor: 'orange'
+cardbackground: 'orange'
+cardtitlecolor: 'white'
 
 post_categories:
 - CTFs
