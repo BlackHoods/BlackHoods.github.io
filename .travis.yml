@@ -11,8 +11,11 @@ env:
   - SOURCE_DIR="public"
   - DEPLOY_BRANCH="source"
 before_install:
- - sudo pip install pygments
- - sudo pip --no-cache-dir install git+https://github.com/Pwnation/radare2-pygments-lexer.git
+ - sudo rm /usr/bin/python
+ - sudo ln /usr/bin/python3 /usr/bin/python
+ - sudo apt-get install python3 python3-pip
+ - sudo pip3 install pygments
+ - sudo pip3 install git+https://github.com/Pwnation/radare2-pygments-lexer.git
  - git clone --branch v2 https://github.com/go-yaml/yaml \$GOPATH/src/gopkg.in/yaml.v2
  - go get -u -v github.com/Pwnation/hugo
  - openssl aes-256-cbc -K $encrypted_88b4fd6fc50b_key -iv $encrypted_88b4fd6fc50b_iv -in pwnation.enc -out pwnation -d
