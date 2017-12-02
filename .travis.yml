@@ -2,8 +2,6 @@
 language: go
 go:
 - 1.8
-python:
-- 3.6
 
 env:
   global:
@@ -13,6 +11,8 @@ env:
   - SOURCE_DIR="public"
   - DEPLOY_BRANCH="source"
 before_install:
+ - sudo apt-get update
+ - sudo apt-get install python3
  - sudo pip install pygments
  - sudo pip --no-cache-dir install git+https://github.com/Pwnation/radare2-pygments-lexer.git
  - git clone --branch v2 https://github.com/go-yaml/yaml \$GOPATH/src/gopkg.in/yaml.v2
@@ -21,5 +21,6 @@ before_install:
 script:
 - git clone --branch source https://github.com/Pwnation/Pwnation.github.io.git
 - hugo --ignoreCache
+- python --version
 after_success:
 - "./scripts/deploy.sh"
