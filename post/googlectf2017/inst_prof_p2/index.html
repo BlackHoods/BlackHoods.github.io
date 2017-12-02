@@ -110,12 +110,12 @@ we explained in the part 1.</p>
 
 <li><p>It copies the following instructions inside of this newly-allocated page:<br />
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k"> </span>           <span class="s">0x7fd4a1197000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            
-<span class="k"> </span>       <span class="err">┌─</span><span class="k">&gt;</span> <span class="s">0x7fd4a1197005</span>      90                                     
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7fd4a1197005</span>      90                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197006</span>      90                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197007</span>      90                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197008</span>      90                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7fd4a1197009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>                
-<span class="k"> </span>       <span class="err">└─</span><span class="k">&lt;</span> <span class="s">0x7fd4a119700c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7fd4a1197005</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7fd4a119700c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7fd4a1197005</span>
 <span class="k"> </span>           <span class="s">0x7fd4a119700e</span>      c3                                     
 </code></pre></div>
 </p></li>
@@ -125,12 +125,12 @@ saw
 in the previous point (those <code>90</code>). For example, if we input the character <code>\xc3</code> (which is the opcode for <code>ret</code> instruction) four times, we will get this:<br />
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>$ r2 -Ad -R &quot;stdin=\&quot;`echo -ne &quot;\xc3\xc3\xc3\xc3&quot;`\&quot;&quot; -c &#39;dcu `/r sym.read_inst~[1]`; dso; pd 8 @ r:rbx;&#39; inst_prof
 <span class="k"> </span>           <span class="s">0x7f6b63902000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            
-<span class="k"> </span>       <span class="err">┌─</span><span class="k">&gt;</span> <span class="s">0x7f6b63902005</span>      c3                                     
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f6b63902005</span>      c3                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902006</span>      c3                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902007</span>      c3                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902008</span>      c3                                     
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f6b63902009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>                
-<span class="k"> </span>       <span class="err">└─</span><span class="k">&lt;</span> <span class="s">0x7f6b6390200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f6b63902005</span> <span class="c">; likely</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f6b6390200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f6b63902005</span> <span class="c">; likely</span>
 <span class="k"> </span>           <span class="s">0x7f6b6390200e</span>      c3                                     
 </code></pre></div>
 </p></li>
@@ -212,9 +212,9 @@ you can search for <a href="https://www.google.com/search?q=shellcode+bin+sh+x64
 <p>Four bytes. That means that we cannot apply a <code>ret</code> instruction.
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[0x7f556238a000 230 /root/inst_prof]&gt; pd $r @ map.unk2._rw_
 <span class="k"> </span>           <span class="s">0x7f556238a000</span>      b900100000             <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>
-<span class="hll"><span class="k"> </span>       <span class="err">┌─</span><span class="k">&gt;</span> <span class="s">0x7f556238a005</span>      41c607b0               byte [<span class="k">r15</span>] <span class="o">=</span> <span class="mh">0xb0</span>
+<span class="hll"><span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f556238a005</span>      41c607b0               byte [<span class="k">r15</span>] <span class="o">=</span> <span class="mh">0xb0</span>
 </span><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f556238a009</span>      83e901                 <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>
-<span class="k"> </span>       <span class="err">└─</span><span class="k">&lt;</span> <span class="s">0x7f556238a00c</span>      75f7                   <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f556238a005</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f556238a00c</span>      75f7                   <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f556238a005</span>
 <span class="k"> </span>           <span class="s">0x7f556238a00e</span>      c3                     
 </code></pre></div>
 </p>
@@ -255,10 +255,10 @@ going to be a return address, the address right after the <code>call rbx</code> 
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[0x558cfc7d3b16 230 /root/inst_prof]&gt; pd $r @ hit0_0
 <span class="k">|</span>           <span class="c">;-- hit0_0:</span>
-│           <span class="mh">0x558cfc7d3b16</span> b    ffd<span class="mh">3</span>           rbx <span class="err">(</span>)
-<span class="hll">│           <span class="mh">0x558cfc7d3b18</span>      <span class="mh">0f31</span>                 
-</span>│           <span class="mh">0x558cfc7d3b1a</span>      bf<span class="mh">01000000</span>     edi <span class="o">=</span> <span class="mh">1</span>
-│           <span class="mh">0x558cfc7d3b1f</span>      <span class="mh">48c1e220</span>       rdx &lt;&lt;&lt;<span class="o">=</span> <span class="mh">0x20</span>
+<span class="k">│</span>           <span class="s">0x558cfc7d3b16</span> b    <span class="m">ffd3</span>           <span class="k">rbx</span> ()
+<span class="hll"><span class="k">│</span>           <span class="s">0x558cfc7d3b18</span>      0f31                 
+</span><span class="k">│</span>           <span class="s">0x558cfc7d3b1a</span>      bf01000000     <span class="k">edi</span> <span class="o">=</span> <span class="m">1</span>
+<span class="k">│</span>           <span class="s">0x558cfc7d3b1f</span>      48c1e220       <span class="k">rdx</span> <span class="k">&lt;&lt;&lt;</span><span class="o">=</span> <span class="mh">0x20</span>
 </code></pre></div>
 
 
@@ -301,13 +301,13 @@ To know which registers we can use, we will:</p>
 <span class="k"> </span>           <span class="c">;-- rbx:</span>
 <span class="k"> </span>           <span class="c">;-- rdi:</span>
 <span class="k"> </span>           <span class="s">0x7f166f142000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>            <span class="c">; rsi</span>
-<span class="k"> </span>       <span class="err">┌─</span><span class="k">&gt;</span> <span class="c">;-- rip:</span>
-<span class="k"> </span>       <span class="err">┌─</span><span class="k">&gt;</span> <span class="s">0x7f166f142005</span>      c3 
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="c">;-- rip:</span>
+<span class="k"> </span>       <span class="k">┌─&gt;</span> <span class="s">0x7f166f142005</span>      c3 
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142006</span>      c3 
 <span class="hll"><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142007</span>      c3 
 </span><span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142008</span>      c3 
 <span class="k"> </span>       <span class="k">|</span>   <span class="s">0x7f166f142009</span>      83e901         <span class="k">ecx</span> <span class="o">-=</span> <span class="m">1</span>
-<span class="k"> </span>       <span class="err">└─</span><span class="k">&lt;</span> <span class="s">0x7f166f14200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f166f142005</span> <span class="c">;[1] ; rip; likely</span>
+<span class="k"> </span>       <span class="k">└─&lt;</span> <span class="s">0x7f166f14200c</span>      75f7           <span class="mh">if</span> (<span class="mh">var</span>) <span class="mh">goto</span> <span class="mh">0x7f166f142005</span> <span class="c">;[1] ; rip; likely</span>
 <span class="k"> </span>           <span class="s">0x7f166f14200e</span>      c3 
 </code></pre></div>
 
