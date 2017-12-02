@@ -13,6 +13,7 @@ env:
 before_install:
  - sudo rm /usr/bin/python
  - sudo ln /usr/bin/python3 /usr/bin/python
+ - sudo apt-get install python3 python3-pip
  - sudo pip3 install pygments
  - sudo pip3 --no-cache-dir install git+https://github.com/Pwnation/radare2-pygments-lexer.git
  - git clone --branch v2 https://github.com/go-yaml/yaml \$GOPATH/src/gopkg.in/yaml.v2
