@@ -11,8 +11,8 @@ env:
   - SOURCE_DIR="public"
   - DEPLOY_BRANCH="source"
 before_install:
- - rm /usr/bin/python
- - ln /usr/bin/python3 /usr/bin/python
+ - sudo rm /usr/bin/python
+ - sudo ln /usr/bin/python3 /usr/bin/python
  - sudo pip install pygments
  - sudo pip --no-cache-dir install git+https://github.com/Pwnation/radare2-pygments-lexer.git
  - git clone --branch v2 https://github.com/go-yaml/yaml \$GOPATH/src/gopkg.in/yaml.v2
