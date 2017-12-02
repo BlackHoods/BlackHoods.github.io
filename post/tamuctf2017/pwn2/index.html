@@ -150,66 +150,66 @@ Instead a new function named <code>echo</code> is called from <code>main</code> 
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ main
 <span class="k"> </span>           <span class="c">;-- main:</span>
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>main <span class="m">36</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>main ();
-<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
-<span class="k">│</span>              <span class="c">; DATA XREF from 0x08048467 (entry0)</span>
-<span class="k">│</span>           <span class="s">0x08048606</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]
-<span class="k">│</span>           <span class="s">0x0804860a</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>
-<span class="k">│</span>           <span class="s">0x0804860d</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
-<span class="k">│</span>           <span class="s">0x08048610</span>      55             <span class="k">push</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x08048611</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
-<span class="k">│</span>           <span class="s">0x08048613</span>      51             <span class="k">push</span> <span class="k">ecx</span>
-<span class="k">│</span>           <span class="s">0x08048614</span>      83ec04         <span class="k">esp</span> <span class="o">-=</span> <span class="m">4</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x08048617</span>      e896ffffff     <span class="k">sym</span><span class="o">.</span>echo ()
-</span><span class="k">│</span>           <span class="s">0x0804861c</span>      b800000000     <span class="k">eax</span> <span class="o">=</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x08048621</span>      83c404         <span class="k">esp</span> <span class="o">+=</span> <span class="m">4</span>
-<span class="k">│</span>           <span class="s">0x08048624</span>      59             <span class="k">pop</span> <span class="k">ecx</span>
-<span class="k">│</span>           <span class="s">0x08048625</span>      5d             <span class="k">pop</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x08048626</span>      8d61fc         <span class="k">esp</span> <span class="o">=</span> [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]
-<span class="k">└</span>           <span class="s">0x08048629</span>      c3             
+┌ <span class="err">(</span>fcn) sym<span class="o">.</span>main <span class="mh">36</span>
+│   sym<span class="o">.</span>main <span class="err">(</span>)<span class="err">;</span>
+│           <span class="err">;</span> var int local_<span class="mh">4</span>h <span class="err">@</span> esp<span class="o">+</span><span class="mh">0x4</span>
+│              <span class="err">;</span> DATA XREF from <span class="mh">0x08048467</span> <span class="err">(</span>entry<span class="mh">0</span>)
+│           <span class="mh">0x08048606</span>      <span class="mh">8d4c2404</span>       ecx <span class="o">=</span> <span class="err">[</span>local_<span class="mh">4</span>h<span class="err">]</span>
+│           <span class="mh">0x0804860a</span>      <span class="mh">83e4f0</span>         esp <span class="err">&amp;</span><span class="o">=</span> <span class="mh">0xfffffff0</span>
+│           <span class="mh">0x0804860d</span>      ff<span class="mh">71fc</span>         push dword <span class="err">[</span>ecx <span class="o">-</span> <span class="mh">4</span><span class="err">]</span>
+│           <span class="mh">0x08048610</span>      <span class="mh">55</span>             push ebp
+│           <span class="mh">0x08048611</span>      <span class="mh">89e5</span>           ebp <span class="o">=</span> esp
+│           <span class="mh">0x08048613</span>      <span class="mh">51</span>             push ecx
+│           <span class="mh">0x08048614</span>      <span class="mh">83ec04</span>         esp <span class="o">-=</span> <span class="mh">4</span>
+<span class="hll">│           <span class="mh">0x08048617</span>      e<span class="mh">896ffffff</span>     sym<span class="o">.</span>echo <span class="err">(</span>)
+</span>│           <span class="mh">0x0804861c</span>      b<span class="mh">800000000</span>     eax <span class="o">=</span> <span class="mh">0</span>
+│           <span class="mh">0x08048621</span>      <span class="mh">83c404</span>         esp <span class="o">+=</span> <span class="mh">4</span>
+│           <span class="mh">0x08048624</span>      <span class="mh">59</span>             pop ecx
+│           <span class="mh">0x08048625</span>      <span class="mh">5d</span>             pop ebp
+│           <span class="mh">0x08048626</span>      <span class="mh">8d61fc</span>         esp <span class="o">=</span> <span class="err">[</span>ecx <span class="o">-</span> <span class="mh">4</span><span class="err">]</span>
+└           <span class="mh">0x08048629</span>      c<span class="mh">3</span>             
 </code></pre></div>
 
 
 <p>Lets see what it does:</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x08048450</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.echo
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>echo <span class="m">84</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>echo ();
-<span class="k">│</span>           <span class="c">; var int local_88h @ ebp-0x88</span>
-<span class="k">│</span>              <span class="c">; CALL XREF from 0x08048617 (sym.main)</span>
-<span class="k">│</span>           <span class="s">0x080485b2</span>      55             <span class="k">push</span> <span class="k">ebp</span>
-<span class="k">│</span>           <span class="s">0x080485b3</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>
-<span class="k">│</span>           <span class="s">0x080485b5</span>      81ec88000000   <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x88</span>
-<span class="k">│</span>           <span class="s">0x080485bb</span>      a130a00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout
-<span class="k">│</span>           <span class="s">0x080485c0</span>      6a00           <span class="k">push</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x080485c2</span>      6a00           <span class="k">push</span> <span class="m">0</span>
-<span class="k">│</span>           <span class="s">0x080485c4</span>      6a02           <span class="k">push</span> <span class="m">2</span>
-<span class="k">│</span>           <span class="s">0x080485c6</span>      50             <span class="k">push</span> <span class="k">eax</span>
-<span class="k">│</span>         <span class="c">; int setvbuf(FILE*stream, char*buf, int mode, size_t size)</span>
-<span class="k">│</span>           <span class="s">0x080485c7</span>      e844feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()
-<span class="k">│</span>           <span class="s">0x080485cc</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x080485cf</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="k">│</span>           <span class="s">0x080485d2</span>      68dd860408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Enter_a_word_to_be_echoed:
-<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x080485d7</span>      e814feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()             
-</span><span class="k">│</span>         <span class="c">; int puts(const char * s)</span>
-<span class="k">│</span>           <span class="s">0x080485dc</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x080485df</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="k">│</span>           <span class="s">0x080485e2</span>      8d8578ffffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_88h</span>]
-<span class="k">│</span>           <span class="s">0x080485e8</span>      50             <span class="k">push</span> <span class="k">eax</span>
-<span class="k">│</span>         <span class="c">; char*gets(char *s)</span>
-<span class="k">│</span>           <span class="s">0x080485e9</span>      e8e2fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()             
-<span class="k">│</span>           <span class="s">0x080485ee</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="s">0x080485f1</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>
-<span class="k">│</span>           <span class="s">0x080485f4</span>      8d8578ffffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_88h</span>]
-<span class="k">│</span>           <span class="s">0x080485fa</span>      50             <span class="k">push</span> <span class="k">eax</span>
-<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
-<span class="k">│</span>           <span class="s">0x080485fb</span>      e8f0fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()
-<span class="k">│</span>           <span class="s">0x08048600</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>
-<span class="k">│</span>           <span class="mh">0x08048603</span>      <span class="m">90</span>
-<span class="k">│</span>           <span class="mh">0x08048604</span>      <span class="m">c9</span>
-<span class="k">└</span>           <span class="mh">0x08048605</span>      <span class="m">c3</span>
+┌ <span class="err">(</span>fcn) sym<span class="o">.</span>echo <span class="mh">84</span>
+│   sym<span class="o">.</span>echo <span class="err">(</span>)<span class="err">;</span>
+│           <span class="err">;</span> var int local_<span class="mh">88</span>h <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0x88</span>
+│              <span class="err">;</span> CALL XREF from <span class="mh">0x08048617</span> <span class="err">(</span>sym<span class="o">.</span>main)
+│           <span class="mh">0x080485b2</span>      <span class="mh">55</span>             push ebp
+│           <span class="mh">0x080485b3</span>      <span class="mh">89e5</span>           ebp <span class="o">=</span> esp
+│           <span class="mh">0x080485b5</span>      <span class="mh">81ec88000000</span>   esp <span class="o">-=</span> <span class="mh">0x88</span>
+│           <span class="mh">0x080485bb</span>      a<span class="mh">130a00408</span>     eax <span class="o">=</span> dword obj<span class="o">.</span>stdout
+│           <span class="mh">0x080485c0</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>
+│           <span class="mh">0x080485c2</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>
+│           <span class="mh">0x080485c4</span>      <span class="mh">6a02</span>           push <span class="mh">2</span>
+│           <span class="mh">0x080485c6</span>      <span class="mh">50</span>             push eax
+│         <span class="err">;</span> int setvbuf<span class="err">(</span>FILE<span class="err">*</span>stream<span class="err">,</span> char<span class="err">*</span>buf<span class="err">,</span> int mode<span class="err">,</span> size_t size)
+│           <span class="mh">0x080485c7</span>      e<span class="mh">844feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>setvbuf <span class="err">(</span>)
+│           <span class="mh">0x080485cc</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
+│           <span class="mh">0x080485cf</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
+│           <span class="mh">0x080485d2</span>      <span class="mh">68dd860408</span>     push str<span class="o">.</span>Enter_a_word_to_be_echoed<span class="o">:</span>
+│         <span class="err">;</span> int puts<span class="err">(</span>const char <span class="err">*</span>s)
+<span class="hll">│           <span class="mh">0x080485d7</span>      e<span class="mh">814feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)             
+</span>│         <span class="err">;</span> int puts<span class="err">(</span>const char <span class="err">*</span> s)
+│           <span class="mh">0x080485dc</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
+│           <span class="mh">0x080485df</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
+│           <span class="mh">0x080485e2</span>      <span class="mh">8d8578ffffff</span>   eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">88</span>h<span class="err">]</span>
+│           <span class="mh">0x080485e8</span>      <span class="mh">50</span>             push eax
+│         <span class="err">;</span> char<span class="err">*</span>gets<span class="err">(</span>char <span class="err">*</span>s)
+│           <span class="mh">0x080485e9</span>      e<span class="mh">8e2fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>gets <span class="err">(</span>)             
+│           <span class="mh">0x080485ee</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
+│           <span class="mh">0x080485f1</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>
+│           <span class="mh">0x080485f4</span>      <span class="mh">8d8578ffffff</span>   eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">88</span>h<span class="err">]</span>
+│           <span class="mh">0x080485fa</span>      <span class="mh">50</span>             push eax
+│         <span class="err">;</span> int puts<span class="err">(</span>const char <span class="err">*</span>s)
+│           <span class="mh">0x080485fb</span>      e<span class="mh">8f0fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)
+│           <span class="mh">0x08048600</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>
+│           <span class="mh">0x08048603</span>      <span class="mh">90</span>
+│           <span class="mh">0x08048604</span>      c<span class="mh">9</span>
+└           <span class="mh">0x08048605</span>      c<span class="mh">3</span>
 </code></pre></div>
 
 

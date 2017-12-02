@@ -141,47 +141,47 @@ Why do we have the exact same challenge again? something must be different.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">pdf</span> @ sym.main 
 <span class="k"> </span>           <span class="c">;-- main:</span>
-<span class="k">┌</span> (<span class="o">fcn</span>) <span class="k">sym</span><span class="o">.</span>main <span class="m">102</span>
-<span class="k">│</span>   <span class="k">sym</span><span class="o">.</span>main ();
-<span class="k">│</span>           <span class="c">; var int local_208h @ ebp-0x208</span>
-<span class="k">│</span>           <span class="c">; var int local_4h @ esp+0x4</span>
-<span class="k">│</span>              <span class="c">; DATA XREF from 0x080484c7 (entry0)</span>
-<span class="k">│</span>           <span class="s">0x08048612</span>      8d4c2404       <span class="k">ecx</span> <span class="o">=</span> [<span class="k">local_4h</span>]            
-<span class="k">│</span>           <span class="s">0x08048616</span>      83e4f0         <span class="k">esp</span> <span class="o">&amp;=</span> <span class="mh">0xfffffff0</span>           
-<span class="k">│</span>           <span class="s">0x08048619</span>      ff71fc         <span class="k">push</span> dword [<span class="k">ecx</span> <span class="o">-</span> <span class="m">4</span>]        
-<span class="k">│</span>           <span class="s">0x0804861c</span>      55             <span class="k">push</span> <span class="k">ebp</span>                    
-<span class="k">│</span>           <span class="s">0x0804861d</span>      89e5           <span class="k">ebp</span> <span class="o">=</span> <span class="k">esp</span>                   
-<span class="k">│</span>           <span class="s">0x0804861f</span>      51             <span class="k">push</span> <span class="k">ecx</span>                    
-<span class="k">│</span>           <span class="s">0x08048620</span>      81ec04020000   <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0x204</span>                
-<span class="k">│</span>           <span class="s">0x08048626</span>      a138a00408     <span class="k">eax</span> <span class="o">=</span> dword <span class="k">obj</span><span class="o">.</span>stdout      
-<span class="k">│</span>           <span class="s">0x0804862b</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
-<span class="k">│</span>           <span class="s">0x0804862d</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
-<span class="k">│</span>           <span class="s">0x0804862f</span>      6a02           <span class="k">push</span> <span class="m">2</span>                      
-<span class="k">│</span>           <span class="s">0x08048631</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
-<span class="k">│</span>         <span class="c">; int setvbuf(FILE*stream, char*buf, int mode, size_t size)</span>
-<span class="k">│</span>           <span class="s">0x08048632</span>      e839feffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>setvbuf ()          
-<span class="k">│</span>           <span class="s">0x08048637</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804863a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x0804863d</span>      682d870408     <span class="k">push</span> <span class="k">str</span><span class="o">.</span>Enter_a_word_to_be_echoed:
-<span class="k">│</span>         <span class="c">; int puts(const char *s)</span>
-<span class="k">│</span>           <span class="s">0x08048642</span>      e8f9fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>puts ()             
-<span class="k">│</span>           <span class="s">0x08048647</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804864a</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x0804864d</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
-<span class="k">│</span>           <span class="s">0x08048653</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
-<span class="k">│</span>         <span class="c">; char*gets(char *s)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x08048654</span>      e8c7fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>gets ()             
-</span><span class="k">│</span>           <span class="s">0x08048659</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804865c</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x0804865f</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
-<span class="k">│</span>           <span class="s">0x08048665</span>      50             <span class="k">push</span> <span class="k">eax</span>                    
-<span class="k">│</span>         <span class="c">; int printf(const char *format)</span>
-<span class="hll"><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()           
-</span><span class="k">│</span>           <span class="s">0x0804866b</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804866e</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x08048671</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
-<span class="k">│</span>         <span class="c">; void exit(int status)</span>
-<span class="hll"><span class="k">└</span>           <span class="s">0x08048673</span>      e8d8fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()             
+┌ <span class="err">(</span>fcn) sym<span class="o">.</span>main <span class="mh">102</span>
+│   sym<span class="o">.</span>main <span class="err">(</span>)<span class="err">;</span>
+│           <span class="err">;</span> var int local_<span class="mh">208</span>h <span class="err">@</span> ebp<span class="o">-</span><span class="mh">0x208</span>
+│           <span class="err">;</span> var int local_<span class="mh">4</span>h <span class="err">@</span> esp<span class="o">+</span><span class="mh">0x4</span>
+│              <span class="err">;</span> DATA XREF from <span class="mh">0x080484c7</span> <span class="err">(</span>entry<span class="mh">0</span>)
+│           <span class="mh">0x08048612</span>      <span class="mh">8d4c2404</span>       ecx <span class="o">=</span> <span class="err">[</span>local_<span class="mh">4</span>h<span class="err">]</span>            
+│           <span class="mh">0x08048616</span>      <span class="mh">83e4f0</span>         esp <span class="err">&amp;</span><span class="o">=</span> <span class="mh">0xfffffff0</span>           
+│           <span class="mh">0x08048619</span>      ff<span class="mh">71fc</span>         push dword <span class="err">[</span>ecx <span class="o">-</span> <span class="mh">4</span><span class="err">]</span>        
+│           <span class="mh">0x0804861c</span>      <span class="mh">55</span>             push ebp                    
+│           <span class="mh">0x0804861d</span>      <span class="mh">89e5</span>           ebp <span class="o">=</span> esp                   
+│           <span class="mh">0x0804861f</span>      <span class="mh">51</span>             push ecx                    
+│           <span class="mh">0x08048620</span>      <span class="mh">81ec04020000</span>   esp <span class="o">-=</span> <span class="mh">0x204</span>                
+│           <span class="mh">0x08048626</span>      a<span class="mh">138a00408</span>     eax <span class="o">=</span> dword obj<span class="o">.</span>stdout      
+│           <span class="mh">0x0804862b</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>                      
+│           <span class="mh">0x0804862d</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>                      
+│           <span class="mh">0x0804862f</span>      <span class="mh">6a02</span>           push <span class="mh">2</span>                      
+│           <span class="mh">0x08048631</span>      <span class="mh">50</span>             push eax                    
+│         <span class="err">;</span> int setvbuf<span class="err">(</span>FILE<span class="err">*</span>stream<span class="err">,</span> char<span class="err">*</span>buf<span class="err">,</span> int mode<span class="err">,</span> size_t size)
+│           <span class="mh">0x08048632</span>      e<span class="mh">839feffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>setvbuf <span class="err">(</span>)          
+│           <span class="mh">0x08048637</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804863a</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x0804863d</span>      <span class="mh">682d870408</span>     push str<span class="o">.</span>Enter_a_word_to_be_echoed<span class="o">:</span>
+│         <span class="err">;</span> int puts<span class="err">(</span>const char <span class="err">*</span>s)
+│           <span class="mh">0x08048642</span>      e<span class="mh">8f9fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>puts <span class="err">(</span>)             
+│           <span class="mh">0x08048647</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804864a</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x0804864d</span>      <span class="mh">8d85f8fdffff</span>   eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">208</span>h<span class="err">]</span>          
+│           <span class="mh">0x08048653</span>      <span class="mh">50</span>             push eax                    
+│         <span class="err">;</span> char<span class="err">*</span>gets<span class="err">(</span>char <span class="err">*</span>s)
+<span class="hll">│           <span class="mh">0x08048654</span>      e<span class="mh">8c7fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>gets <span class="err">(</span>)             
+</span>│           <span class="mh">0x08048659</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804865c</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x0804865f</span>      <span class="mh">8d85f8fdffff</span>   eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">208</span>h<span class="err">]</span>          
+│           <span class="mh">0x08048665</span>      <span class="mh">50</span>             push eax                    
+│         <span class="err">;</span> int printf<span class="err">(</span>const char <span class="err">*</span>format)
+<span class="hll">│           <span class="mh">0x08048666</span>      e<span class="mh">8a5fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>printf <span class="err">(</span>)           
+</span>│           <span class="mh">0x0804866b</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804866e</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x08048671</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>                      
+│         <span class="err">;</span> void exit<span class="err">(</span>int status)
+<span class="hll">└           <span class="mh">0x08048673</span>      e<span class="mh">8d8fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>exit <span class="err">(</span>)             
 </span></code></pre></div>
 
 
@@ -206,12 +206,12 @@ Why do we have the exact same challenge again? something must be different.</p>
 <p>But, wait a moment, that `printf call is a bit strange.</p>
 
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x080484b0</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 5 @ 0x08048659
-<span class="k">│</span>           <span class="s">0x08048659</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804865c</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x0804865f</span>      8d85f8fdffff   <span class="k">eax</span> <span class="o">=</span> [<span class="k">local_208h</span>]          
-<span class="hll"><span class="k">│</span>           <span class="s">0x08048665</span>      50             <span class="k">push</span> <span class="k">eax</span>         
-</span><span class="hll"><span class="k">│</span>         <span class="c">; int printf(const char *format)            </span>
-</span><span class="hll"><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()
+│           <span class="mh">0x08048659</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804865c</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x0804865f</span>      <span class="mh">8d85f8fdffff</span>   eax <span class="o">=</span> <span class="err">[</span>local_<span class="mh">208</span>h<span class="err">]</span>          
+<span class="hll">│           <span class="mh">0x08048665</span>      <span class="mh">50</span>             push eax         
+</span><span class="hll">│         <span class="err">;</span> int printf<span class="err">(</span>const char <span class="err">*</span>format)            
+</span><span class="hll">│           <span class="mh">0x08048666</span>      e<span class="mh">8a5fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>printf <span class="err">(</span>)
 </span></code></pre></div>
 
 
@@ -311,12 +311,12 @@ OFFSET   TYPE              VALUE
 <p>But not all of them are good for us, the function to be replaced must be executed <strong>AFTER</strong> the vulnerable <code>printf</code> call.<br />
 Radare2 will gave us this answer before.</p>
 
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k">│</span>           <span class="s">0x08048666</span>      e8a5fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>printf ()           
-<span class="k">│</span>           <span class="s">0x0804866b</span>      83c410         <span class="k">esp</span> <span class="o">+=</span> <span class="mh">0x10</span>                 
-<span class="k">│</span>           <span class="s">0x0804866e</span>      83ec0c         <span class="k">esp</span> <span class="o">-=</span> <span class="mh">0xc</span>                  
-<span class="k">│</span>           <span class="s">0x08048671</span>      6a00           <span class="k">push</span> <span class="m">0</span>                      
-<span class="k">│</span>         <span class="c">; void exit(int status)</span>
-<span class="hll"><span class="k">└</span>           <span class="s">0x08048673</span>      e8d8fdffff     <span class="k">sym</span><span class="o">.</span><span class="k">imp</span><span class="o">.</span>exit ()  
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>│           <span class="mh">0x08048666</span>      e<span class="mh">8a5fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>printf <span class="err">(</span>)           
+│           <span class="mh">0x0804866b</span>      <span class="mh">83c410</span>         esp <span class="o">+=</span> <span class="mh">0x10</span>                 
+│           <span class="mh">0x0804866e</span>      <span class="mh">83ec0c</span>         esp <span class="o">-=</span> <span class="mh">0xc</span>                  
+│           <span class="mh">0x08048671</span>      <span class="mh">6a00</span>           push <span class="mh">0</span>                      
+│         <span class="err">;</span> void exit<span class="err">(</span>int status)
+<span class="hll">└           <span class="mh">0x08048673</span>      e<span class="mh">8d8fdffff</span>     sym<span class="o">.</span>imp<span class="o">.</span>exit <span class="err">(</span>)  
 </span></code></pre></div>
 
 
