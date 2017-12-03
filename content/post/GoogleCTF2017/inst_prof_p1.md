@@ -386,7 +386,7 @@ Basically it is:
 3. That memory region will have **read** and **write** permissions. This come from "or-ing":  
 `PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3`
 
-4. The changes in memory are not visible to others processes and not are not backed by any file. Again, this explanation comes from "or-ing":  
+4. The changes in memory are not visible to other processes and not are backed by any file. Again, this explanation comes from "or-ing":  
 `MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22`.
 
 
