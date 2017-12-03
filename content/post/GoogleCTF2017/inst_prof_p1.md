@@ -420,7 +420,7 @@ Now that we know what is in there, we can keep going with the flow we were expla
 │           0x00000acd      e81effffff     sym.alloc_page ()
 │           0x00000ad2      4889c3         rbx = rax
 │ ; The address of the recently-allocated page is saved in rbx (remember that by default
-│ ; the returned value of sym.alloc_page (and every function which follows the
+│ ; the returned value of sym.alloc_page and every function which follows the
 │ ; previously commented convention) is stored in rax).
 │           0x00000ad5      488d05240100.  rax = obj.template
 │ ; It copies the address of the loop-template we have just described in rax.
