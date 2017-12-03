@@ -488,7 +488,7 @@ void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t leng
 <div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span><span class="k">│</span>           <span class="s">0x00000acd</span>      e81effffff     <span class="k">sym</span><span class="o">.</span>alloc_page ()
 <span class="k">│</span>           <span class="s">0x00000ad2</span>      4889c3         <span class="k">rbx</span> <span class="o">=</span> <span class="k">rax</span>
 <span class="k">│</span> <span class="c">; The address of the recently-allocated page is saved in rbx (remember that by default</span>
-<span class="k">│</span> <span class="c">; the returned value of sym.alloc_page (and every function which follows the</span>
+<span class="k">│</span> <span class="c">; the returned value of sym.alloc_page and every function which follows the</span>
 <span class="k">│</span> <span class="c">; previously commented convention) is stored in rax).</span>
 <span class="k">│</span>           <span class="s">0x00000ad5</span>      488d05240100.  <span class="k">rax</span> <span class="o">=</span> <span class="k">obj</span><span class="o">.</span>template
 <span class="k">│</span> <span class="c">; It copies the address of the loop-template we have just described in rax.</span>
