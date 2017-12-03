@@ -454,7 +454,7 @@ void *mmap<span class="p">(</span>void *addr<span class="p">,</span> size_t leng
 <li><p>That memory region will have <strong>read</strong> and <strong>write</strong> permissions. This come from &ldquo;or-ing&rdquo;:<br />
 <code>PROT_READ | PROT_WRITE = 0x1 | 0x2 = 0x3</code></p></li>
 
-<li><p>The changes in memory are not visible to others processes and not are not backed by any file. Again, this explanation comes from &ldquo;or-ing&rdquo;:<br />
+<li><p>The changes in memory are not visible to other processes and not are backed by any file. Again, this explanation comes from &ldquo;or-ing&rdquo;:<br />
 <code>MAP_PRIVATE | MAP_ANONYMOUSE = 0x20 | 0x2 = 0x22</code>.</p></li>
 </ol>
 
