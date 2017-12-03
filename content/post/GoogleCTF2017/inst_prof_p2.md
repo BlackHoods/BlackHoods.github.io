@@ -365,6 +365,7 @@ is going to be:
 3. `r15` = GOT + 0x80 = Start address of our shellcode
 
 > mmmh repeat me again, why `r14` and `r15` has the same value?
+
 It is just because we will increment `r15` one by one and use it to write each byte of the shellcode but we 
 will still need to know its initial value to say: "Hey you! start executing instructions at this point please".
 
@@ -424,7 +425,7 @@ Now we only need to make that memory zone executable and redirect the flow to `r
 ---
 
 #### Make a page executable? Is that even possible?
-Well, normally is a bit more complicated than here. Thankfully, we have a function called `sym.make_page_executable()` which receives an 0x1000-aligned address.
+Well, normally is a bit more complicated than here. Thankfully, we have a function called `sym.make_page_executable()` which receives a 0x1000-aligned address.
 
 {{< highlight r2 "hl_lines=2" >}}
 [0x7f8137df2a61]> aaa;afl~make
@@ -450,7 +451,7 @@ r15 = 0x55c877356097
 {{< /highlight >}}
 
 
-We want to send the address stored in `r13`. As we see in the [first part 1](../inst_prof_p1) the calling 
+We want to send the address stored in `r13`. As we saw in the [first part](../inst_prof_p1) the calling 
 convention for a 64 bit arquitecture states that:
 
 > The first six arguments [of a function] are passed in registers **RDI**, **RSI**, **RDX**, **RCX**, **R8**, and 
@@ -484,7 +485,7 @@ ret
 ```
 
 We have to find out the address of that gadget, write its address in the stack overwritting the current return 
-address of the current stack frame and right after it, push the value we want to store 
+address of the current stack frame and right after it, push the value we want to store. 
 
 How do we find the address of the ROP gadget? Luckily, r2 has a very handful command to accomplish this task.
 
@@ -493,9 +494,9 @@ $ r2 -Ad -c 's main; "/R pop rdi;ret"' -d inst_prof
 0x55f78b7bdbc3                 5f  pop rdi
 0x55f78b7bdbc4                 c3  ret
 {{< /highlight >}}
-> `-Ad`: we already know that `A` stands for `Analyze` and `d` is for open for debugging.
 
-> `-c` just passes the commands directly to r2. We want to positioned ourselves in the `main` function (`s 
+> `-Ad`: we already know that `A` stands for `Analyze` and `d` is to open for `debugging`.  
+`-c` just passes the commands directly to r2. We want to positioned ourselves in the `main` function (`s 
 main`) and search for our desired gadget `"/R pop rdi;ret"`.
 
 Ok! so there we will have to write the following data in the stack:
@@ -511,7 +512,7 @@ address of make_page_executable
 ------------------------------------------------------------------------
 {{< /highlight >}}
 
-Wee can write these wherever we want to into the stack, just have in mind they need to survive to several calls 
+Wee can write these values wherever we want to into the stack, just have in mind they need to survive to several calls 
 of `sym.do_test()`. I decided to use the following addresses:
 
 {{< highlight sh "cssclass=highlight compact" >}}
@@ -525,11 +526,11 @@ of `sym.do_test()`. I decided to use the following addresses:
 ----------------------------------------------------------------------
 {{< /highlight >}}
 
-Once again, remember that we need to calculate the addresses on-runtime. Not the threer of them, but two because 
-we already have address of the GOT in `r13`. `r14` is not shown in the previous schema but it will be used in 
+Once again, remember that we need to calculate the addresses on-runtime. Not the three of them, but two because 
+we already have the address of the GOT in `r13`. `r14` is not shown in the previous schema but it has the address where our shellcode starts and will be used in 
 a latter phase.
 
-We only have `r15` free, so we are going to save `r13` in `rsp + 32` at first place to be able to use it too.
+We only have `r15` free, so we are going to save `r13` in `rsp + 32` at first place to be able to use that register too.
 
 {{< highlight python "hl_lines=7 8 9" >}}
 # 1) rsp + 32 -> GOT table address (r13)
@@ -623,17 +624,21 @@ p.send(asm('mov [rsp], r14'))            # "\x4c\x89\x34\x24"
 p.interactive()
 {{< /highlight >}}
 
-[solve2.py](/assets/GoogleCTF2017/Inst Prof/solve2.py).
+Complete exploit: [solve2.py](/assets/GoogleCTF2017/Inst Prof/solve2.py).
 
 Answer: CTF{0v3r_4ND_0v3r_4ND_0v3r_4ND_0v3r}
 
-### Video
+---
+
+#### Video
 
 <a href="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN?autoplay=1">
   <img src="https://asciinema.org/a/R71WGFkZWEyonqfK5DLf0l5UN.png"/>
 </a>
 
-### References and tools used:
+---
+
+#### References and tools used
 
  * [radare2](https://github.com/radare/radare2) - To analyze the binary.
  * [asciinema](https://asciinema.org) - To record the session.
