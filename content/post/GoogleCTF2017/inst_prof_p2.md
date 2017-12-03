@@ -364,7 +364,7 @@ is going to be:
 
 3. `r15` = GOT + 0x80 = Start address of our shellcode
 
-> mmmh repeat me again, why `r14` and `r15` has the same value?
+> mmmh repeat me again, why `r14` and `r15` have the same value?
 
 It is just because we will increment `r15` one by one and use it to write each byte of the shellcode but we 
 will still need to know its initial value to say: "Hey you! start executing instructions at this point please".
