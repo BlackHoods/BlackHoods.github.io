@@ -481,7 +481,7 @@ In summary, the instructions between `sym.alloc_page` and `sym.read_inst` functi
 Lets devour `sym.read_inst` now!
 Remember the `rdi = [rbx + 5]` instruction I told you to remember before? Look where it points to.
 {{< highlight r2 "hl_lines=5" >}}
-[0x55cfea0bcacd]> pd 6 @ rdi+5
+[0x55cfea0bcacd]> pd 6 @ rdi-5
             ;-- rbx:
             0x7f2d9bae5000      b900100000     ecx = 0x1000
             ;-- rdi:
