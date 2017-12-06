@@ -554,7 +554,7 @@ Thats not enough for us and we ask him to execute the following commands (<code>
 
 <p>Lets devour <code>sym.read_inst</code> now!
 Remember the <code>rdi = [rbx + 5]</code> instruction I told you to remember before? Look where it points to.
-<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x55cfea0bcacd</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 6 @ rdi+5
+<div class="highlight"><pre><code class="language-r2" data-lang="r2"><span></span>[<span class="mh">0x55cfea0bcacd</span>]<span class="o">&gt;</span> <span class="nf">pd</span> 6 @ rdi-5
 <span class="k"> </span>           <span class="c">;-- rbx:</span>
 <span class="k"> </span>           <span class="s">0x7f2d9bae5000</span>      b900100000     <span class="k">ecx</span> <span class="o">=</span> <span class="mh">0x1000</span>
 <span class="k"> </span>           <span class="c">;-- rdi:</span>
