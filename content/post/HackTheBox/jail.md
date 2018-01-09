@@ -3,7 +3,8 @@ title: "HackTheBox - Jail"
 description: ""
 
 date: 2018-01-06T17:56:18+01:00
-publishdate: 2018-01-06T17:56:18+01:00
+publishdate: 2019-01-06T17:56:18+01:00
+draft: true
 
 summary: ""
 cardthumbimage: "/assets/HackTheBox/title.png"
@@ -186,3 +187,4 @@ The only thing we get from this for the moment is a path inside of the machine a
 [2]: https://www.hackthebox.eu
 [3]: https://nmap.org/nsedoc/scripts/nfs-showmount.html
 [4]: /assets/HackTheBox/Jail/compile.sh
+[5]: 
