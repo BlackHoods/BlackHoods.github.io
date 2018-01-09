@@ -35,7 +35,7 @@ tags:
 #### Introduction
 
 This post is the second part of the solucion of **Inst Prof**, an initial challenge of the GoogleCTF 2017.  
-Basically, the analysis phase was already donein [part1](../inst_prof_p1), so, in this post, we are going to 
+Basically, the analysis phase was already done in [part1](../inst_prof_p1), so, in this post, we are going to 
 focus with the exploitation phase.
 
 ---
@@ -79,7 +79,7 @@ $ r2 -Ad -R "stdin=\"`echo -ne "\xc3\xc3\xc3\xc3"`\"" -c 'dcu `/r sym.read_inst~
 
 5. After these permissions have been updated, the process will execute our inserted bytes or instructions.
 
-6. It deallocates de memory region.
+6. It deallocates the memory region.
 
 7. And it starts again.
 
@@ -95,7 +95,7 @@ memory and redirect the execution flow to it. We have some little problems regar
 2. Furthermore, If the instruction provided is a 4-byte one, it will be executed `4096` (or `0x1000`) times because it will be inserted inside a loop.  
 If it has less, we could avoid this behavior adding an extra byte: `c3` which is the opcode for the return statement. If we use it we will break the mentioned loop.
 
-3. We need an **address** to write the bytes to and the section this address belongs to must have execution permissions.
+3. We need an **address** to write these bytes to and the section this address belongs to must have execution permissions.
 
 4. We will need to save some stuff on the registers, i.e. the address we are going to copy our shellcode to. We will need to identify which registers are **not used** from our first input to the next one.
 
