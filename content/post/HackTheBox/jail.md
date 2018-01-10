@@ -80,7 +80,24 @@ Hacemos algunas ejecuciones con `dirbuster` y `dirb` y obtenemos los siguientes 
 /jailuser/dev/jail.c
 ```
 
-Interesante, tiene un código fuente escrito en C, su binario compilado y su línea de compilación. He aquí un fragmento del archivo [jail.c](/assets/HackTheBox/Jail/jail.c) que contiene un buffer overflow clásico.
+
+Si nos fijamos abajo del código fuente del archivo [jail.c](/assets/HackTheBox/Jail/jail.c)
+{{< highlight c "hl_lines=1" >}}
+    port = 7411;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(port);
+{{< /highlight >}}
+
+vemos que el programa esta pensado para funcionar en el puerto 7411. Podemos comprobar que está efectivamente activo conectándonos directamente desde netcat, por ejemplo.
+{{< highlight c "hl_lines=4" >}}
+nc -vv 10.10.10.34 7411
+Warning: Inverse name lookup failed for `10.10.10.34'
+10.10.10.34 7411 (daqstream) open
+OK Ready. Send USER command.
+{{< /highlight >}}
+
+Si continuamos estudiando el código fuente, podemos ver el siguiente fragmento de código, que contiene un buffer overflow clásico.
 {{< highlight c "hl_lines=9" >}}
 int auth(char *username, char *password) {
     char userpass[16];
@@ -101,33 +118,33 @@ int auth(char *username, char *password) {
 }
 {{< /highlight >}}
 
-Además si nos fijamos en el [script de compilación](4), nos damos cuenta de que el código se está compilando con el flag `execstack`, lo cual nos indica que podemos utilizar la misma pila para ejecutar instrucciones una vez desbordado el buffer que hemos indicado anteriormente.
+La variable `userpass` tiene reservados 16 bytes en memoria. Sin embargo, debido a que se utiliza la función insegura `strcpy` no existe una comprobación del número de bytes que van a ser copiados desde la variable `password`. Si el contenido almacenado en la variable `password` es mayor de 16 bytes, los bytes consecutivos a la variable `userpass` serán sobreescritos, pudiéndose dar el caso que, incluso, se sobreescribiese la dirección de retorno de la función `auth( ... )` permitiéndonos tomar control del programa.
+
+Además si nos fijamos en el [script de compilación](4), nos damos cuenta de que el código se está compilando con el flag `execstack`, lo cual nos indica que la zona de memoria de la pila será ejecutable.
 {{< highlight sh "hl_lines=1" >}}
     gcc -o jail jail.c -m32 -z execstack
     service jail stop
     cp jail /usr/local/bin/jail
     service jail start
 {{< /highlight >}}
-
-Si nos fijamos también un poco más abajo del código fuente del programa
-{{< highlight c "hl_lines=1" >}}
-    port = 7411;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(port);
-{{< /highlight >}}
-
-vemos que el programa esta pensado para funcionar en el puerto 7411. Podemos comprobar que está efectivamente activo conectándonos directamente desde netcat, por ejemplo.
-{{< highlight c "hl_lines=4" >}}
-nc -vv 10.10.10.34 7411
-Warning: Inverse name lookup failed for `10.10.10.34'
-10.10.10.34 7411 (daqstream) open
-OK Ready. Send USER command.
-{{< /highlight >}}
+Y nos viene bién que la pila sea ejecutable, dado que podremos enviar las instrucciones en ensamblador que queremos que se ejecuten cuando tomemos el control del programa.
 
 Asique ya sabemos que existe un programa vulnerable escuchando en el servidor que queremos atacar. Ahora necesitamos desbordar la pila y enviar una `shellcode` para usar 
 
-Vale, ¿qué necesitamos exactamente para desbordar la pila?
+Vale, ¿qué necesitamos exactamente para desbordar la variable?
+
+nc 127.0.0.1 7411                                                                                        20:11:55
+OK Ready. Send USER command.
+DEBUG
+OK DEBUG mode on.
+USER admin
+OK Send PASS command.
+PASS pass
+Debug: userpass buffer @ 0xff8417e0
+Incorrect username and/or password.
+ERR Authentication failed.
+
+#### Desbordando la 
 
 
 Vale, ya tenemos una shell sin privilegios. ¿Cómo podemos aumentarlos? Es aquí donde entra el servicio NFS que hemos descubierto en el escaneo
