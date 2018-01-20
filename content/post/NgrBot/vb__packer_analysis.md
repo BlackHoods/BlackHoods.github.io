@@ -2,8 +2,7 @@
 title: "NgrBot - Packer analysis"
 description: NgrBot (Part 1)- Packer analysis
 
-date: 2018-01-14T18:56:18+02:00
-publishdate: 2018-01-15T09:00:00+02:00
+date: 2018-01-20T10:30:18+02:00
 
 summary: "In this serie of posts we are going to review interesting feaures of a malware sample known as NrgBot. In this first part, we will focus in the malware packer/deployer whihc has been coded in Visual Basic"
 cardthumbimage: "/assets/NgrBot/cardthumbimage.jpg"
