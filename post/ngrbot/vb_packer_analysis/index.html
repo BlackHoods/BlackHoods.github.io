@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="Hugo 0.34-DEV" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Blog about - {CTFs | Pwning | Reversing}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="icon" type="image/png" href="/images/favicon.ico">
+
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-103806632-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+    <title>NgrBot - Packer analysis</title>
+</head>
+
+<body style="background-image: url('/images/background.jpg');">
+    <div id="MainCnt" class="hmdl-body mdl-layout mdl-js-layout has-drawer is-upgraded">        
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/post/">Articles</a>
+                <a class="mdl-navigation__link" href="/project/">Projects</a>
+                <a class="mdl-navigation__link" href="/about/">About</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/post/">Articles</a>
+            <a class="mdl-navigation__link" href="/project/">Projects</a>
+            <a class="mdl-navigation__link" href="/about/">About</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+		
+
+            <div class="hmdl-page mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__media mdl-color-text--grey-50" style=" background-color:orange;">
+                        <h3 style="color:white;">NgrBot - Packer Analysis</h3>
+                    </div>
+                    <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
+                        <div class="minilogo" style="background-image: url('/images/Doopel_Profile/dopelrIcon.png');"></div>
+
+                        <div>
+							<strong>
+                            		<strong>Doopel</strong>
+							</strong>
+                            <span>Jan 20, 2018</span>
+                        </div>
+                        <div class="section-spacer"></div>
+                    </div>
+                    <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
+                        
+
+<h2 id="abstract">Abstract</h2>
+
+<p>As malware analyst one of the most tricky executable to analyze that I faced are the P-code visual basic executables. That is why I am writing this post, to help all new analysts who need some tips to unmask this kind of tricky malicious executable :).</p>
+
+<p>In order to illustrate the explanation I will use a malware sample known as NgrBot which comes “packeted” in a Visual Basic executable.</p>
+
+<p>It can be downloaded from VirusTotal &ndash;&gt; MD5: 2749db2586ed61451442e19615674010</p>
+
+<p>The analysis will be divided in three post where will describe step by step how I have performed the reverse engineering process, explaining little analysis tricks and curiosities about this particular simple.</p>
+
+<h2 id="identify-file">Identify file</h2>
+
+<p>The first thing that we need to know when we pretend to analysis an unclassified software is which kind of sample we have in our hands. Personally I like to use a tool named <strong>exeinfope</strong> which provides really useful information about the file and other functionalities that we will use later.</p>
+
+<p><img src="/assets/NgrBot/Identify file/exeinfo.png" alt="ExeInfo" /></p>
+
+<p>Looks like that we are dealing with something serious here. And for now we can not say it is a visual basic executable. Lets take a look to it with our favorite debugger in my case I will use “OllyDbg”.</p>
+
+<p><img src="/assets/NgrBot/Identify file/VisualBasic_msvbvm60_Dll_Call.png" alt="VisualBasic_msvbvm60_Dll_Call" /></p>
+
+<p>This are the first 4 instructions of the program, we can see that it is calling to the function number 100 (ThunRTMain) of  dll “Msvbvm60” which is known as &ldquo;Microsoft Visual Basic Virtual Machine COM layer msvbvm60&rdquo;. Now we can say that it is definitely a visual basic executable.</p>
+
+<p><strong>Note:</strong> Before we get into the details, it is necessary to understand that we are dealing with a virtual machine interpreter. That  means that we will no be able to see the code that it is going to be executed (the source code I mean) but at least we can see all the API call that the program is doing. Which will provide us enough information to have an idea of what is going on.</p>
+
+<h2 id="seeking-api-calls">Seeking API Calls</h2>
+
+<p>So our next step is to identify the API calls. It could be really tedious if you do not how the library works because there is a lot of junk code in the execution. What I like to do is to set a break point in the function named <strong>DllFunctionCall</strong> which will be call every time an API call is performed.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/DllFunctionCall.png" alt="DllFunctionCall" /></p>
+
+<p><strong>Note:</strong> In order to find it easily just introduce in the command box &ndash;&gt; &ldquo;bp DllFunctionCall&rdquo; and press F9 to let the program run until it hits the breakpoint.</p>
+
+<p>Once we reach the break point we will be placed inside DllFunctionCall which will return the address of the API call that the program wants to execute in this case the first call made is vbaCopyBytes. Lets keep seeking ;)</p>
+
+<h3 id="vbacopybytes">vbaCopyBytes</h3>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/vbaCopyBytes.png" alt="vbaCopyBytes" /></p>
+
+<p>Usually the return point it is a “jmp eax” but we will see that it uses another methods.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/jmpEax.png" alt="vbaCopyBytes" /></p>
+
+<p>Now lets take a look of what it is coping. The first instruction are made to prepare the copy loop which will copy the first 10 Dword store in the address 009054AD.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/mz.png" alt="mz" /></p>
+
+<p>If we follow in the dump the register <strong>“edi”</strong> we can see that it has been copied the header of a executable Interesting :). Maybe we are lucky and all the executable is in the address saved in <strong>“esi”</strong>.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/des_mz_addr.png" alt="des_mz_addr" /></p>
+
+<p>Oh yeah there it is :)</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/source_mz_addr.png" alt="source_mz_addr" /></p>
+
+<p><strong>Note:</strong> if you place a break point some were inside this function you will notice that it is recalled multiple time in order to copy the full executable to the new location. But as we only care about the address of the begging and the full executable saved in the source, we can ignore it.</p>
+
+<h4 id="dumping-suspicious-mz">Dumping suspicious MZ</h4>
+
+<p>Once we have found a MZ in memory there is just one thing to do &ndash;&gt; Dump and reconstruct it. There are multiple ways to dump it, you can use the OllyDbg plugin “OllyDump” but I personally prefer, in this case, just to do it manually. Selecting all the code from the beginning of the MZ to the end and saving it whit Right Click + Backup + Save data to file.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/dump mz/dump.png" alt="dump mz" /></p>
+
+<p>The most probable thing is that we had dump our MZ + extra unwanted junk. First it is probably that the file contains some extra junk at the beginning, just open it with your favorite hex editor (010 editor) and remove it manually and save the file.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/dump mz/fix_header.png" alt="fix header" /></p>
+
+<p>Additionally to remove the junk tail I like to use again “exeinfope”. Opening the dumped binary and use the option Overlay Menu + trunk overlay (generate new file) and voila we have our MZ ready to be opened in IDA or any other dissembler to be analyzed.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/dump mz/remove_overlay.png" alt="remove overlay" /></p>
+
+<p>for the time being we will keep following the execution pressing “F9” to go to the next call in DllFunctionCall and later on we will return to examine this file which probably will be executed in some point.</p>
+
+<p>###GetModuleFileNameW</p>
+
+<p>The next function called is <strong>GetFileNameW</strong> which retrieves the fully qualified path for the file that contains the specified module.</p>
+
+<p><strong>Note:</strong> The module must have been loaded by the current process.</p>
+
+<p>In this case after the return we were placed in the middle of the Dll jungle but do not panic. Lets use a little trick to jump directly to the important code placing a break point in GetModuleFileNameW address (76B34950) + F9</p>
+
+<p>The parameters that the function receives are:</p>
+
+<ol>
+<li><p><strong>hModule:</strong> A handle to the loaded module whose path is being requested.</p></li>
+
+<li><p><strong>lpFilename/PathBuffer:</strong> A pointer to a buffer that receives the fully qualified path of the module.</p></li>
+
+<li><p><strong>BufferSize/nSize:</strong> The size of the lpFilename buffer, in TCHARs</p></li>
+</ol>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/GetModuleFileNameW/GetModuleFileNameW.png" alt="GetModuleFileNameW" /></p>
+
+<p>In our case the pointer is save in “00604C6C” that will contain his own file path.</p>
+
+<h3 id="createprocessw">CreateProcessW</h3>
+
+<p>Now it is going to create a son process. We can proceed as before to reach the “CreatePorcessW” call.  Which will create a sub-process with the following characteristics:</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/createProcess/createProcess.png" alt="createProces" /></p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/createProcess/ProcessHacker.png" alt="ProcessHacker" /></p>
+
+<p><strong>Note:</strong> notice that it is going to be initialized suspended which makes me suspect that it will be has something to do with the MZ loaded before.</p>
+
+<p>In the father process it is saved his son’s the handler  (0xC8) which will be used later, keep it in mind.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/createProcess/handlers.png" alt="Handlers" /></p>
+
+<h3 id="zwunmapviewofsection">ZwUnmapViewOfSection</h3>
+
+<p>The <strong>ZwUnmapViewOfSection</strong> routine unmaps a view of a section from the virtual address space of a subject process.</p>
+
+<p>Input parameters:</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/ZwUnmapViewOfSection/ZwUnmapViewOfSection.png" alt="ZwUnmapViewOfSection" /></p>
+
+<h3 id="virtualallocex">VirtualAllocEX</h3>
+
+<p>VirtualAllocEX reserves, commits, or changes the state of a region of memory within the virtual address space of a specified process. The function initializes the memory it allocates to zero.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/VirtualAllocEX/VirtualAllocEX.png" alt="VirtualAllocEX" /></p>
+
+<h3 id="zwwritevirtualmemory">ZwWriteVirtualMemory</h3>
+
+<p>Now it will write into the son’s process the MZ that we extracted previously which is allocated in “397AA0”. As before “ZwWriteVirtualMemory” is going to be called multiple time in order to copy all the executable code to his son.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/ZwWriteVirtualMemory/ZwWriteVirtualMemory.png" alt="ZwWriteVirtualMemory" /></p>
+
+<h3 id="zwgetcontextthreat">ZwGetContextThreat</h3>
+
+<p>It retrieves the context of the specified thread. Which will be modified in the next call.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/ZwGetContextThreat/ZwGetContextThreat.png" alt="ZwGetContextThreat" /></p>
+
+<h3 id="zwsetcontextthreat">ZwSetContextThreat</h3>
+
+<p>Sets the context for the specified thread.</p>
+
+<p><img src="/assets/NgrBot/Seeking  API calls/ZwSetContextThreat/ZwSetContextThreat.png" alt="ZwSetContextThreat" /></p>
+
+<h3 id="zwresumethreat">ZwResumeThreat</h3>
+
+<p>This one is going to be the last operation done by the father’s hand and the code injected in his sons which is the real malicious code is going to be executed.</p>
+
+<p>The only parameter that it receives is the son’s thread handler “0xC”.</p>
+
+<p>Now is when the muddy staff beggings :).</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Up to now, we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see it is a dropper/deployer that will make the infection persistent in the system.</p>
+
+<h2 id="tools">Tools</h2>
+
+<ul>
+<li>OllyDbg</li>
+<li>ProcessHacker</li>
+<li>ExeInfo</li>
+<li>010 hex editor</li>
+</ul>
+
+                    </div>
+                    <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
+                        <strong>
+                            	<strong>Doopel</strong>
+						</strong>
+                        <p></p>
+                    </div>  
+                </div>                
+                <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+                    <a href="/post/googlectf2017/inst_prof_p2/">
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                        <i class="icon ion-android-arrow-back"></i>
+                        </button>
+                        Older
+                    </a>
+                    <div class="section-spacer"></div>
+                </nav>
+ 
+            </div>        
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">                
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="mailto:pwn4tion@gmail.com?subject=Hi">
+                    <i class="material-icons_lg icon ion-email"></i>
+                    <span class="visuallyhidden">Email</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://github.com/Pwnation">
+                    <i class="material-icons_lg icon ion-social-github"></i>
+                    <span class="visuallyhidden">Github</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://twitter.com/PwnationBlog">
+                    <i class="material-icons_lg icon ion-social-twitter "></i>
+                    <span class="visuallyhidden">Twitter</span>
+                </a>
+
+
+            </div>
+            <div class="mdl-mini-footer--right-section">
+                <span>© 2017 </span>
+            </div>
+        </footer>
+        <div class="mdl-layout__obfuscator"></div>
+    </div>
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+</body>
+</html>
+

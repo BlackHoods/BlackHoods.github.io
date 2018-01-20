@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Pwnation Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Dec 2017 18:56:18 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jan 2018 10:30:18 +0200</lastBuildDate>
     
 	<atom:link href="http://Pwnation.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>2017</title>
       <link>http://Pwnation.github.io/tags/2017/</link>
-      <pubDate>Fri, 01 Dec 2017 18:56:18 +0200</pubDate>
+      <pubDate>Sat, 20 Jan 2018 10:30:18 +0200</pubDate>
       
       <guid>http://Pwnation.github.io/tags/2017/</guid>
       <description></description>
@@ -44,6 +44,15 @@
       <pubDate>Fri, 01 Dec 2017 18:56:18 +0200</pubDate>
       
       <guid>http://Pwnation.github.io/tags/googlectf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Malware</title>
+      <link>http://Pwnation.github.io/tags/malware/</link>
+      <pubDate>Sat, 20 Jan 2018 10:30:18 +0200</pubDate>
+      
+      <guid>http://Pwnation.github.io/tags/malware/</guid>
       <description></description>
     </item>
     

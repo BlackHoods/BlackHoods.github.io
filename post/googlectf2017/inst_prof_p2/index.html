@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="generator" content="Hugo 0.33-DEV" />
+    <meta name="generator" content="Hugo 0.34-DEV" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,7 +94,7 @@ ga('send', 'pageview');
 <h4 id="introduction">Introduction</h4>
 
 <p>This post is the second part of the solucion of <strong>Inst Prof</strong>, an initial challenge of the GoogleCTF 2017.<br />
-Basically, the analysis phase was already donein <a href="../inst_prof_p1">part1</a>, so, in this post, we are going to
+Basically, the analysis phase was already done in <a href="../inst_prof_p1">part1</a>, so, in this post, we are going to
 focus with the exploitation phase.</p>
 
 <hr />
@@ -139,7 +139,7 @@ in the previous point (those <code>90</code>). For example, if we input the char
 
 <li><p>After these permissions have been updated, the process will execute our inserted bytes or instructions.</p></li>
 
-<li><p>It deallocates de memory region.</p></li>
+<li><p>It deallocates the memory region.</p></li>
 
 <li><p>And it starts again.</p></li>
 </ol>
@@ -157,7 +157,7 @@ memory and redirect the execution flow to it. We have some little problems regar
 <li><p>Furthermore, If the instruction provided is a 4-byte one, it will be executed <code>4096</code> (or <code>0x1000</code>) times because it will be inserted inside a loop.<br />
 If it has less, we could avoid this behavior adding an extra byte: <code>c3</code> which is the opcode for the return statement. If we use it we will break the mentioned loop.</p></li>
 
-<li><p>We need an <strong>address</strong> to write the bytes to and the section this address belongs to must have execution permissions.</p></li>
+<li><p>We need an <strong>address</strong> to write these bytes to and the section this address belongs to must have execution permissions.</p></li>
 
 <li><p>We will need to save some stuff on the registers, i.e. the address we are going to copy our shellcode to. We will need to identify which registers are <strong>not used</strong> from our first input to the next one.</p></li>
 </ol>
@@ -735,6 +735,12 @@ exploitation phase.</li>
                         Older
                     </a>
                     <div class="section-spacer"></div>
+                    <a href="/post/ngrbot/vb_packer_analysis/">
+                        Newer
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                            <i class="icon ion-android-arrow-forward"></i>
+                        </button>
+                    </a>
                 </nav>
  
             </div>        

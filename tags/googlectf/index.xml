@@ -18,7 +18,7 @@
       
       <guid>http://Pwnation.github.io/post/googlectf2017/inst_prof_p2/</guid>
       <description>Introduction This post is the second part of the solucion of Inst Prof, an initial challenge of the GoogleCTF 2017.
-Basically, the analysis phase was already donein part1, so, in this post, we are going to focus with the exploitation phase.
+Basically, the analysis phase was already done in part1, so, in this post, we are going to focus with the exploitation phase.
 Flash reminder Just to remember what we explained in part 1, here is an easy list with the normal flow of the process. Here is a patched version of the binary as we explained in the part 1.</description>
     </item>
     
