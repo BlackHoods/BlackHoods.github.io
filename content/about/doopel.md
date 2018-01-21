@@ -18,7 +18,7 @@ blurb: "Just an IT engineer who likes to learn new things every day"
 recentposts: 5
 recentprojects: 5
 photo: "/images/Doopel_Profile/dopelrIcon.png"
-cardheaderimage: "/images/Doopel_Profile/card_backgroud2.jpg" #optional: default solid color if unset
+cardheaderimage: "/images/Doopel_Profile/card_backgroud.jpg" #optional: default solid color if unset
 cardbackground: "#263238" #optional: card background color; only shows when no image specified
 linkedin: "https://www.linkedin.com/in/alejo-mol%C3%A9s-ramos-459792125/"
 email: "doop3lgang3r@gmail.com"

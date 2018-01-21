@@ -25,10 +25,10 @@ project_category = "project_categories"
 [params]
   id = 1
   group = "Pwnation"
-  avatar = "/images/blackHoodsIcon120x120.png"
+  avatar = "/images/blackHoodsIcon120x120.jpg"
   background = "/images/background.jpg"
   description = "A place to publish my incomprehensible ramblings" #meta description
-  image = "/images/blackHoodsIcon120x120.png" #for frontpage profile card
+  image = "/images/blackHoodsIcon120x120.jpg" #for frontpage profile card
   mdlPrimary = "grey"
   mdlSecondary = "orange"
 

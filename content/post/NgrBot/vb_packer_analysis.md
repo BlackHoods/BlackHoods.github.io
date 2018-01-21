@@ -1,6 +1,6 @@
 ---
-title: "NgrBot - Packer analysis"
-description: NgrBot (Part 1)- Packer analysis
+title: "NgrBot - Packer analysis (Part 1)"
+description: NgrBot - Packer analysis (Part 1)
 
 date: 2018-01-20T10:30:18+02:00
 
@@ -29,7 +29,7 @@ tags:
 ## Abstract ##
 As malware analyst one of the most tricky executable to analyze that I faced are the P-code visual basic executables. That is why I am writing this post, to help all new analysts who need some tips to unmask this kind of tricky malicious executable :).
 
-In order to illustrate the explanation I will use a malware sample known as NgrBot which comes “packeted” in a Visual Basic executable.
+In order to illustrate the explanation I will use a malware sample known as NgrBot which comes “packed” in a Visual Basic executable.
 
 It can be downloaded from VirusTotal --> MD5: 2749db2586ed61451442e19615674010
 
