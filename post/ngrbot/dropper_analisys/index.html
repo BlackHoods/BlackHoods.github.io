@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="generator" content="Hugo 0.35-DEV" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Blog about - {CTFs | Pwning | Reversing}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="icon" type="image/png" href="/images/favicon.ico">
+
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+
+    
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"/>
+    <link rel="stylesheet" href="/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.grey-orange.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/css/hmdl-style.css"/>
+	<link rel="stylesheet" href="/css/pygment.css">
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-103806632-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+    <title>NgrBot - Dropper analysis (Part 2)</title>
+</head>
+
+<body style="background-image: url('/images/background.jpg');">
+    <div id="MainCnt" class="hmdl-body mdl-layout mdl-js-layout has-drawer is-upgraded">        
+        <header class="mdl-layout__header mdl-layout__header--transparent mdl-layout__header--scroll">
+            <div class="mdl-layout__header-row">
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/post/">Articles</a>
+                <a class="mdl-navigation__link" href="/project/">Projects</a>
+                <a class="mdl-navigation__link" href="/about/">About</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/">Home</a>
+            <a class="mdl-navigation__link" href="/post/">Articles</a>
+            <a class="mdl-navigation__link" href="/project/">Projects</a>
+            <a class="mdl-navigation__link" href="/about/">About</a>
+            </nav>
+        </div>
+
+        <main class="mdl-layout__content">
+
+		
+
+            <div class="hmdl-page mdl-grid">
+                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                    <div class="mdl-card__media mdl-color-text--grey-50" style=" background-color:orange;">
+                        <h3 style="color:white;">NgrBot - Dropper Analysis (Part 2)</h3>
+                    </div>
+                    <div class="hmdl-page-meta mdl-color-text--grey-700 mdl-card__supporting-text">
+                        <div class="minilogo" style="background-image: url('/images/Doopel_Profile/dopelrIcon.png');"></div>
+
+                        <div>
+							<strong>
+                            		<strong>Doopel</strong>
+							</strong>
+                            <span>Jan 28, 2018</span>
+                        </div>
+                        <div class="section-spacer"></div>
+                    </div>
+                    <div class="hmdl-page-content mdl-color-text--grey-700 mdl-card__supporting-text">
+                        
+
+<h2 id="resume">Resume</h2>
+
+<p>Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as posible legit process running in the victim machine.</p>
+
+<h2 id="reversing-unpacked-executable">Reversing unpacked executable</h2>
+
+<p>Before get into the static analysis of the sample, sometimes is really usefull to take a look of its behaviour, so we will do a quick dynamic analysis of its execution.</p>
+
+<p>At this point if we execute “resume threat” or the extracted file that we get from the last post. It will create an independent process to inject malicious code inside “iexplorer” in order to bypass the firewall and connected itself to the IRC master chat.</p>
+
+<p>As we can see in the our favority process monitor and network traffics analysis tools (eg. Process Hacker and Wireshark)</p>
+
+<p><img src="/assets/NgrBot/Behaviour/monitor.png" alt="monitor" /></p>
+
+<p><img src="/assets/NgrBot/Behaviour/traffic.png" alt="traffic" /></p>
+
+<p>Thanks to the dynamic analysis now we know that we are dealing with a bot. Specifically,  one that communicates with its master throw a IRC channel.</p>
+
+<p>Welcome to the 80s :)</p>
+
+<h4 id="irc-botnet">IRC botnet</h4>
+
+<p>An IRC botnet works as the following chart illustrate, the bot connects as a client to a chat and waits for instructions.</p>
+
+<p><img src="/assets/NgrBot/IRC/botnet.png" alt="botnet" /></p>
+
+<h4 id="internet-relay-chat-irc-protocol">Internet Relay Chat (IRC) protocol</h4>
+
+<p>Immediately upon establishing a connection the client must attempt registration, without waiting for any banner message from the server.</p>
+
+<p>Until registration is complete, only a limited subset of commands SHOULD be accepted by the server. This is because it makes sense to require a registered (fully connected) client connection before allowing commands such as JOIN, PRIVMSG and others.</p>
+
+<p>The recommended order of commands during registration is as follows:</p>
+
+<ol>
+<li>CAP LS 302</li>
+<li>PASS</li>
+<li>NICK and USER</li>
+<li>Capability Negotiation</li>
+<li>SASL (if negotiated)</li>
+<li>CAP END</li>
+</ol>
+
+<h4 id="our-irc-login-case">Our IRC login case</h4>
+
+<p>In our case the client sents its user and  password message but unfortunately the server is not responding with the well come banner and the bot is not able to join the specific channel to receive commands.</p>
+
+<p>For what we can extract from the traffic captured before we know that</p>
+
+<ul>
+<li><p>the username and the nick used in the chat are generated strings by the malware which uses the information extracted from the infected system to create an unic ID.  The nicknme is something like <strong>n{&ldquo;system lenguage&rdquo;|&ldquo;windows vesion&rdquo;}&ldquo;username&rdquo;</strong> (eg, n{ES|W7u}dsiqdxi) and the username probably is a random string (eg, dsiqdxi).</p></li>
+
+<li><p>the password used to login into the chat is <strong>ngrBot</strong>.</p></li>
+</ul>
+
+<p>With this information we could craft our own client in order to log into the botnet a interact with it, but as we saw the IRC server is down. So from here, we only can keep looking into the code of our sample to get more information.</p>
+
+<h2 id="reversing-unpacked-executable-in-ida">Reversing unpacked executable in IDA</h2>
+
+<p>At this point we know what is going to do the malicious code, we have it dumped and we do not require from the parent executable anymore to launch the malware. But looks quiet interesting to know how it is able to create an independent process and make its self persistent in the infected system.</p>
+
+<p>Let’s take a look to the assembly code in IDA :)</p>
+
+<p>Father Behavior Resume:</p>
+
+<ul>
+<li>Decode part of its .data section data.</li>
+<li>Gets drive information possible Anti-VB  possible Anti-VB</li>
+<li>Tries to open communication mutex</li>
+<li>Make persistent</li>
+<li>Launch deployed executable</li>
+</ul>
+
+<h4 id="decryption-data">Decryption .data</h4>
+
+<p>At the beginning of its execution it decrypts some important strings from its .data section.</p>
+
+<p><img src="/assets/NgrBot/unpacked/string_decryptor.png" alt="string_decryptor" /></p>
+
+<p>From the first decryption function really interesting strings provides us an over view of which capabilities it has:</p>
+
+<ul>
+<li>Antivirus detection</li>
+<li>IRC commands: USER, NICK, JOIN, PART, PRIVMSG, QUIT, PONG, PING, PRIVMSG</li>
+
+<li><p>Browsers injection:  i e x p l o r e . e x e     f i r e f o x . e x e</p></li>
+
+<li><p>Registers (persistent):<br />
+    ◦ S o f t w a r e \ M i c r o s o f t \ W i n d o w s \ C u r r e n t V e r s i o n \ R u n<br />
+    ◦ S o f t w a r e \ M i c r o s o f t \ W i n d o w s \ C u r r e n t V e r s i o n \ P o l i c i e s \ S y s t e m</p></li>
+
+<li><p>Auto Update</p></li>
+
+<li><p>Hijacking</p></li>
+
+<li><p>DDOS: SYN flood, UDP flood.Propagation:
+    ◦ USB
+    ◦ Mail
+    ◦ Malicious HTML injection
+    ◦ FTP brute force
+    ◦ DNS poisoning
+    ◦ Network Shared folder</p></li>
+
+<li><p>Credential stealing</p></li>
+</ul>
+
+<p>And the second one get us what looks like the bot commands used to communicate with its master:</p>
+
+<ul>
+<li>:!v</li>
+<li>:!rc</li>
+<li>:!die</li>
+<li>:!rm</li>
+<li>:!s</li>
+<li>:!us</li>
+<li>:!stop</li>
+<li>:!stats</li>
+<li>:!logins</li>
+<li>:!rs0</li>
+<li>:!speed</li>
+<li>:!m</li>
+<li>:!j</li>
+<li>:!p</li>
+<li>:!dl</li>
+<li>:!msn.set</li>
+<li>:!msn.int</li>
+<li>:!http.set</li>
+<li>:!http.int</li>
+<li>:!http.inj</li>
+<li>:!mdns</li>
+<li>:!vs</li>
+<li>:!up</li>
+<li>:!slow</li>
+<li>:!mod</li>
+<li>:!rs1</li>
+<li>:!udp</li>
+<li>:!ssyn</li>
+</ul>
+
+<h2 id="get-drive-information">Get drive information</h2>
+
+<p>Coming up next, it checks the C:\ disk properties in order to detect if it is being executed in a virtual environment.</p>
+
+<p>To check it, it uses two functions “CreateFileA” to get C:\ handler and “DeviceIOControl” to fetch the device factory name.</p>
+
+<ul>
+<li>CreateFileA will return in this case the handler x94 which will be saved in eax. Arguments:</li>
+</ul>
+
+<p><img src="/assets/NgrBot/unpacked/Sys_info/disk_proper.png" alt="disk_proper" />
+<img src="/assets/NgrBot/unpacked/Sys_info/disk_proper_2.png" alt="disk_proper_2" /></p>
+
+<ul>
+<li>DeviceIOControl: using the taken handler it obtains the hard disk’s name which is saved in “OutBuffer”:0018F864.</li>
+</ul>
+
+<p><img src="/assets/NgrBot/unpacked/Sys_info/disk_proper_dump.png" alt="disk_proper_dump" /></p>
+
+<h4 id="open-mutex">Open Mutex</h4>
+
+<p>It tries to open a Mutex which will be uses later to communicate with its “independent son”. At the first execution it will not exist. It will be used by his mutant son.</p>
+
+<h4 id="make-itself-persistent">Make itself persistent</h4>
+
+<p>It copies itself into <strong>C:\Users\”username”\AppData\Roaming</strong> , registers itself in <strong>\Softwaer\Microsoft\CurrentVersion\Run</strong> to be executed automatically and launches the dropped/copied executable.</p>
+
+<p><img src="/assets/NgrBot/unpacked/persistence/persistence.png" alt="persistence" /></p>
+
+<h4 id="launch-deployed-executable">Launch deployed executable</h4>
+
+<p>After the deployment stage it launch the dropped replica stored in <strong>“AppData\Romaing”</strong> using a particular flag <strong>CREATE_NEW_CONSOLE</strong> of the CreateProcessW API call that will execute it as a new process tree.</p>
+
+<p><img src="/assets/NgrBot/unpacked/lauch/CreateProcess.png" alt="CreateProcess" /></p>
+
+<p><strong>Note:</strong> The new process has a new console, instead of inheriting its parent&rsquo;s console (the default).
+To keep tracking the execution we want to attach to the new process but unfortunately there are to factors that make it a little bit tricky:</p>
+
+<ul>
+<li>It has a custom values in StartInfo&amp;ProcessInfo structures</li>
+</ul>
+
+<p><img src="/assets/NgrBot/unpacked/lauch/process_conf.png" alt="process_conf" /></p>
+
+<ul>
+<li>Once the CreateProcess is called we will not be able to attach properly to it. To attach to it I just stopped fathers execution just before CreateProcessW call and modified the binary (Xmbmbj) manually making a infinite loop in its first jump instruction.</li>
+</ul>
+
+<p>In this particular case he first jump is <strong>“jz eip+95” (74 jz opcode, 5F = 95)</strong> and we want to loop infinite times over that instruction that means we want to jump to <strong>“eip-4” (FE = -4)</strong>.</p>
+
+<p><img src="/assets/NgrBot/unpacked/lauch/loop.png" alt="loop" /></p>
+
+<p>Now that we are attached to the new process we only need to restore the original jump instruction directly in the debugger a continue the execution (F9) until the end of father’s process and start debugging his son which will take a different execution flow.</p>
+
+<h2 id="reversing-deployed-executable">Reversing deployed executable</h2>
+
+<p>It will follow the same execution flow as his father until deployment_launcher function where his father dies after it launches his son.</p>
+
+<p><img src="/assets/NgrBot/deployed/init.png" alt="init" /></p>
+
+<p>Son’s main mission is to inject malicious code inside legit processes. To acomplish it, it does the following actions:</p>
+
+<h4 id="preliminar-setup">Preliminar setup</h4>
+
+<ol>
+<li><p>It creates a file map to store some useful information.</p>
+
+<ol>
+<li>Create mutex
+<img src="/assets/NgrBot/deployed/setup/create_mutex.png" alt="create_mutex" /></li>
+
+<li><p>CreateFileMap
+<img src="/assets/NgrBot/deployed/setup/createFileMap.png" alt="createFileMap" /></p>
+
+<p><strong>Note:</strong> If hFile is INVALID_HANDLE_VALUE, the calling process must also specify a size for the file mapping object in the dwMaximumSizeHigh and dwMaximumSizeLow parameters. In this scenario, CreateFileMapping creates a file mapping object of a specified size that is backed by the system paging file instead of by a file in the file system.
+<img src="/assets/NgrBot/deployed/setup/mutant.png" alt="mutant" /></p></li>
+
+<li><p>MapViewofFile (Maps a view of a file mapping into the address space of a calling process)
+<img src="/assets/NgrBot/deployed/setup/mapViewofFile.png" alt="mapViewofFile" /></p>
+
+<ol>
+<li>Starting address of the mapped view:
+<img src="/assets/NgrBot/deployed/setup/start_address.png" alt="start_address" /></li>
+<li>Values witten:
+<img src="/assets/NgrBot/deployed/setup/values.png" alt="values" /></li>
+<li>Flag as running
+<img src="/assets/NgrBot/deployed/setup/flag.png" alt="flag" /></li>
+</ol></li>
+</ol></li>
+</ol>
+
+<h4 id="launch-iexplorer">Launch iexplorer</h4>
+
+<p>At this point, it tries to launch &ldquo;Internet Explorer&rdquo; to be sure that it is able at least inject its malicious code inside a running/legit process.</p>
+
+<p>It searches the path of internet explorer and launch it:</p>
+
+<p><img src="/assets/NgrBot/deployed/explorer/iexplorer_func.png" alt="iexplorer_func" /></p>
+
+<ul>
+<li><p>SHGetSpecialFolderPathW
+<img src="/assets/NgrBot/deployed/explorer/SHGetSpecialFolderPath.png" alt="SHGetSpecialFolderPath" /></p></li>
+
+<li><p>PathAppendW
+<img src="/assets/NgrBot/deployed/explorer/PathAppendW.png" alt="PathAppendW" /></p></li>
+
+<li><p>CreateProcessW
+<img src="/assets/NgrBot/deployed/explorer/CreateProcessW.png" alt="CreateProcessW" /></p></li>
+</ul>
+
+<h4 id="malicious-code-injection">Malicious code injection</h4>
+
+<p>It searchs for all the process running under WoW64 to infect them. It just has load iexlorer to be sure to find some victim but it will do the same to all the posibles targets. In my case the first process it detects is iexplorer.exe with handler <strong>0x10C</strong>. The way to infect a process and execute the code is:</p>
+
+<ul>
+<li><p>Loads in a remote process’ memory the input parameters that are goiung to be used by the malicious code:</p>
+
+<ul>
+<li>VirtualAllocEx:
+<img src="/assets/NgrBot/deployed/injection/VirtualAllocEx.png" alt="VirtualAllocEx" /></li>
+<li>WriteProcessMemory
+<img src="/assets/NgrBot/deployed/injection/WriteProcessMemory.png" alt="WriteProcessMemory" />
+<img src="/assets/NgrBot/deployed/injection/WriteProcessMemory_2.png" alt="WriteProcessMemory_2" /></li>
+</ul></li>
+
+<li><p>To copy the malicious code it does the same, in this case:</p>
+
+<ul>
+<li>VirtualAllocEx:
+<img src="/assets/NgrBot/deployed/injection/VirtualAllocEx_2.png" alt="VirtualAllocEx_2" /></li>
+<li>WriteProcessMemory
+<img src="/assets/NgrBot/deployed/injection/WriteProcessMemory_3.png" alt="WriteProcessMemory_3" />
+<img src="/assets/NgrBot/deployed/injection/WriteProcessMemory_4.png" alt="WriteProcessMemory_4" /></li>
+</ul></li>
+
+<li><p>Now it already has infected his target but to execute that code  it creates a remote thread in the infected process to launch the malicious code selecting as “StartAddress” the startAddress of the malicious code (010BC374) and as “lpParameter the section that was stored before (EF0000).
+<img src="/assets/NgrBot/deployed/injection/remote_thread.png" alt="remote_thread" /></p></li>
+</ul>
+
+<h4 id="dumping-iexplore-injected-code">Dumping iexplore injected code</h4>
+
+<p>At this point, &ldquo;Iexplorer&rdquo; has been infected and the real malicious code is running freelly in the victim machine. The next step is to dump the MZ store in “iexplorer” memory and continue our investigation. To dump it I just used the tool “ProcessHacker”.</p>
+
+<p><img src="/assets/NgrBot/deployed/dump.png" alt="dump" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this post we have seen how the malware has deployed and made itself persisten in the victim system and a interesting technique to inject malicious code inside legit programs unlinking the origian malware process tree.</p>
+
+<p>In the following and last post we will take a look into the injected code a we will be able to confirm the malware capabilities that we have guessed from the decoded strings.</p>
+
+<h2 id="tools">Tools</h2>
+
+<ul>
+<li>OllyDbg</li>
+<li>ProcessHacker</li>
+<li>IDA pro</li>
+<li>Wireshark</li>
+</ul>
+
+                    </div>
+                    <div class="hmdl-page-comments mdl-color-text--primary-contrast mdl-card__supporting-text comments"> 
+                        <strong>
+                            	<strong>Doopel</strong>
+						</strong>
+                        <p></p>
+                    </div>  
+                </div>                
+                <nav class="mdl-color-text--grey-50 mdl-cell mdl-cell--12-col">
+                    <a href="/post/ngrbot/vb_packer_analysis/">
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                        <i class="icon ion-android-arrow-back"></i>
+                        </button>
+                        Older
+                    </a>
+                    <div class="section-spacer"></div>
+                </nav>
+ 
+            </div>        
+        </main>
+        <footer class="mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">                
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="mailto:pwn4tion@gmail.com?subject=Hi">
+                    <i class="material-icons_lg icon ion-email"></i>
+                    <span class="visuallyhidden">Email</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://github.com/Pwnation">
+                    <i class="material-icons_lg icon ion-social-github"></i>
+                    <span class="visuallyhidden">Github</span>
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-mini-footer--social-btn social-btn" href="https://twitter.com/PwnationBlog">
+                    <i class="material-icons_lg icon ion-social-twitter "></i>
+                    <span class="visuallyhidden">Twitter</span>
+                </a>
+
+
+            </div>
+            <div class="mdl-mini-footer--right-section">
+                <span>© 2017 </span>
+            </div>
+        </footer>
+        <div class="mdl-layout__obfuscator"></div>
+    </div>
+    <script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+</body>
+</html>
+

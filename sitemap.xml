@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://Pwnation.github.io/post/ngrbot/dropper_analisys/</loc>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://Pwnation.github.io/post/ngrbot/vb_packer_analysis/</loc>
     <lastmod>2018-01-20T10:30:18+02:00</lastmod>
   </url>
@@ -54,7 +59,7 @@
   
   <url>
     <loc>http://Pwnation.github.io/tags/2017/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -95,13 +100,13 @@
   
   <url>
     <loc>http://Pwnation.github.io/tags/malware/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://Pwnation.github.io/post_categories/malware-analysis/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -113,7 +118,7 @@
   
   <url>
     <loc>http://Pwnation.github.io/post/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -124,7 +129,7 @@
   
   <url>
     <loc>http://Pwnation.github.io/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -142,7 +147,7 @@
   
   <url>
     <loc>http://Pwnation.github.io/tags/</loc>
-    <lastmod>2018-01-20T10:30:18+02:00</lastmod>
+    <lastmod>2018-01-28T21:30:18+02:00</lastmod>
     <priority>0</priority>
   </url>
   

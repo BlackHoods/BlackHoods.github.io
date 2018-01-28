@@ -6,10 +6,20 @@
     <description>Recent content on Pwnation Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Jan 2018 10:30:18 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jan 2018 21:30:18 +0200</lastBuildDate>
     
 	<atom:link href="http://Pwnation.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>NgrBot - Dropper analysis (Part 2)</title>
+      <link>http://Pwnation.github.io/post/ngrbot/dropper_analisys/</link>
+      <pubDate>Sun, 28 Jan 2018 21:30:18 +0200</pubDate>
+      
+      <guid>http://Pwnation.github.io/post/ngrbot/dropper_analisys/</guid>
+      <description>Resume Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as posible legit process running in the victim machine.
+Reversing unpacked executable Before get into the static analysis of the sample, sometimes is really usefull to take a look of its behaviour, so we will do a quick dynamic analysis of its execution.</description>
+    </item>
     
     <item>
       <title>NgrBot - Packer analysis (Part 1)</title>
