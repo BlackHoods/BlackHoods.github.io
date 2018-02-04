@@ -30,15 +30,15 @@ tags:
 
 ## Resume
 
-Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as posible legit process running in the victim machine.
+Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as possible legit process running in the victim machine.
 
 ## Reversing unpacked executable
 
-Before get into the static analysis of the sample, sometimes is really usefull to take a look of its behaviour, so we will do a quick dynamic analysis of its execution. 
+Before get into the static analysis of the sample, sometimes is really useful to take a look of its behaviour, so we will do a quick dynamic analysis of its execution. 
 
 At this point if we execute “resume threat” or the extracted file that we get from the last post. It will create an independent process to inject malicious code inside “iexplorer” in order to bypass the firewall and connected itself to the IRC master chat. 
 
-As we can see in the our favority process monitor and network traffics analysis tools (eg. Process Hacker and Wireshark)
+As we can see in the our favourite process monitor and network traffics analysis tools (eg. Process Hacker and Wireshark)
 
 ![monitor](/assets/NgrBot/Behaviour/monitor.png)
 
@@ -71,11 +71,11 @@ The recommended order of commands during registration is as follows:
 
 #### Our IRC login case
 
-In our case the client sents its user and  password message but unfortunately the server is not responding with the well come banner and the bot is not able to join the specific channel to receive commands.
+In our case the client sends its user and  password message but unfortunately the server is not responding with the well come banner and the bot is not able to join the specific channel to receive commands.
 
 For what we can extract from the traffic captured before we know that
 
-* the username and the nick used in the chat are generated strings by the malware which uses the information extracted from the infected system to create an unic ID.  The nicknme is something like **n{"system lenguage"|"windows vesion"}"username"** (eg, n{ES|W7u}dsiqdxi) and the username probably is a random string (eg, dsiqdxi). 
+* the username and the nick used in the chat are generated strings by the malware which uses the information extracted from the infected system to create an unic ID.  The nicknme is something like **n{"system language"|"windows vesion"}"username"** (eg, n{ES|W7u}dsiqdxi) and the username probably is a random string (eg, dsiqdxi). 
 
 * the password used to login into the chat is **ngrBot**.
 
@@ -83,11 +83,11 @@ With this information we could craft our own client in order to log into the bot
 
 ## Reversing unpacked executable in IDA
 
-At this point we know what is going to do the malicious code, we have it dumped and we do not require from the parent executable anymore to launch the malware. But looks quiet interesting to know how it is able to create an independent process and make its self persistent in the infected system.
+At this point we know what is going to do the malicious code, we have it dumped and we do not require from the parent executable any more to launch the malware. But looks quiet interesting to know how it is able to create an independent process and make its self persistent in the infected system.
 
 Let’s take a look to the assembly code in IDA :)
 
-Father Behavior Resume:
+Father Behaviour Resume:
 
 * Decode part of its .data section data.
 * Gets drive information possible Anti-VB  possible Anti-VB
@@ -206,9 +206,9 @@ It will follow the same execution flow as his father until deployment_launcher f
 
 ![init](/assets/NgrBot/deployed/init.png)
 
-Son’s main mission is to inject malicious code inside legit processes. To acomplish it, it does the following actions:
+Son’s main mission is to inject malicious code inside legit processes. To accomplish it, it does the following actions:
 
-#### Preliminar setup
+#### Preliminary set-up
 
 1. It creates a file map to store some useful information.
     1. Create mutex
@@ -222,7 +222,7 @@ Son’s main mission is to inject malicious code inside legit processes. To acom
         ![mapViewofFile](/assets/NgrBot/deployed/setup/mapViewofFile.png)
         1. Starting address of the mapped view:
         ![start_address](/assets/NgrBot/deployed/setup/start_address.png)
-        2. Values witten:
+        2. Values written:
         ![values](/assets/NgrBot/deployed/setup/values.png)
         3. Flag as running
         ![flag](/assets/NgrBot/deployed/setup/flag.png)
@@ -246,9 +246,9 @@ It searches the path of internet explorer and launch it:
 
 #### Malicious code injection
 
-It searchs for all the process running under WoW64 to infect them. It just has load iexlorer to be sure to find some victim but it will do the same to all the posibles targets. In my case the first process it detects is iexplorer.exe with handler **0x10C**. The way to infect a process and execute the code is:
+It searches for all the process running under WoW64 to infect them. It just has load iexlorer to be sure to find some victim but it will do the same to all the possibles targets. In my case the first process it detects is iexplorer.exe with handler **0x10C**. The way to infect a process and execute the code is:
 
-* Loads in a remote process’ memory the input parameters that are goiung to be used by the malicious code:
+* Loads in a remote process’ memory the input parameters that are going to be used by the malicious code:
 
     * VirtualAllocEx:
 ![VirtualAllocEx](/assets/NgrBot/deployed/injection/VirtualAllocEx.png)
@@ -269,13 +269,13 @@ It searchs for all the process running under WoW64 to infect them. It just has l
 
 #### Dumping iexplore injected code
 
-At this point, "Iexplorer" has been infected and the real malicious code is running freelly in the victim machine. The next step is to dump the MZ store in “iexplorer” memory and continue our investigation. To dump it I just used the tool “ProcessHacker”.
+At this point, "Iexplorer" has been infected and the real malicious code is running freely in the victim machine. The next step is to dump the MZ store in “iexplorer” memory and continue our investigation. To dump it I just used the tool “ProcessHacker”.
 
 ![dump](/assets/NgrBot/deployed/dump.png)
 
 ## Conclusion
 
-In this post we have seen how the malware has deployed and made itself persisten in the victim system and a interesting technique to inject malicious code inside legit programs unlinking the origian malware process tree.
+In this post we have seen how the malware has deployed and made itself persistent in the victim system and a interesting technique to inject malicious code inside legit programs unlinking the original malware process tree.
 
 In the following and last post we will take a look into the injected code a we will be able to confirm the malware capabilities that we have guessed from the decoded strings.
 
