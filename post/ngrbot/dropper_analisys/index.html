@@ -91,15 +91,15 @@ ga('send', 'pageview');
 
 <h2 id="resume">Resume</h2>
 
-<p>Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as posible legit process running in the victim machine.</p>
+<p>Until now we have seen that the original Visual Basic executable just has injected a MZ executable inside a new process. And as we will see throw this post, it is a dropper/deployer that will deploy itself in the system and tries to infect as many as possible legit process running in the victim machine.</p>
 
 <h2 id="reversing-unpacked-executable">Reversing unpacked executable</h2>
 
-<p>Before get into the static analysis of the sample, sometimes is really usefull to take a look of its behaviour, so we will do a quick dynamic analysis of its execution.</p>
+<p>Before get into the static analysis of the sample, sometimes is really useful to take a look of its behaviour, so we will do a quick dynamic analysis of its execution.</p>
 
 <p>At this point if we execute “resume threat” or the extracted file that we get from the last post. It will create an independent process to inject malicious code inside “iexplorer” in order to bypass the firewall and connected itself to the IRC master chat.</p>
 
-<p>As we can see in the our favority process monitor and network traffics analysis tools (eg. Process Hacker and Wireshark)</p>
+<p>As we can see in the our favourite process monitor and network traffics analysis tools (eg. Process Hacker and Wireshark)</p>
 
 <p><img src="/assets/NgrBot/Behaviour/monitor.png" alt="monitor" /></p>
 
@@ -134,12 +134,12 @@ ga('send', 'pageview');
 
 <h4 id="our-irc-login-case">Our IRC login case</h4>
 
-<p>In our case the client sents its user and  password message but unfortunately the server is not responding with the well come banner and the bot is not able to join the specific channel to receive commands.</p>
+<p>In our case the client sends its user and  password message but unfortunately the server is not responding with the well come banner and the bot is not able to join the specific channel to receive commands.</p>
 
 <p>For what we can extract from the traffic captured before we know that</p>
 
 <ul>
-<li><p>the username and the nick used in the chat are generated strings by the malware which uses the information extracted from the infected system to create an unic ID.  The nicknme is something like <strong>n{&ldquo;system lenguage&rdquo;|&ldquo;windows vesion&rdquo;}&ldquo;username&rdquo;</strong> (eg, n{ES|W7u}dsiqdxi) and the username probably is a random string (eg, dsiqdxi).</p></li>
+<li><p>the username and the nick used in the chat are generated strings by the malware which uses the information extracted from the infected system to create an unic ID.  The nicknme is something like <strong>n{&ldquo;system language&rdquo;|&ldquo;windows vesion&rdquo;}&ldquo;username&rdquo;</strong> (eg, n{ES|W7u}dsiqdxi) and the username probably is a random string (eg, dsiqdxi).</p></li>
 
 <li><p>the password used to login into the chat is <strong>ngrBot</strong>.</p></li>
 </ul>
@@ -148,11 +148,11 @@ ga('send', 'pageview');
 
 <h2 id="reversing-unpacked-executable-in-ida">Reversing unpacked executable in IDA</h2>
 
-<p>At this point we know what is going to do the malicious code, we have it dumped and we do not require from the parent executable anymore to launch the malware. But looks quiet interesting to know how it is able to create an independent process and make its self persistent in the infected system.</p>
+<p>At this point we know what is going to do the malicious code, we have it dumped and we do not require from the parent executable any more to launch the malware. But looks quiet interesting to know how it is able to create an independent process and make its self persistent in the infected system.</p>
 
 <p>Let’s take a look to the assembly code in IDA :)</p>
 
-<p>Father Behavior Resume:</p>
+<p>Father Behaviour Resume:</p>
 
 <ul>
 <li>Decode part of its .data section data.</li>
@@ -288,9 +288,9 @@ To keep tracking the execution we want to attach to the new process but unfortun
 
 <p><img src="/assets/NgrBot/deployed/init.png" alt="init" /></p>
 
-<p>Son’s main mission is to inject malicious code inside legit processes. To acomplish it, it does the following actions:</p>
+<p>Son’s main mission is to inject malicious code inside legit processes. To accomplish it, it does the following actions:</p>
 
-<h4 id="preliminar-setup">Preliminar setup</h4>
+<h4 id="preliminary-set-up">Preliminary set-up</h4>
 
 <ol>
 <li><p>It creates a file map to store some useful information.</p>
@@ -311,7 +311,7 @@ To keep tracking the execution we want to attach to the new process but unfortun
 <ol>
 <li>Starting address of the mapped view:
 <img src="/assets/NgrBot/deployed/setup/start_address.png" alt="start_address" /></li>
-<li>Values witten:
+<li>Values written:
 <img src="/assets/NgrBot/deployed/setup/values.png" alt="values" /></li>
 <li>Flag as running
 <img src="/assets/NgrBot/deployed/setup/flag.png" alt="flag" /></li>
@@ -340,10 +340,10 @@ To keep tracking the execution we want to attach to the new process but unfortun
 
 <h4 id="malicious-code-injection">Malicious code injection</h4>
 
-<p>It searchs for all the process running under WoW64 to infect them. It just has load iexlorer to be sure to find some victim but it will do the same to all the posibles targets. In my case the first process it detects is iexplorer.exe with handler <strong>0x10C</strong>. The way to infect a process and execute the code is:</p>
+<p>It searches for all the process running under WoW64 to infect them. It just has load iexlorer to be sure to find some victim but it will do the same to all the possibles targets. In my case the first process it detects is iexplorer.exe with handler <strong>0x10C</strong>. The way to infect a process and execute the code is:</p>
 
 <ul>
-<li><p>Loads in a remote process’ memory the input parameters that are goiung to be used by the malicious code:</p>
+<li><p>Loads in a remote process’ memory the input parameters that are going to be used by the malicious code:</p>
 
 <ul>
 <li>VirtualAllocEx:
@@ -369,13 +369,13 @@ To keep tracking the execution we want to attach to the new process but unfortun
 
 <h4 id="dumping-iexplore-injected-code">Dumping iexplore injected code</h4>
 
-<p>At this point, &ldquo;Iexplorer&rdquo; has been infected and the real malicious code is running freelly in the victim machine. The next step is to dump the MZ store in “iexplorer” memory and continue our investigation. To dump it I just used the tool “ProcessHacker”.</p>
+<p>At this point, &ldquo;Iexplorer&rdquo; has been infected and the real malicious code is running freely in the victim machine. The next step is to dump the MZ store in “iexplorer” memory and continue our investigation. To dump it I just used the tool “ProcessHacker”.</p>
 
 <p><img src="/assets/NgrBot/deployed/dump.png" alt="dump" /></p>
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p>In this post we have seen how the malware has deployed and made itself persisten in the victim system and a interesting technique to inject malicious code inside legit programs unlinking the origian malware process tree.</p>
+<p>In this post we have seen how the malware has deployed and made itself persistent in the victim system and a interesting technique to inject malicious code inside legit programs unlinking the original malware process tree.</p>
 
 <p>In the following and last post we will take a look into the injected code a we will be able to confirm the malware capabilities that we have guessed from the decoded strings.</p>
 
@@ -404,6 +404,12 @@ To keep tracking the execution we want to attach to the new process but unfortun
                         Older
                     </a>
                     <div class="section-spacer"></div>
+                    <a href="/post/ngrbot/malware_capabilities/">
+                        Newer
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-color--white mdl-color-text--grey-900" role="presentation">
+                            <i class="icon ion-android-arrow-forward"></i>
+                        </button>
+                    </a>
                 </nav>
  
             </div>        
